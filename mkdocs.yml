@@ -1,0 +1,69 @@
+site_name: السينما المصرية
+site_description: أرشيف عربي لأفلام السينما المصرية وصنّاعها من ١٨٩٦ حتى ٢٠٠٠
+site_url: https://cimaeg.github.io/
+
+theme:
+  name: material
+  language: ar
+  direction: rtl
+  custom_dir: overrides
+  font: false
+  icon:
+    logo: material/filmstrip
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: الوضع النهاري
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: الوضع الليلي
+  features:
+    - navigation.tabs
+    - navigation.indexes
+    - navigation.footer
+    - navigation.top
+    - search.highlight
+
+plugins:
+  - search
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: false
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  generator: false
+
+# الفهرس يُولَّد تلقائيًا من build_content.py
+nav:
+  - الرئيسية: index.md
+  - العقود:
+      - البدايات: decades/1890s-1920s.md
+      - الثلاثينيات: decades/1930s.md
+      - الأربعينيات: decades/1940s.md
+      - الخمسينيات: decades/1950s.md
+      - الستينيات: decades/1960s.md
+      - السبعينيات: decades/1970s.md
+      - الثمانينيات: decades/1980s.md
+      - التسعينيات: decades/1990s.md
+  - الأفلام:
+      - films/index.md
+      - ليلى (١٩٢٧): films/laila-1927.md
+      - العزيمة (١٩٣٩): films/al-azima-1939.md
+      - باب الحديد (١٩٥٨): films/bab-el-hadid-1958.md
+      - المومياء (١٩٦٩): films/al-momia-1969.md
+      - الأرض (١٩٧٠): films/al-ard-1970.md
+      - الكيت كات (١٩٩١): films/el-kitkat-1991.md

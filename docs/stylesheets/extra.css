@@ -1,0 +1,190 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap");
+
+/* ===== الألوان ===== */
+[data-md-color-scheme="slate"] {
+  --bg: #0e0e10;
+  --bg-2: #17171b;
+  --bg-3: #212127;
+  --fg: #f2efe9;
+  --fg-2: #a9a5a0;
+  --line: #2a2a31;
+  --accent: #f0b43c;
+  --accent-2: #e0563b;
+  color-scheme: dark;
+}
+[data-md-color-scheme="default"] {
+  --bg: #f7f6f3;
+  --bg-2: #ffffff;
+  --bg-3: #eeece7;
+  --fg: #17171b;
+  --fg-2: #5e5b57;
+  --line: #e2dfd8;
+  --accent: #b5770a;
+  --accent-2: #c2402a;
+  color-scheme: light;
+}
+[data-md-color-scheme] {
+  --md-default-bg-color: var(--bg);
+  --md-default-fg-color: var(--fg);
+  --md-default-fg-color--light: var(--fg-2);
+  --md-default-fg-color--lighter: var(--fg-2);
+  --md-default-fg-color--lightest: var(--line);
+  --md-typeset-color: var(--fg);
+  --md-typeset-a-color: var(--accent);
+  --md-primary-fg-color: var(--bg);
+  --md-primary-bg-color: var(--fg);
+  --md-accent-fg-color: var(--accent);
+  --md-footer-bg-color: var(--bg-2);
+  --md-footer-bg-color--dark: var(--bg-2);
+  --md-footer-fg-color: var(--fg);
+  --md-footer-fg-color--light: var(--fg-2);
+  --md-footer-fg-color--lighter: var(--fg-2);
+}
+:root {
+  --md-text-font: "IBM Plex Sans Arabic", system-ui, sans-serif;
+}
+
+/* ===== الواجهة ===== */
+.md-header { box-shadow: none; border-bottom: 1px solid var(--line); }
+.md-header__topic:first-child { font-weight: 600; }
+.md-tabs { border-bottom: 1px solid var(--line); }
+.md-tabs__link { opacity: .7; }
+.md-tabs__item--active .md-tabs__link { opacity: 1; color: var(--accent); }
+.md-search__form { background: var(--bg-3); border-radius: 999px; }
+.md-search__input, .md-search__input::placeholder { color: var(--fg-2); }
+.md-nav__link { color: var(--fg); }
+.md-nav__link--active { color: var(--accent) !important; font-weight: 600; }
+.md-nav--primary .md-nav__title { background: var(--bg-2); color: var(--fg); }
+.md-sidebar--primary .md-sidebar__scrollwrap { background: var(--bg); }
+
+.md-typeset { font-size: 1rem; line-height: 1.9; }
+.md-typeset h1, .md-typeset h2 { font-weight: 600; color: var(--fg); letter-spacing: 0; }
+.md-typeset h2 { font-size: 1.15rem; margin-top: 2.2em; color: var(--fg-2); }
+.md-content { max-width: 60rem; margin-inline: auto; }
+
+/* ===== الرئيسية ===== */
+.home-hero { text-align: center; padding: 2.5rem 0 1rem; }
+.hh-kicker { color: var(--accent); font-weight: 600; letter-spacing: .15em; font-size: .9rem; }
+.md-typeset .home-hero h1 { font-size: 2.8rem; margin: .2em 0 .3em; }
+.home-hero p { color: var(--fg-2); max-width: 32rem; margin-inline: auto; }
+
+.decade-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: .7rem;
+}
+.md-typeset .decade-card {
+  display: flex; flex-direction: column; gap: .15rem;
+  background: var(--bg-2); border: 1px solid var(--line);
+  border-radius: 14px; padding: .9rem 1rem; color: var(--fg);
+  transition: border-color .15s, transform .15s;
+}
+.md-typeset .decade-card:hover { border-color: var(--accent); color: var(--fg); transform: translateY(-2px); }
+.dc-span { font-size: .75rem; color: var(--accent); font-weight: 600; }
+.dc-name { font-size: 1.1rem; font-weight: 600; }
+
+/* ===== بطاقات الأفلام: ملصق طباعي بلا صور ===== */
+.film-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: .9rem;
+  margin: 1rem 0;
+}
+.md-typeset .film-card {
+  position: relative;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  aspect-ratio: 2 / 3;
+  padding: 1rem;
+  border-radius: 14px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  color: var(--fg);
+  overflow: hidden;
+  transition: transform .15s, border-color .15s;
+}
+.md-typeset .film-card::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(160deg, transparent 40%, color-mix(in srgb, var(--accent-2) 18%, transparent)),
+    repeating-linear-gradient(0deg, transparent 0 3px, color-mix(in srgb, var(--fg) 3%, transparent) 3px 4px);
+  pointer-events: none;
+}
+.md-typeset .film-card:hover { transform: translateY(-3px); border-color: var(--accent); color: var(--fg); }
+.fc-year {
+  position: absolute; top: .8rem; inset-inline-start: 1rem;
+  font-size: .8rem; font-weight: 600; color: var(--accent);
+}
+.fc-title { position: relative; font-size: 1.5rem; font-weight: 600; line-height: 1.3; }
+.fc-dir { position: relative; font-size: .8rem; color: var(--fg-2); margin-top: .3rem; }
+.empty { color: var(--fg-2); }
+
+/* ===== صفحة الفيلم ===== */
+.film-hero, .decade-hero { padding: 1.5rem 0 .5rem; }
+.film-year, .decade-span { color: var(--accent); font-weight: 600; letter-spacing: .1em; }
+.md-typeset .film-hero h1, .md-typeset .decade-hero h1 { font-size: 2.6rem; margin: .1em 0 .2em; }
+.film-by { color: var(--fg-2); }
+
+.film-meta {
+  margin: 1.5rem 0;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.meta-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 1rem;
+  padding: .7rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  font-size: .9rem;
+}
+.meta-row:last-child { border-bottom: 0; }
+.meta-row span { color: var(--fg-2); }
+.meta-row b { font-weight: 400; }
+
+.md-typeset .sources { font-size: .85rem; color: var(--fg-2); }
+.md-typeset .sources h2 { font-size: 1rem; }
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .home-hero h1 { font-size: 2.2rem; }
+  .film-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .meta-row { grid-template-columns: 5.5rem 1fr; }
+}
+
+/* ===== الملصقات (تظهر فقط إذا وُجد ملف الملصق) ===== */
+.md-typeset .film-card .fc-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.md-typeset .film-card.has-poster::before {
+  background: linear-gradient(180deg, transparent 45%, rgba(0,0,0,.85));
+  z-index: 1;
+}
+.md-typeset .film-card.has-poster .fc-title,
+.md-typeset .film-card.has-poster .fc-dir,
+.md-typeset .film-card.has-poster .fc-year { z-index: 2; color: #fff; }
+.md-typeset .film-card.has-poster .fc-year {
+  background: rgba(0,0,0,.55); padding: 0 .5em; border-radius: 999px; color: #f0b43c;
+}
+
+.film-top.has-poster {
+  display: grid;
+  grid-template-columns: 13rem 1fr;
+  gap: 1.8rem;
+  align-items: end;
+}
+.md-typeset .film-poster { margin: 1rem 0 0; }
+.md-typeset .film-poster img {
+  width: 100%; aspect-ratio: 2 / 3; object-fit: cover;
+  border-radius: 12px; border: 1px solid var(--line); display: block;
+}
+.md-typeset .film-poster figcaption {
+  font-size: .72rem; color: var(--fg-2); margin-top: .4rem; text-align: start;
+}
+@media screen and (max-width: 44.9375em) {
+  .film-top.has-poster { grid-template-columns: 1fr; gap: 0; }
+  .md-typeset .film-poster { max-width: 15rem; margin-inline: auto; }
+}
