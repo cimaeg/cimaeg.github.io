@@ -2,7 +2,8 @@
 title: أحمد زكي
 ---
 
-<div class="film-top">
+<div class="film-top has-poster">
+<figure class="film-poster"><img src="../../portraits/ahmed-zaki.webp" alt="صورة أحمد زكي" loading="lazy"></figure>
 <div class="film-hero">
 <div class="film-year">١٩٤٩–٢٠٠٥</div>
 <h1>أحمد زكي</h1>

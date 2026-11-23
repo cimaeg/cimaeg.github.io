@@ -248,11 +248,15 @@ def person_page(p):
 </div>
 """
     src = "\n".join(f"- [{t}]({u})" for t, u in p["sources"])
+    photo = portrait_of(p)
+    photo_html = (f'<figure class="film-poster"><img src="../../portraits/{photo}" '
+                  f'alt="صورة {p["name"]}" loading="lazy"></figure>') if photo else ""
     return f"""---
 title: {p['name']}
 ---
 
-<div class="film-top">
+<div class="film-top{' has-poster' if photo else ''}">
+{photo_html}
 <div class="film-hero">
 <div class="film-year">{p['span']}</div>
 <h1>{p['name']}</h1>
@@ -276,8 +280,19 @@ title: {p['name']}
 </div>
 """
 
+PORTRAIT_DIR = "docs/portraits"
+
+def portrait_of(p):
+    for ext in ("webp", "jpg", "jpeg", "png"):
+        if os.path.exists(f"{PORTRAIT_DIR}/{p['slug']}.{ext}"):
+            return f"{p['slug']}.{ext}"
+    return None
+
 def person_card(p, prefix):
-    return (f'<a class="film-card" href="{prefix}people/{p["slug"]}/">'
+    photo = portrait_of(p)
+    img = (f'<img class="fc-img" src="{prefix}portraits/{photo}" alt="" loading="lazy">' if photo else "")
+    cls = "film-card has-poster" if photo else "film-card"
+    return (f'<a class="{cls}" href="{prefix}people/{p["slug"]}/">{img}'
             f'<span class="fc-year">{p["span"]}</span>'
             f'<span class="fc-title">{p["name"]}</span>'
             f'<span class="fc-dir">{p["role"]}</span></a>')
