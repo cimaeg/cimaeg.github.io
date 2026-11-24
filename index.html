@@ -75,10 +75,21 @@ a{color:inherit}
 .list-head .num{font-size:clamp(64px,10vw,110px)}
 .list-head h1{font:700 clamp(32px,5vw,48px)/1.1 var(--disp);margin:0}
 .list-head p{margin:6px 0 0;color:var(--sub)}
-.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:22px 0 8px}
-.ctrl span{color:var(--sub);font-size:14px;margin-inline-end:4px}
-.ctrl button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--ink);font:500 14px var(--body);cursor:pointer}
-.ctrl button[aria-pressed=true]{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.clab{display:block;color:var(--sub);font-size:13px;margin:24px 0 8px}
+.tix{display:flex;flex-wrap:wrap;gap:0;filter:drop-shadow(0 6px 10px #0006)}
+.tix button{position:relative;min-height:50px;padding:0 20px;border:0;background:#efe5cb;color:#2a2118;font:700 15px var(--body);cursor:pointer;
+ -webkit-mask:radial-gradient(circle 7px at 50% 0,#0000 96%,#000) top/100% 51% no-repeat,radial-gradient(circle 7px at 50% 100%,#0000 96%,#000) bottom/100% 51% no-repeat;
+ mask:radial-gradient(circle 7px at 50% 0,#0000 96%,#000) top/100% 51% no-repeat,radial-gradient(circle 7px at 50% 100%,#0000 96%,#000) bottom/100% 51% no-repeat;
+ border-inline-start:2px dashed #2a211855;transition:transform .2s,background .2s}
+.tix button:first-child{border-inline-start:0;border-radius:0 6px 6px 0}.tix button:last-child{border-radius:6px 0 0 6px}
+.tix button:hover{transform:translateY(-3px)}
+.tix button[aria-pressed=true]{background:var(--acc);color:var(--bg);transform:translateY(-5px)}
+.tix button[aria-pressed=true]::after{content:"";position:absolute;top:7px;left:7px;width:9px;height:9px;border-radius:50%;background:var(--bg);box-shadow:inset 0 1px 2px #000a}
+.stamps{display:flex;flex-wrap:wrap;gap:12px 14px;padding:4px 2px}
+.stamps button{min-height:44px;padding:0 16px;border:2.5px solid var(--acc);outline:1px solid var(--acc);outline-offset:3px;border-radius:6px;background:none;color:var(--acc);font:800 15px var(--body);letter-spacing:.02em;cursor:pointer;opacity:.55;transform:rotate(var(--r,-2deg));transition:opacity .2s,transform .25s,background .2s}
+.stamps button:nth-child(2n){--r:2deg}.stamps button:nth-child(3n){--r:-1deg}
+.stamps button:hover{opacity:.85}
+.stamps button[aria-pressed=true]{opacity:1;background:var(--acc);color:var(--bg);transform:rotate(var(--r,-2deg)) scale(1.06)}
 .prog{list-style:none;margin:16px 0 0;padding:0;border-top:2px solid var(--ink)}
 .prog a{display:grid;grid-template-columns:52px 76px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 4px;border-bottom:1px dashed var(--line);text-decoration:none}
 .prog a:hover{background:rgba(255,255,255,.05)}
@@ -107,7 +118,7 @@ a{color:inherit}
 .lcount{margin:16px 0 0;color:var(--sub);font-size:14px}
 .lcount b{color:var(--ink)}
 .lnone{padding:28px 4px;color:var(--sub)}
-@media(max-width:600px){.prog a{grid-template-columns:30px 60px minmax(0,1fr);gap:12px}.mp{width:60px}.mp b{font-size:12px!important}.prog .i{font-size:24px}.prog .sc{grid-column:3;flex-direction:row}.board label{display:none}}
+@media(max-width:600px){.tix{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}.tix button{padding:0 6px;font-size:13px}.prog a{grid-template-columns:30px 60px minmax(0,1fr);gap:12px}.mp{width:60px}.mp b{font-size:12px!important}.prog .i{font-size:24px}.prog .sc{grid-column:3;flex-direction:row}.board label{display:none}}
 .poster{aspect-ratio:2/3;border-radius:4px;border:1px solid rgba(255,255,255,.12);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:14px;box-shadow:0 14px 28px -12px #000b;transition:transform .3s}
 .card:hover .poster{transform:translateY(-6px) rotate(-1deg)}
 .poster .pt{font:700 clamp(22px,2.4vw,30px)/1.2 var(--disp);text-wrap:balance}
@@ -131,7 +142,24 @@ a{color:inherit}
 .meta dt{color:var(--sub);white-space:nowrap}.meta dd{margin:0}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
 .tags span{border:1px solid var(--line);border-radius:999px;padding:2px 12px;font-size:14px}
-.prose{--ts:1;max-width:68ch;margin:18px 0 0;font-size:calc(18px*var(--ts));line-height:1.95}
+.prose{--ts:1;margin:18px 0 0;font-size:calc(18px*var(--ts));line-height:1.95;text-align:justify;text-justify:kashida;text-justify:inter-word;hyphens:auto}
+.prose h2,.prose h3,.prose li{text-align:start}
+.read{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:clamp(28px,4vw,56px);align-items:start;margin-top:clamp(28px,5vw,48px)}
+.side{position:sticky;top:88px;display:flex;flex-direction:column;gap:22px}
+.box{border:1px solid var(--line);border-radius:10px;padding:16px 16px 10px;background:rgba(255,255,255,.04)}
+.box h4{margin:0 0 10px;font:700 18px/1.3 var(--disp);color:var(--acc)}
+.toc{list-style:none;margin:0;padding:0;counter-reset:t}
+.toc button{display:flex;gap:10px;width:100%;text-align:start;background:none;border:0;color:var(--ink);font:500 15px/1.5 var(--body);padding:8px 2px;cursor:pointer;border-bottom:1px dashed var(--line)}
+.toc li:last-child button{border:0}
+.toc button::before{counter-increment:t;content:counter(t,arabic-indic);color:var(--acc);font-weight:700;min-width:1em}
+.toc button.on{color:var(--acc)}
+.rel{display:flex;flex-direction:column}
+.rel a{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;align-items:center;padding:8px 0;text-decoration:none;border-bottom:1px dashed var(--line)}
+.rel a:last-child{border:0}
+.rel .mp{width:48px;padding:5px}.rel .mp b{font-size:10px!important}.rel .mp i{font-size:8px}
+.rel b.t{display:block;font:700 16px/1.3 var(--disp)}
+.rel small{color:var(--sub);font-size:13px}
+@media(max-width:900px){.read{grid-template-columns:1fr}.side{position:static}.side .tocbox{display:none}}
 .prose h2{font:700 calc(30px*var(--ts))/1.25 var(--disp);color:var(--acc);margin:1.6em 0 .4em}
 .prose h3{font-size:calc(20px*var(--ts));margin:1.4em 0 .3em}
 .prose p{margin:0 0 1em}
@@ -149,7 +177,7 @@ a{color:inherit}
 .rate b{font:700 22px/1 var(--body);direction:ltr}
 .rate b small{font-size:13px;font-weight:500;opacity:.7}
 .rate span.v{display:block;font-size:12px;color:var(--sub);line-height:1.3}
-.tsize{direction:ltr;display:flex;align-items:center;gap:12px;max-width:68ch;margin:clamp(28px,5vw,48px) 0 0;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);width:max-content;max-width:100%}
+.tsize{direction:ltr;display:flex;align-items:center;gap:12px;height:56px;margin:0;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);width:max-content;max-width:100%}
 .tsize .lbl{font-size:13px;color:var(--sub);white-space:nowrap}
 .tsize .a{font-weight:700;color:var(--ink);line-height:1;user-select:none}
 .tsize .s{font-size:13px}.tsize .l{font-size:24px}
@@ -159,8 +187,8 @@ a{color:inherit}
 .tsize input::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-6px;border-radius:50%;background:var(--acc);border:3px solid #0b0b0b;box-shadow:0 0 0 2px var(--acc)}
 .tsize input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--acc);border:3px solid #0b0b0b}
 .tsize input:focus-visible{outline:3px solid var(--acc);outline-offset:4px;border-radius:6px}
-.tsize .rst{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#0b0b0b;color:var(--acc);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .3s}
-.tsize .rst:hover{transform:rotate(-120deg)}
+.tsize .rst{visibility:hidden;opacity:0;transition:opacity .25s,transform .3s;flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#0b0b0b;color:var(--acc);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .3s}
+.tsize .rst.on{visibility:visible;opacity:1}.tsize .rst:hover{transform:rotate(-120deg)}
 @media(max-width:600px){.tsize .lbl{display:none}.tsize input{width:140px}}
 /* البحث: تذكرة سينما */
 .finder{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:clamp(12px,8vh,90px) 14px 14px}
@@ -335,13 +363,27 @@ async function showFilm(id){
   <div class="tags">${(f.genre||[]).map(g=>`<span>${esc(g)}</span>`).join('')}</div>
   ${rates(f)}
  </div></div>
- <div class="tsize"><span class="a s" aria-hidden="true">أ</span><input id="tsr" type="range" min="0" max="${TS.length-1}" step="1" value="${tsi}" aria-label="حجم نص المقالة"><span class="a l" aria-hidden="true">أ</span><button type="button" class="rst" id="tsrst" aria-label="إعادة الحجم الافتراضي" title="إعادة الحجم الافتراضي">↺</button><label class="lbl" for="tsr">حجم القراءة</label></div>
- <div class="prose" id="prose"><p class="lead">${esc(f.summary)}</p></div>`;
+ <div class="read"><div class="main">
+ <div class="tsize"><span class="a s" aria-hidden="true">أ</span><input id="tsr" type="range" min="${TSMIN}" max="${TSMAX}" step="0.01" value="${tsv}" aria-label="حجم نص المقالة"><span class="a l" aria-hidden="true">أ</span><button type="button" class="rst" id="tsrst" aria-label="إعادة الحجم الافتراضي" title="إعادة الحجم الافتراضي">↺</button><label class="lbl" for="tsr">حجم القراءة</label></div>
+ <div class="prose" id="prose"><p class="lead">${esc(f.summary)}</p></div></div>
+ <aside class="side" id="side">${sideRel(f,e)}</aside></div>`;
  applyTs();
  window.scrollTo(0,0);
  const txt=await article(id);
  if(location.hash!=='#film-'+id)return;
  $('prose').insertAdjacentHTML('beforeend',txt?md(txt):`<div class="soon">لم تُكتب عن هذا الفيلم مقالة بعد.</div>`);
+ const hs=[...$('prose').querySelectorAll('h2')];
+ if(hs.length>1){hs.forEach((h,i)=>h.id='sec-'+i);
+  $('side').insertAdjacentHTML('afterbegin',`<div class="box tocbox"><h4>في هذه المقالة</h4><ol class="toc">${hs.map((h,i)=>`<li><button type="button" data-sec="${i}">${esc(h.textContent)}</button></li>`).join('')}</ol></div>`);
+  tocIO&&tocIO.disconnect();tocIO=new IntersectionObserver(es=>{for(const x of es)if(x.isIntersecting){document.querySelectorAll('.toc button').forEach(b=>b.classList.toggle('on',b.dataset.sec===x.target.id.slice(4)))}},{rootMargin:'-20% 0px -70% 0px'});hs.forEach(h=>tocIO.observe(h));}
+}
+let tocIO;
+$('film').addEventListener('click',e=>{const b=e.target.closest('[data-sec]');if(b)$('sec-'+b.dataset.sec).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})});
+function sideRel(f,e){
+ const mini=x=>{const [bg,ink]=STYLE[eraOf(x.year).id];return `<a href="#film-${esc(x.id)}"><span class="mp" style="background:${bg};color:${ink}"><i>${ar(x.year)}</i><b style="font-family:${FONT[eraOf(x.year).id]}">${esc(x.title)}</b></span><span><b class="t">${esc(x.title)}</b><small>${ar(x.year)}${score(x)?' · ★ '+score(x).toFixed(1):''}</small></span></a>`};
+ const dir=FILMS.filter(x=>x!==f&&x.director===f.director).sort(byRating).slice(0,3);
+ const same=FILMS.filter(x=>x!==f&&eraOf(x.year)===e&&!dir.includes(x)).sort(byRating).slice(0,4);
+ return (dir.length?`<div class="box"><h4>للمخرج نفسه</h4><div class="rel">${dir.map(mini).join('')}</div></div>`:'')+(same.length?`<div class="box"><h4>من ${e.name} أيضًا</h4><div class="rel">${same.map(mini).join('')}</div></div>`:'');
 }
 function rates(f){const r=f.ratings||{},out=[];
  const k=n=>n>=1000?ar((n/1000).toFixed(1).replace(/\.0$/,''))+' ألف':ar(n);
@@ -349,12 +391,12 @@ function rates(f){const r=f.ratings||{},out=[];
  if(r.elcinema)out.push(`<a class="rate" href="https://elcinema.com/work/${esc(r.elcinema.id)}/" target="_blank" rel="noopener"><span class="lg elc">السينما.كوم</span><span><b>${esc(r.elcinema.score.toFixed(1))}<small>/10</small></b></span></a>`);
  return out.length?`<div class="rates">${out.join('')}</div>`:'';
 }
-const TS=[.85,1,1.15,1.3,1.5];let tsi=1;
-try{const g=localStorage.getItem('ts'),v=+g;if(g!==null&&v>=0&&v<TS.length)tsi=v}catch{}
-function applyTs(){const p=$('prose');if(p)p.style.setProperty('--ts',TS[tsi]);
- const r=$('tsr');if(r)r.value=tsi;const z=$('tsrst');if(z)z.hidden=tsi===1}
-$('film').addEventListener('click',e=>{if(!e.target.closest('#tsrst'))return;tsi=1;try{localStorage.removeItem('ts')}catch{};applyTs();$('tsr').focus()});
-$('film').addEventListener('input',e=>{if(e.target.id!=='tsr')return;tsi=+e.target.value;try{localStorage.setItem('ts',tsi)}catch{};applyTs()});
+const TSMIN=.85,TSMAX=1.5;let tsv=1;
+try{const g=localStorage.getItem('tsv'),v=+g;if(g!==null&&v>=TSMIN&&v<=TSMAX)tsv=v}catch{}
+function applyTs(){const p=$('prose');if(p)p.style.setProperty('--ts',tsv);
+ const r=$('tsr');if(r&&+r.value!==tsv)r.value=tsv;const z=$('tsrst');if(z)z.classList.toggle('on',Math.abs(tsv-1)>.02)}
+$('film').addEventListener('click',e=>{if(!e.target.closest('#tsrst'))return;tsv=1;try{localStorage.removeItem('tsv')}catch{};applyTs()});
+let tsT;$('film').addEventListener('input',e=>{if(e.target.id!=='tsr')return;tsv=+e.target.value;applyTs();clearTimeout(tsT);tsT=setTimeout(()=>{try{localStorage.setItem('tsv',tsv)}catch{}},300)});
 function showHome(target){
  const wasFilm=!$('film').hidden||!$('list').hidden;$('film').hidden=true;$('list').hidden=true;$('home').hidden=false;document.title='شاشة زمان';
  const t=target&&document.getElementById(target);
@@ -374,8 +416,8 @@ function showList(id){
  <div class="list-head"><div class="num">${e.num}</div><div><h1>كل أفلام ${e.name}</h1><p>${cnt(all.length)} في الأرشيف</p></div></div>
  <div class="board"><label for="lq">لوحة البحث</label><input id="lq" type="text" autocomplete="off" enterkeyhint="search" value="${esc(lq)}" placeholder="اكتب على اللوحة: فيلم، ممثل، مخرج، كاتب…"><button type="button" id="lqx" aria-label="امسح اللوحة" ${lq?'':'hidden'}>×</button></div>
  <div class="years" role="group" aria-label="سنة العرض"><span>السنة:</span><button type="button" class="all" data-year="0" aria-pressed="${!lyear}">كلها</button>${years.map(y=>`<button type="button" data-year="${y}" aria-pressed="${y===lyear}" title="${y}">${ar(String(y).slice(2))}</button>`).join('')}</div>
- <div class="ctrl"><span>ترتيب:</span>${Object.entries(LS).map(([k,v])=>btn(k,v[0],lsort,'sort')).join('')}</div>
- ${genres.length>1?`<div class="ctrl"><span>النوع:</span>${btn('','الكل',lgenre,'genre')}${genres.map(g=>btn(g,g,lgenre,'genre')).join('')}</div>`:''}
+ <span class="clab">رتّب حسب</span><div class="tix" role="group" aria-label="الترتيب">${Object.entries(LS).map(([k,v])=>btn(k,v[0],lsort,'sort')).join('')}</div>
+ ${genres.length>1?`<span class="clab">النوع</span><div class="stamps" role="group" aria-label="النوع">${btn('','الكل',lgenre,'genre')}${genres.map(g=>btn(g,g,lgenre,'genre')).join('')}</div>`:''}
  <p class="lcount" id="lcount" aria-live="polite"></p>
  <ol class="prog" id="prog"></ol>`;
  rows();
