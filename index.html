@@ -7,17 +7,17 @@
 <title>شاشة زمان</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@500;700&family=Lalezar&family=Rakkas&family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@500;700&family=Lalezar&family=Rakkas&family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* VOICE: حنين دافئ، كأنك تدخل سينما مصرية قديمة
-   IDEA: شريط فيلم يتغيّر لونه وخطّه مع كل عقد، والأفيشات تُطبع بخط عصرها
-   PICTURE: لافتة سينما بأضواء ورقم العقد كبيرًا، وصف أفيشات مولّدة بالكود
-   COLOUR/TYPE: كل عقد له لوحته وخطّه: رقعة الأربعينيات، كوفي الخمسينيات، لاله‌زار السبعينيات، رقّاص الثمانينيات، القاهرة التسعينيات
-   LAYOUT: شريط عقود علوي ثابت، أقسام بعرض الشاشة، أفيشات تُمرَّر أفقيًا */
-:root{color-scheme:dark;--line:rgba(255,255,255,.18);--bg:#121212;--ink:#efeae0;--acc:#fff;--sub:#8a857c;--disp:'Aref Ruqaa',serif;--body:'Cairo',system-ui,sans-serif}
+   IDEA: شريط فيلم يتغيّر لونه وخطّه مع كل عقد، والبحث تذكرة سينما ورقية
+   PICTURE: لافتة «يُعرض الآن» بإطارات العقود، وأفيشات تُطبع بخط عصرها
+   COLOUR/TYPE: لوحة لكل عقد بخطّه، ونصوص القراءة بخط IBM Plex Sans Arabic
+   LAYOUT: شريط عقود ثابت، أقسام بعرض الشاشة، وصفحة لكل فيلم بعمود قراءة مريح */
+:root{color-scheme:dark;--line:rgba(255,255,255,.18);--bg:#141414;--ink:#ece8df;--acc:#fff;--sub:#8d8a83;--disp:'Aref Ruqaa',serif;--body:'IBM Plex Sans Arabic',system-ui,sans-serif;--paper:#f3ead2;--paper-ink:#211a12}
 *{box-sizing:border-box;min-width:0}
 html{scroll-padding-top:72px}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--body);overflow-x:clip;transition:background .9s,color .9s}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 var(--body);overflow-x:clip;transition:background .9s,color .9s}
 body[data-era=e40]{--bg:#141414;--ink:#ece8df;--acc:#ffffff;--sub:#8d8a83;--disp:'Aref Ruqaa',serif}
 body[data-era=e50]{--bg:#12372e;--ink:#f3ead2;--acc:#e8b33a;--sub:#9fb5a6;--disp:'Reem Kufi',sans-serif}
 body[data-era=e60]{--bg:#4a1426;--ink:#f6e7d8;--acc:#f3a59c;--sub:#c39aa4;--disp:'Reem Kufi',sans-serif}
@@ -26,163 +26,284 @@ body[data-era=e80]{--bg:#1d2230;--ink:#eceff5;--acc:#f07a8a;--sub:#9aa3b8;--disp
 body[data-era=e90]{--bg:#0f3f45;--ink:#eaf5f5;--acc:#f2c94c;--sub:#94bfc2;--disp:'Cairo',sans-serif}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 a{color:inherit}
+:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
 .top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);transition:background .9s}
-.top-in{display:flex;align-items:center;gap:16px;max-width:1240px;margin:auto;padding:10px max(4vw,16px)}
-.logo{font:700 26px/1 var(--disp);white-space:nowrap;text-decoration:none}
+.top-in{display:flex;align-items:center;gap:14px;max-width:1240px;margin:auto;padding:10px max(4vw,16px)}
+.logo{font:700 26px/1 'Aref Ruqaa',serif;white-space:nowrap;text-decoration:none}
 .strip{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1}
-.strip a{flex:none;text-decoration:none;padding:8px 14px;border-radius:4px;font-weight:600;font-size:14px;border:1px dashed var(--line);min-height:40px;display:flex;align-items:center}
+.strip a{flex:none;text-decoration:none;padding:8px 14px;border-radius:4px;font-weight:500;font-size:14px;border:1px dashed var(--line);min-height:40px;display:flex;align-items:center}
 .strip a.on{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.find-btn{flex:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:500 15px var(--body);cursor:pointer}
+.find-btn:hover{background:rgba(255,255,255,.12)}
+.find-btn svg{width:18px;height:18px}
+.find-btn kbd{font:12px var(--body);border:1px solid var(--line);border-radius:4px;padding:0 6px;opacity:.7}
 .hero{max-width:1240px;margin:auto;padding:clamp(28px,5vw,72px) max(4vw,16px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;align-items:center}
-.hero h1{font:700 clamp(40px,7vw,76px)/1.05 var(--disp);margin:0 0 14px}
-.hero p{font-size:17px;max-width:34em;margin:0 0 22px;opacity:.9}
+.hero h1{font:700 clamp(40px,7vw,76px)/1.1 var(--disp);margin:0 0 16px}
+.hero p{font-size:18px;line-height:1.85;max-width:32em;margin:0 0 24px;opacity:.9}
 .btn{display:inline-flex;align-items:center;min-height:46px;padding:0 22px;background:var(--acc);color:var(--bg);border:0;border-radius:4px;font:700 16px var(--body);cursor:pointer;text-decoration:none}
-.btn:focus-visible,.card:focus-visible,.strip a:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
 .marquee{border-radius:10px;background:#0b0b0b;padding:30px 26px 26px;outline:6px dotted #ffd77a;outline-offset:-12px;box-shadow:0 30px 60px -20px #000a;animation:glow 1.8s infinite}
 @keyframes glow{50%{outline-color:#b8913f}}
 .marquee h2{margin:0 0 14px;text-align:center;font:700 28px/1.2 'Aref Ruqaa',serif;color:#ffd77a}
 .frames{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .frames a{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1/1;border-radius:4px;text-decoration:none;border:1px solid rgba(255,255,255,.15);padding:6px;text-align:center}
 .frames b{font-size:clamp(24px,6vw,34px);line-height:1.1;white-space:nowrap}
-.frames span{font:600 13px var(--body);opacity:.85;margin-top:4px}
-.frames a:focus-visible{outline:3px solid #ffd77a;outline-offset:2px}
+.frames span{font:500 13px var(--body);opacity:.85;margin-top:4px}
 .era{padding:clamp(36px,6vw,80px) 0;border-top:1px solid var(--line)}
 .era-head{max-width:1240px;margin:auto;padding:0 max(4vw,16px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 28px;align-items:end}
 .num{font:700 clamp(64px,13vw,150px)/.9 var(--disp);color:var(--acc)}
 .era h2{font:700 clamp(30px,4vw,44px)/1.1 var(--disp);margin:0}
 .era-head p{margin:6px 0 0;max-width:42em;opacity:.88}
 .row{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px max(4vw,16px) 10px;scrollbar-width:thin}
-.card{flex:none;width:200px;scroll-snap-align:start;background:none;border:0;padding:0;color:inherit;text-align:start;cursor:pointer;font:inherit}
+.card{flex:none;width:200px;scroll-snap-align:start;text-decoration:none;color:inherit}
 .poster{aspect-ratio:2/3;border-radius:4px;border:1px solid rgba(255,255,255,.12);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:14px;box-shadow:0 14px 28px -12px #000b;transition:transform .3s}
 .card:hover .poster{transform:translateY(-6px) rotate(-1deg)}
-.poster .pt{font:700 30px/1.15 var(--disp);text-wrap:balance}
-.poster .py{font:800 13px var(--body);letter-spacing:.02em;opacity:.85}
-.poster .pc{font-size:12px;line-height:1.4;opacity:.9}
+.poster .pt{font:700 30px/1.2 var(--disp);text-wrap:balance}
+.poster .py{font:700 14px var(--body);opacity:.85}
+.poster .pc{font:500 13px/1.5 var(--body);opacity:.92}
 .poster .sun{position:absolute;border-radius:50%;opacity:.9}
 .poster>*{position:relative}
-.cap{margin-top:10px;font-weight:600;font-size:15px}
+.cap{margin-top:10px;font-weight:700;font-size:15px;line-height:1.5}
 .cap small{display:block;font-weight:400;color:var(--sub);font-size:13px}
-.tools{max-width:1240px;margin:auto;padding:0 max(4vw,16px) 8px;display:flex;gap:12px;flex-wrap:wrap}
-.tools input{flex:1 1 260px;min-height:48px;font:16px var(--body);padding:0 16px;border-radius:4px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--ink)}
-.tools input::placeholder{color:var(--sub)}
-.empty{padding:20px max(4vw,16px);color:var(--sub)}
-.modal{position:fixed;inset:0;z-index:20;background:#000c;display:none;align-items:center;justify-content:center;padding:16px}
-.modal.open{display:flex}
-.sheet{background:var(--bg);color:var(--ink);max-width:760px;width:100%;max-height:92vh;overflow:auto;border-radius:8px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;padding:24px;position:relative}
-.sheet h3{font:700 36px/1.1 var(--disp);margin:0 0 6px}
-.sheet dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;margin:14px 0}
-.sheet dt{color:var(--sub)}.sheet dd{margin:0}
-.x{position:absolute;top:10px;left:10px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:var(--ink);font-size:22px;cursor:pointer}
-.note{font-size:13px;color:var(--sub)}
+/* صفحة الفيلم */
+.film{max-width:1100px;margin:auto;padding:clamp(20px,4vw,48px) max(4vw,16px) 60px}
+.back{display:inline-flex;align-items:center;min-height:44px;text-decoration:none;color:var(--sub);font-weight:500}
+.back:hover{color:var(--ink)}
+.film-top{display:grid;grid-template-columns:260px minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:start;margin-top:8px}
+.film-top .poster{width:100%}
+.film-top .poster .pt{font-size:36px}
+.kicker{color:var(--acc);font-weight:700}
+.film h1{font:700 clamp(40px,6vw,64px)/1.1 var(--disp);margin:4px 0 6px}
+.by{font-size:18px;opacity:.9;margin:0 0 18px}
+.meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 18px;margin:0;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.meta dt{color:var(--sub);white-space:nowrap}.meta dd{margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tags span{border:1px solid var(--line);border-radius:999px;padding:2px 12px;font-size:14px}
+.prose{max-width:68ch;margin:clamp(28px,5vw,56px) 0 0;font-size:18px;line-height:1.95}
+.prose h2{font:700 30px/1.25 var(--disp);color:var(--acc);margin:1.6em 0 .4em}
+.prose h3{font-size:20px;margin:1.4em 0 .3em}
+.prose p{margin:0 0 1em}
+.prose blockquote{margin:1.4em 0;padding:4px 20px;border-inline-start:4px solid var(--acc);font-size:20px;opacity:.95}
+.prose ul{padding-inline-start:22px}
+.prose a{text-decoration-color:var(--acc);text-underline-offset:4px}
+.prose .lead{font-size:20px}
+.soon{border:1px dashed var(--line);border-radius:8px;padding:20px 24px;color:var(--sub)}
+.pn{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:68ch;margin:48px 0 0}
+.pn a{display:block;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:14px 18px;min-height:44px}
+.pn a:hover{background:rgba(255,255,255,.06)}
+.pn small{display:block;color:var(--sub)}
+.pn b{font:700 22px/1.3 var(--disp)}
+.pn .nx{text-align:left}
+/* البحث: تذكرة سينما */
+.finder{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:clamp(12px,8vh,90px) 14px 14px}
+.finder.open{display:flex}
+.ticket{width:100%;max-width:640px;max-height:calc(100vh - 2*clamp(12px,8vh,90px));display:flex;flex-direction:column;background:var(--paper);color:var(--paper-ink);border-radius:10px;box-shadow:0 30px 80px #000c;
+ -webkit-mask:radial-gradient(circle 14px at 0 74px,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 14px at 100% 74px,#0000 98%,#000) right/51% 100% no-repeat;
+ mask:radial-gradient(circle 14px at 0 74px,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 14px at 100% 74px,#0000 98%,#000) right/51% 100% no-repeat}
+.stub{display:flex;justify-content:space-between;align-items:center;padding:14px 26px 12px;border-bottom:2px dashed rgba(33,26,18,.3);height:74px}
+.stub b{font:700 24px 'Aref Ruqaa',serif}
+.stub span{font-size:13px;opacity:.7}
+.stub button{width:44px;height:44px;border:0;background:none;font-size:26px;cursor:pointer;color:inherit}
+.qwrap{display:flex;align-items:center;gap:12px;padding:16px 26px 8px}
+.qwrap svg{width:24px;height:24px;flex:none;opacity:.6}
+.qwrap input{flex:1;border:0;background:none;font:500 22px var(--body);color:var(--paper-ink);padding:8px 0;outline:none;border-bottom:2px solid rgba(33,26,18,.25)}
+.qwrap input:focus{border-bottom-color:#9b3d1c}
+.qwrap input::placeholder{color:rgba(33,26,18,.45)}
+.res{overflow-y:auto;padding:6px 14px 18px}
+.grp{font-size:13px;font-weight:700;opacity:.6;padding:12px 12px 4px}
+.hit{display:flex;align-items:center;gap:14px;padding:10px 12px;border-radius:6px;text-decoration:none;color:inherit;cursor:pointer;border:0;background:none;width:100%;text-align:start;font:inherit;min-height:52px}
+.hit.on,.hit:hover{background:rgba(155,61,28,.12)}
+.sw{width:34px;height:48px;border-radius:3px;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.av{width:40px;height:40px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:#211a12;color:var(--paper);font-weight:700}
+.hit b{display:block;font-size:17px;line-height:1.35}
+.hit small{display:block;font-size:13px;opacity:.7}
+.hit mark{background:rgba(232,179,58,.55);color:inherit;border-radius:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:4px 12px 8px}
+.chips button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(33,26,18,.3);background:none;color:inherit;font:500 14px var(--body);cursor:pointer}
+.chips button:hover{background:rgba(155,61,28,.12)}
+.chips .lucky{background:#211a12;color:var(--paper);border-color:#211a12}
+.none{padding:18px 12px;opacity:.7}
 footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
-@media(max-width:760px){.hero{grid-template-columns:1fr;gap:28px}.era-head{grid-template-columns:1fr;gap:4px}.num{font-size:64px}.sheet{grid-template-columns:1fr}.sheet .poster{max-width:180px}.logo{font-size:22px}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+[hidden]{display:none!important}
+@media(max-width:760px){.hero{grid-template-columns:1fr;gap:28px}.era-head{grid-template-columns:1fr;gap:4px}.num{font-size:64px}.logo{font-size:22px}
+ .film-top{grid-template-columns:1fr}.film-top .poster{max-width:170px}.find-btn span,.find-btn kbd{display:none}.find-btn{padding:0 12px}
+ .prose{font-size:17px}.pn{grid-template-columns:1fr}.pn .nx{text-align:start}.stub span{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body data-era="e40">
 <header class="top"><div class="top-in">
   <a class="logo" href="#top">شاشة زمان</a>
   <nav class="strip" id="strip" aria-label="العقود"></nav>
+  <button class="find-btn" id="findBtn" type="button" aria-label="ابحث عن فيلم أو ممثل أو مخرج">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <span>ابحث</span><kbd>/</kbd>
+  </button>
 </div></header>
 
+<div id="home">
 <section class="hero" id="top">
   <div>
     <h1>آلة الزمن السينمائية</h1>
-    <p>رحلة في السينما المصرية من البدايات حتى عام 2000. مرّر للأسفل وسيتغيّر لون الموقع وخطّه مع كل عقد، كأنك تقلّب بكرات الأفلام.</p>
-    <a class="btn" href="#e40">ابدأ الرحلة</a>
+    <p>أكثر من سبعين عامًا من السينما المصرية، من «ليلى» أول فيلم روائي طويل عام 1927 حتى نهاية القرن العشرين. اختر عقدًا من شاشة العرض، أو انزل في الصفحة عقدًا بعد عقد، وستتبدّل ألوانها وخطوطها لتشبه أفيشات كل زمن.</p>
+    <a class="btn" href="#e40">ابدأ من البدايات</a>
   </div>
   <nav class="marquee" aria-label="اختر عقدًا">
     <h2>يُعرض الآن</h2>
     <div class="frames" id="frames"></div>
   </nav>
 </section>
-
-<div class="tools"><input id="q" type="search" placeholder="ابحث عن فيلم أو ممثل أو مخرج…" aria-label="بحث"></div>
 <main id="eras"></main>
-<div class="empty" id="empty" hidden>لا توجد أفلام تطابق البحث.</div>
+</div>
 
+<article class="film" id="film" hidden></article>
 <footer>شاشة زمان · أرشيف السينما المصرية حتى عام 2000</footer>
 
-<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
-  <div class="sheet" id="sheet"></div>
+<div class="finder" id="finder" role="dialog" aria-modal="true" aria-label="البحث">
+  <div class="ticket">
+    <div class="stub"><b>تذكرة بحث</b><span>اكتب اسم فيلم أو ممثل أو مخرج أو كاتب</span><button type="button" id="findClose" aria-label="إغلاق">×</button></div>
+    <div class="qwrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="text" enterkeyhint="search" autocomplete="off" placeholder="مثلًا: فاتن حمامة، الأرض، نجيب محفوظ" aria-label="بحث">
+    </div>
+    <div class="res" id="res"></div>
+  </div>
 </div>
 
 <script>
 {
 const ERAS=[
- {id:'e40',num:'٣٠–٤٠',name:'البدايات',d0:1930,d1:1949,blurb:'استوديو مصر يفتح أبوابه، والأفلام الغنائية والواقعية الأولى تصنع نجومها. الشاشة بالأبيض والأسود، والقاهرة تصبح هوليوود الشرق.'},
+ {id:'e40',num:'٢٠–٤٠',name:'البدايات',d0:1920,d1:1949,blurb:'من «ليلى» عام 1927، أول فيلم روائي طويل، إلى استوديو مصر وأفلامه الغنائية والواقعية الأولى. الشاشة بالأبيض والأسود، والقاهرة تصبح هوليوود الشرق.'},
  {id:'e50',num:'٥٠',name:'الخمسينيات',d0:1950,d1:1959,blurb:'جيل جديد من المخرجين ونجوم الصف الأول، وروايات كبار الأدباء تنتقل إلى الشاشة. بداية ما يسمّيه الجمهور «الزمن الجميل».'},
  {id:'e60',num:'٦٠',name:'الستينيات',d0:1960,d1:1969,blurb:'ذروة الأدب على الشاشة: نجيب محفوظ ويوسف إدريس وغيرهما، مع إنتاج القطاع العام وأفلام تاريخية ضخمة.'},
  {id:'e70',num:'٧٠',name:'السبعينيات',d0:1970,d1:1979,blurb:'الألوان تملأ الشاشة، والاستعراض يلتقي بالسياسة، وتظهر أفلام تراجع الماضي القريب بجرأة.'},
  {id:'e80',num:'٨٠',name:'الثمانينيات',d0:1980,d1:1989,blurb:'الواقعية الجديدة: عاطف الطيب ومحمد خان وخيري بشارة ينزلون بالكاميرا إلى الشارع، بينما يزدهر عصر الفيديو.'},
  {id:'e90',num:'٩٠',name:'التسعينيات',d0:1990,d1:2000,blurb:'كوميديا سياسية ذكية، ثم موجة نجوم شباب تعيد الجمهور إلى دور العرض في نهاية العقد.'}
 ];
-// عيّنة للتجربة — تحتاج مراجعة قبل النشر
-const FILMS=[
- {id:'salama-fi-khair',title:'سلامة في خير',year:1937,director:'نيازي مصطفى',cast:['نجيب الريحاني'],genre:['كوميديا'],summary:'موظف بسيط تقوده الصدفة إلى أن يُظَنّ أميرًا، فتتوالى المفارقات.'},
- {id:'al-azima',title:'العزيمة',year:1939,director:'كمال سليم',cast:['حسين صدقي','فاطمة رشدي'],genre:['دراما','واقعية'],summary:'شاب من الحارة يكافح للعمل والزواج ممن يحب، في واحد من أوائل الأفلام الواقعية.'},
- {id:'ghazal-al-banat',title:'غزل البنات',year:1949,director:'أنور وجدي',cast:['ليلى مراد','نجيب الريحاني','أنور وجدي','يوسف وهبي'],genre:['كوميديا','غنائي'],summary:'مدرّس لغة عربية يقع في حب تلميذته ابنة الباشا، في آخر أفلام نجيب الريحاني.'},
- {id:'siraa-fil-wadi',title:'صراع في الوادي',year:1954,director:'يوسف شاهين',cast:['فاتن حمامة','عمر الشريف','زكي رستم'],genre:['دراما'],summary:'مهندس زراعي يواجه سطوة الباشا في الصعيد، بعد جريمة يُتَّهم بها والده ظلمًا.'},
- {id:'bab-al-hadid',title:'باب الحديد',year:1958,director:'يوسف شاهين',cast:['فريد شوقي','هند رستم','يوسف شاهين'],genre:['دراما','تشويق'],summary:'بائع جرائد في محطة القطارات يتحول هوسه ببائعة مشروبات إلى خطر.'},
- {id:'doaa-al-karawan',title:'دعاء الكروان',year:1959,director:'هنري بركات',cast:['فاتن حمامة','أحمد مظهر','زهرة العلا'],genre:['دراما'],based_on:'رواية طه حسين',summary:'فتاة ريفية تسعى للانتقام لأختها من الرجل الذي تسبّب في موتها.'},
- {id:'al-les-wal-kilab',title:'اللص والكلاب',year:1962,director:'كمال الشيخ',cast:['شكري سرحان','شادية','كمال الشناوي'],genre:['دراما','جريمة'],based_on:'رواية نجيب محفوظ',summary:'لص يخرج من السجن ليجد أن أقرب الناس إليه قد خانوه، فيقرر الانتقام.'},
- {id:'al-nasser-salah-el-din',title:'الناصر صلاح الدين',year:1963,director:'يوسف شاهين',cast:['أحمد مظهر','صلاح ذو الفقار','نادية لطفي'],genre:['تاريخي'],summary:'ملحمة عن صلاح الدين الأيوبي والحروب الصليبية واسترداد القدس.'},
- {id:'bein-al-qasrein',title:'بين القصرين',year:1964,director:'حسن الإمام',cast:['يحيى شاهين','آمال زايد'],genre:['دراما'],based_on:'رواية نجيب محفوظ',summary:'حياة أسرة السيد أحمد عبد الجواد في القاهرة القديمة إبّان ثورة 1919.'},
- {id:'al-haram',title:'الحرام',year:1965,director:'هنري بركات',cast:['فاتن حمامة','عبد الله غيث','زكي رستم'],genre:['دراما'],based_on:'رواية يوسف إدريس',summary:'عاملة تراحيل فقيرة تحمل سرًّا ثقيلًا في قرية لا ترحم.'},
- {id:'shaiun-min-al-khawf',title:'شيء من الخوف',year:1969,director:'حسين كمال',cast:['شادية','محمود مرسي','يحيى شاهين'],genre:['دراما'],based_on:'قصة ثروت أباظة',summary:'قرية يحكمها طاغية، وفتاة واحدة تجرؤ على رفضه.'},
- {id:'al-mumia',title:'المومياء',year:1969,director:'شادي عبد السلام',cast:['أحمد مرعي','نادية لطفي'],genre:['دراما','تاريخي'],summary:'شاب من قبيلة تتاجر سرًّا في آثار الفراعنة يواجه سؤال الهوية والضمير.'},
- {id:'al-ard',title:'الأرض',year:1970,director:'يوسف شاهين',cast:['محمود المليجي','عزت العلايلي','نجوى إبراهيم'],genre:['دراما'],based_on:'رواية عبد الرحمن الشرقاوي',summary:'فلاحو قرية يقاومون من يريد انتزاع أرضهم وحقهم في الماء.'},
- {id:'khally-balak-min-zouzou',title:'خلي بالك من زوزو',year:1972,director:'حسن الإمام',cast:['سعاد حسني','حسين فهمي','تحية كاريوكا'],genre:['استعراضي','رومانسي'],summary:'طالبة جامعية تخفي عمل أسرتها في الأفراح، حتى يفاجئها الحب.'},
- {id:'al-karnak',title:'الكرنك',year:1975,director:'علي بدرخان',cast:['سعاد حسني','نور الشريف','كمال الشناوي'],genre:['دراما','سياسي'],based_on:'رواية نجيب محفوظ',summary:'طلاب يجتمعون في مقهى الكرنك، فتطحنهم آلة القمع في الستينيات.'},
- {id:'al-aar',title:'العار',year:1982,director:'علي عبد الخالق',cast:['نور الشريف','محمود عبد العزيز','حسين فهمي','نورا'],genre:['دراما','جريمة'],summary:'ثلاثة إخوة يكتشفون بعد وفاة أبيهم مصدر ثروته الحقيقي.'},
- {id:'al-bariea',title:'البريء',year:1986,director:'عاطف الطيب',cast:['أحمد زكي','محمود عبد العزيز'],genre:['دراما','سياسي'],summary:'مجنّد ريفي ساذج يُقنَع بأن المعتقلين أعداء الوطن، حتى يرى الحقيقة.'},
- {id:'zawgat-ragol-mohem',title:'زوجة رجل مهم',year:1987,director:'محمد خان',cast:['أحمد زكي','ميرفت أمين'],genre:['دراما'],summary:'زوجة شابة تكتشف تدريجيًا الوجه المتسلّط لزوجها ضابط الأمن.'},
- {id:'al-kit-kat',title:'الكيت كات',year:1991,director:'داود عبد السيد',cast:['محمود عبد العزيز','شريف منير'],genre:['كوميديا','دراما'],based_on:'رواية «مالك الحزين» لإبراهيم أصلان',summary:'الشيخ حسني الكفيف يعيش كأنه يرى كل شيء في حي الكيت كات.'},
- {id:'al-irhab-wal-kabab',title:'الإرهاب والكباب',year:1992,director:'شريف عرفة',cast:['عادل إمام','يسرا','كمال الشناوي'],genre:['كوميديا','سياسي'],summary:'مواطن يذهب لإنهاء ورقة في مجمع التحرير فيجد نفسه متهمًا بالإرهاب.'},
- {id:'ismailia-rayeh-gay',title:'إسماعيلية رايح جاي',year:1997,director:'كريم ضياء الدين',cast:['محمد فؤاد','محمد هنيدي','حنان ترك'],genre:['كوميديا','غنائي'],summary:'شاب من الإسماعيلية يحلم بالغناء في القاهرة، ومعه صديقه خفيف الظل.'},
- {id:'al-masir',title:'المصير',year:1997,director:'يوسف شاهين',cast:['نور الشريف','ليلى علوي','محمود حميدة'],genre:['تاريخي','دراما'],summary:'الفيلسوف ابن رشد في الأندلس يواجه التعصب وحرق كتبه.'}
-];
 const STYLE={e40:['#e9e4d8','#151515','#151515'],e50:['#e8b33a','#12372e','#b5462c'],e60:['#f3a59c','#4a1426','#f6e7d8'],e70:['#e8823a','#2a170c','#f5e4cc'],e80:['#f07a8a','#1d2230','#eceff5'],e90:['#f2c94c','#0f3f45','#e8623f']};
 const FONT={e40:"'Aref Ruqaa',serif",e50:"'Reem Kufi',sans-serif",e60:"'Reem Kufi',sans-serif",e70:"'Lalezar',sans-serif",e80:"'Rakkas',serif",e90:"'Cairo',sans-serif"};
+let FILMS=[];
+const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
-const eraOf=y=>ERAS.find(e=>y>=e.d0&&y<=e.d1);
-const poster=(f,i)=>{const e=eraOf(f.year).id,[bg,ink,acc]=STYLE[e],v=i%3;
- const sun=v===0?`<span class="sun" style="width:120px;height:120px;background:${acc};bottom:-30px;left:-30px"></span>`:v===1?`<span class="sun" style="width:100%;height:38%;border-radius:0;background:${acc};top:30%;left:0;opacity:.35"></span>`:`<span class="sun" style="width:70px;height:70px;background:${acc};top:14px;left:14px"></span>`;
- return `<div class="poster" style="background:${bg};color:${ink};--disp:${FONT[e]}">${sun}<span class="py">${ar(f.year)}</span><span class="pt">${esc(f.title)}</span><span class="pc">${esc(f.cast.slice(0,2).join(' · '))}<br>إخراج ${esc(f.director)}</span></div>`};
-const strip=document.getElementById('strip'),main=document.getElementById('eras');
+const eraOf=y=>ERAS.find(e=>y>=e.d0&&y<=e.d1)||ERAS[ERAS.length-1];
+const norm=s=>String(s||'').replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[«»"()]/g,'').toLowerCase().trim();
+const poster=(f)=>{const e=eraOf(f.year).id,[bg,ink,acc]=STYLE[e],v=FILMS.indexOf(f)%3;
+ const sun=v===0?`<span class="sun" style="width:120px;height:120px;background:${acc};bottom:-30px;left:-30px"></span>`:v===1?`<span class="sun" style="width:100%;height:38%;border-radius:0;background:${acc};top:30%;left:0;opacity:.3"></span>`:`<span class="sun" style="width:70px;height:70px;background:${acc};top:14px;left:14px"></span>`;
+ return `<div class="poster" style="background:${bg};color:${ink};--disp:${FONT[e]}">${sun}<span class="py">${ar(f.year)}</span><span class="pt">${esc(f.title)}</span><span class="pc">${esc((f.cast||[]).slice(0,2).join(' · '))}<br>إخراج ${esc(f.director)}</span></div>`};
+
+/* ——— الصفحة الرئيسية ——— */
+const strip=$('strip'),main=$('eras');
 strip.innerHTML=ERAS.map(e=>`<a href="#${e.id}" data-id="${e.id}">${e.name}</a>`).join('');
-function render(q){
- q=(q||'').trim();let total=0;
- main.innerHTML=ERAS.map(e=>{
-  const list=FILMS.filter(f=>eraOf(f.year)===e&&(!q||[f.title,f.director,...f.cast].join(' ').includes(q)));
-  total+=list.length;if(q&&!list.length)return '';
+$('frames').innerHTML=ERAS.map(e=>{const [bg,ink]=STYLE[e.id];return `<a href="#${e.id}" style="background:${bg};color:${ink}"><b style="font-family:${FONT[e.id]}">${e.num}</b><span>${e.name}</span></a>`}).join('');
+function renderHome(){
+ main.innerHTML=ERAS.map(e=>{const list=FILMS.filter(f=>eraOf(f.year)===e);
   return `<section class="era" id="${e.id}" data-era="${e.id}"><div class="era-head"><div class="num">${e.num}</div><div><h2>${e.name}</h2><p>${e.blurb}</p></div></div>
-  <div class="row">${list.map(f=>`<button class="card" type="button" data-id="${f.id}">${poster(f,FILMS.indexOf(f))}<div class="cap">${esc(f.title)}<small>${ar(f.year)} · ${esc(f.director)}</small></div></button>`).join('')}</div></section>`}).join('');
- document.getElementById('empty').hidden=total>0;observe();
+  <div class="row">${list.map(f=>`<a class="card" href="#film-${esc(f.id)}">${poster(f)}<div class="cap">${esc(f.title)}<small>${ar(f.year)} · ${esc(f.director)}</small></div></a>`).join('')}</div></section>`}).join('');
+ document.querySelectorAll('.era').forEach(s=>eraIO.observe(s));
 }
-let io,cur='';
+let cur='';
 function setEra(id){if(id===cur)return;cur=id;document.body.dataset.era=id;
  for(const a of strip.children){const on=a.dataset.id===id;a.classList.toggle('on',on);
   if(on){const left=a.offsetLeft-(strip.clientWidth-a.offsetWidth)/2;strip.scrollTo({left,behavior:'auto'})}}}
-function observe(){
- io&&io.disconnect();
- io=new IntersectionObserver(es=>{for(const x of es)if(x.isIntersecting)setEra(x.target.dataset.era)},{rootMargin:'-45% 0px -50% 0px'});
- document.querySelectorAll('.era').forEach(s=>io.observe(s));
+const eraIO=new IntersectionObserver(es=>{if($('home').hidden)return;for(const x of es)if(x.isIntersecting)setEra(x.target.dataset.era)},{rootMargin:'-45% 0px -50% 0px'});
+
+/* ——— صفحة الفيلم ——— */
+function md(src){ // محوّل Markdown صغير: عناوين، فقرات، قوائم، اقتباسات، روابط، خط عريض ومائل
+ const inl=t=>esc(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/\[([^\]]+)\]\(((?:[^()\s]|\([^()\s]*\))+)\)/g,(m,a,u)=>`<a href="${u}"${/^https?:/.test(u)?' target="_blank" rel="noopener"':''}>${a}</a>`);
+ const out=[];let list=null,para=[],quote=[];
+ const flush=()=>{if(para.length){out.push(`<p>${inl(para.join(' '))}</p>`);para=[]}if(list){out.push(`<ul>${list.map(i=>`<li>${inl(i)}</li>`).join('')}</ul>`);list=null}if(quote.length){out.push(`<blockquote><p>${inl(quote.join(' '))}</p></blockquote>`);quote=[]}};
+ for(const raw of src.replace(/\r/g,'').split('\n')){const l=raw.trim();let m;
+  if(!l){flush();continue}
+  if(m=l.match(/^(#{2,3})\s+(.*)/)){flush();out.push(`<h${m[1].length}>${inl(m[2])}</h${m[1].length}>`);continue}
+  if(m=l.match(/^[-*]\s+(.*)/)){if(para.length||quote.length){const l2=list;list=null;flush();list=l2}(list=list||[]).push(m[1]);continue}
+  if(m=l.match(/^>\s?(.*)/)){if(para.length||list)flush();quote.push(m[1]);continue}
+  if(list||quote.length)flush();para.push(l)}
+ flush();return out.join('');
 }
-const modal=document.getElementById('modal'),sheet=document.getElementById('sheet');let last;
-function open(id){const f=FILMS.find(x=>x.id===id);if(!f)return;last=document.activeElement;
- sheet.innerHTML=`<button class="x" type="button" aria-label="إغلاق">×</button><div>${poster(f,FILMS.indexOf(f))}</div><div><h3 id="mt">${esc(f.title)}</h3><div class="note">${eraOf(f.year).name}</div><p>${esc(f.summary)}</p>
- <dl><dt>السنة</dt><dd>${ar(f.year)}</dd><dt>الإخراج</dt><dd>${esc(f.director)}</dd><dt>البطولة</dt><dd>${esc(f.cast.join('، '))}</dd><dt>النوع</dt><dd>${esc(f.genre.join('، '))}</dd>${f.based_on?`<dt>عن</dt><dd>${esc(f.based_on)}</dd>`:''}</dl>
- <p class="note">الأفيش هنا مولّد بالكود. عند توفّر أفيش في ويكيميديا كومنز يُعرض بدلًا منه مع ذكر المصدر.</p></div>`;
- modal.classList.add('open');sheet.querySelector('.x').focus()}
-function close(){modal.classList.remove('open');last&&last.focus()}
-main.addEventListener('click',e=>{const c=e.target.closest('.card');if(c)open(c.dataset.id)});
-modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('.x'))close()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))close()});
-document.getElementById('q').addEventListener('input',e=>render(e.target.value));
-// لافتة السينما: إطارات العقود بالترتيب، وكل إطار رابط لقسمه
-document.getElementById('frames').innerHTML=ERAS.map(e=>{const [bg,ink]=STYLE[e.id];return `<a href="#${e.id}" style="background:${bg};color:${ink}"><b style="font-family:${FONT[e.id]}">${e.num}</b><span>${e.name}</span></a>`}).join('');
-render('');
+const cache={};
+async function article(id){
+ if(id in cache)return cache[id];
+ try{const r=await fetch(`films/${encodeURIComponent(id)}.md`,{cache:'no-cache'});cache[id]=r.ok?await r.text():null}catch{cache[id]=null}
+ return cache[id];
+}
+async function showFilm(id){
+ const f=FILMS.find(x=>x.id===id);if(!f){location.hash='';return}
+ const e=eraOf(f.year),i=FILMS.indexOf(f),prev=FILMS[i-1],next=FILMS[i+1];
+ $('home').hidden=true;const el=$('film');el.hidden=false;cur='';setEra(e.id);
+ document.title=`${f.title} (${f.year}) · شاشة زمان`;
+ const row=(k,v)=>v?`<dt>${k}</dt><dd>${esc(v)}</dd>`:'';
+ el.innerHTML=`<a class="back" href="#${e.id}">→ العودة إلى ${e.name}</a>
+ <div class="film-top"><div>${poster(f)}</div><div>
+  <div class="kicker">${ar(f.year)} · ${e.name}</div><h1>${esc(f.title)}</h1><p class="by">إخراج ${esc(f.director)}</p>
+  <dl class="meta">${row('البطولة',(f.cast||[]).join('، '))}${row('التأليف',f.writer)}${/عن /.test(f.writer||'')?'':row('عن',f.based_on)}${row('الإنتاج',f.producer)}${row('المدة',f.duration)}${row('العرض الأول',f.premiere)}</dl>
+  <div class="tags">${(f.genre||[]).map(g=>`<span>${esc(g)}</span>`).join('')}</div>
+ </div></div>
+ <div class="prose" id="prose"><p class="lead">${esc(f.summary)}</p></div>
+ <nav class="pn">${prev?`<a href="#film-${esc(prev.id)}"><small>→ الفيلم السابق</small><b>${esc(prev.title)}</b></a>`:'<span></span>'}${next?`<a class="nx" href="#film-${esc(next.id)}"><small>الفيلم التالي ←</small><b>${esc(next.title)}</b></a>`:''}</nav>`;
+ window.scrollTo(0,0);
+ const txt=await article(id);
+ if(location.hash!=='#film-'+id)return;
+ $('prose').insertAdjacentHTML('beforeend',txt?md(txt):`<div class="soon">لم تُكتب عن هذا الفيلم مقالة بعد.</div>`);
+}
+function showHome(target){
+ const wasFilm=!$('film').hidden;$('film').hidden=true;$('home').hidden=false;document.title='شاشة زمان';
+ const t=target&&document.getElementById(target);
+ if(t)t.scrollIntoView();else if(wasFilm)window.scrollTo(0,0);
+ if(!t||target==='top'){cur='';setEra('e40')}
+}
+function route(){const h=decodeURIComponent(location.hash.slice(1));if(h.startsWith('film-'))showFilm(h.slice(5));else showHome(h)}
+addEventListener('hashchange',route);
+
+/* ——— البحث ——— */
+const finder=$('finder'),q=$('q'),res=$('res');let hits=[],act=0,lastFocus;
+function openFind(){lastFocus=document.activeElement;finder.classList.add('open');q.value='';search('');q.focus()}
+function closeFind(){finder.classList.remove('open');lastFocus&&lastFocus.focus()}
+$('findBtn').addEventListener('click',openFind);$('findClose').addEventListener('click',closeFind);
+finder.addEventListener('click',e=>{if(e.target===finder)closeFind()});
+document.addEventListener('keydown',e=>{
+ const open=finder.classList.contains('open');
+ if(!open&&(e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();openFind();return}
+ if(!open)return;
+ if(e.key==='Escape')closeFind();
+ else if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(!hits.length)return;act=(act+(e.key==='ArrowDown'?1:-1)+hits.length)%hits.length;paint()}
+ else if(e.key==='Enter'&&hits[act]){e.preventDefault();hits[act].click()}
+});
+const hl=(text,qn)=>{if(!qn)return esc(text);const n=norm(text),i=n.indexOf(qn);if(i<0)return esc(text);
+ // تقريب: التطبيع لا يغيّر الطول إلا بحذف التشكيل، فنظلّل فقط إن تطابق الطول
+ return n.length===text.length?esc(text.slice(0,i))+'<mark>'+esc(text.slice(i,i+qn.length))+'</mark>'+esc(text.slice(i+qn.length)):esc(text)};
+function people(){const m=new Map();
+ for(const f of FILMS){for(const c of f.cast||[]){const n=c.replace(/\s*\(.*?\)/,'');m.has(n)||m.set(n,{name:n,films:new Set(),roles:new Set()});m.get(n).films.add(f);m.get(n).roles.add('ممثل')}
+  const d=(f.director||'').replace(/\s*\(.*?\)/,'');if(d){m.has(d)||m.set(d,{name:d,films:new Set(),roles:new Set()});m.get(d).films.add(f);m.get(d).roles.add('مخرج')}}
+ return [...m.values()]}
+function search(raw){
+ const qn=norm(raw);act=0;
+ if(!qn){
+  res.innerHTML=`<div class="grp">تصفّح العقود</div><div class="chips">${ERAS.map(e=>`<button type="button" data-era="${e.id}">${e.name}</button>`).join('')}</div>
+  <div class="grp">جرّب</div><div class="chips">${['فاتن حمامة','يوسف شاهين','أحمد زكي','نجيب محفوظ'].map(s=>`<button type="button" data-q="${s}">${s}</button>`).join('')}<button type="button" class="lucky" data-lucky>فيلم عشوائي</button></div>`;
+  hits=[];return}
+ const films=FILMS.filter(f=>norm(f.title).includes(qn)||norm(f.based_on).includes(qn)||norm(f.writer).includes(qn));
+ const ppl=people().filter(p=>norm(p.name).includes(qn)).sort((a,b)=>b.films.size-a.films.size).slice(0,6);
+ const exact=people().find(p=>norm(p.name)===qn);
+ const byPerson=exact?[...exact.films].filter(f=>!films.includes(f)):[];
+ const fl=[...films,...byPerson];
+ let h='';
+ if(fl.length)h+=`<div class="grp">${exact?'أفلام '+esc(exact.name):'أفلام'}</div>`+fl.map(f=>{const [bg,ink]=STYLE[eraOf(f.year).id];return `<a class="hit" href="#film-${esc(f.id)}"><span class="sw" style="background:${bg};color:${ink}">${ar(String(f.year).slice(2))}</span><span><b>${hl(f.title,qn)}</b><small>${ar(f.year)} · إخراج ${esc(f.director)}${f.based_on?' · عن '+esc(f.based_on):''}</small></span></a>`}).join('');
+ const pl=ppl.filter(p=>!exact||p.name!==exact.name);
+ if(pl.length)h+=`<div class="grp">ممثلون ومخرجون</div>`+pl.map(p=>`<button class="hit" type="button" data-q="${esc(p.name)}"><span class="av">${esc(p.name[0])}</span><span><b>${hl(p.name,qn)}</b><small>${[...p.roles].join(' و')} · ${ar(p.films.size)} ${p.films.size>2?'أفلام':'فيلم'} في الأرشيف</small></span></button>`).join('');
+ res.innerHTML=h||`<div class="none">لا نتائج لـ «${esc(raw)}». جرّب اسمًا آخر أو جزءًا من العنوان.</div>`;
+ hits=[...res.querySelectorAll('.hit')];paint();
+}
+function paint(){hits.forEach((x,i)=>x.classList.toggle('on',i===act));hits[act]&&hits[act].scrollIntoView({block:'nearest'})}
+q.addEventListener('input',()=>search(q.value));
+res.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b)return;
+ if(b.dataset.q){q.value=b.dataset.q;search(q.value);q.focus()}
+ else if(b.dataset.era){closeFind();location.hash=b.dataset.era;if(location.hash==='#'+b.dataset.era)showHome(b.dataset.era)}
+ else if('lucky' in b.dataset){closeFind();location.hash='film-'+FILMS[Math.floor(Math.random()*FILMS.length)].id}
+ else if(b.tagName==='A')closeFind()});
+
+/* ——— تحميل البيانات ——— */
+fetch('data/films.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{FILMS=d.sort((a,b)=>a.year-b.year);renderHome();route()})
+ .catch(()=>{main.innerHTML='<p style="padding:40px;text-align:center">تعذّر تحميل بيانات الأفلام.</p>'});
 }
 </script>
 </body>
