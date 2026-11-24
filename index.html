@@ -21,9 +21,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--body);ov
 body[data-era=e40]{--bg:#141414;--ink:#ece8df;--acc:#ffffff;--sub:#8d8a83;--disp:'Aref Ruqaa',serif}
 body[data-era=e50]{--bg:#12372e;--ink:#f3ead2;--acc:#e8b33a;--sub:#9fb5a6;--disp:'Reem Kufi',sans-serif}
 body[data-era=e60]{--bg:#4a1426;--ink:#f6e7d8;--acc:#f3a59c;--sub:#c39aa4;--disp:'Reem Kufi',sans-serif}
-body[data-era=e70]{--bg:#c4501d;--ink:#fff3df;--acc:#2b1a10;--sub:#ffd2b0;--disp:'Lalezar',sans-serif}
-body[data-era=e80]{--bg:#a8102b;--ink:#fff;--acc:#7fe3e8;--sub:#ffb3c0;--disp:'Rakkas',serif}
-body[data-era=e90]{--bg:#0e6e78;--ink:#fff;--acc:#ffd23f;--sub:#a9dde1;--disp:'Cairo',sans-serif}
+body[data-era=e70]{--bg:#3a2416;--ink:#f5e4cc;--acc:#e8823a;--sub:#c9a98a;--disp:'Lalezar',sans-serif}
+body[data-era=e80]{--bg:#1d2230;--ink:#eceff5;--acc:#f07a8a;--sub:#9aa3b8;--disp:'Rakkas',serif}
+body[data-era=e90]{--bg:#0f3f45;--ink:#eaf5f5;--acc:#f2c94c;--sub:#94bfc2;--disp:'Cairo',sans-serif}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 a{color:inherit}
 .top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);transition:background .9s}
@@ -141,7 +141,7 @@ const FILMS=[
  {id:'ismailia-rayeh-gay',title:'إسماعيلية رايح جاي',year:1997,director:'كريم ضياء الدين',cast:['محمد فؤاد','محمد هنيدي','حنان ترك'],genre:['كوميديا','غنائي'],summary:'شاب من الإسماعيلية يحلم بالغناء في القاهرة، ومعه صديقه خفيف الظل.'},
  {id:'al-masir',title:'المصير',year:1997,director:'يوسف شاهين',cast:['نور الشريف','ليلى علوي','محمود حميدة'],genre:['تاريخي','دراما'],summary:'الفيلسوف ابن رشد في الأندلس يواجه التعصب وحرق كتبه.'}
 ];
-const STYLE={e40:['#e9e4d8','#151515','#151515'],e50:['#e8b33a','#12372e','#b5462c'],e60:['#f3a59c','#4a1426','#f6e7d8'],e70:['#2b1a10','#ffcf6b','#e8622a'],e80:['#7fe3e8','#1b0a2e','#ff3d6e'],e90:['#ffd23f','#08434a','#ff6b4a']};
+const STYLE={e40:['#e9e4d8','#151515','#151515'],e50:['#e8b33a','#12372e','#b5462c'],e60:['#f3a59c','#4a1426','#f6e7d8'],e70:['#e8823a','#2a170c','#f5e4cc'],e80:['#f07a8a','#1d2230','#eceff5'],e90:['#f2c94c','#0f3f45','#e8623f']};
 const FONT={e40:"'Aref Ruqaa',serif",e50:"'Reem Kufi',sans-serif",e60:"'Reem Kufi',sans-serif",e70:"'Lalezar',sans-serif",e80:"'Rakkas',serif",e90:"'Cairo',sans-serif"};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
