@@ -73,10 +73,6 @@ a{color:inherit}
 .sheet dt{color:var(--sub)}.sheet dd{margin:0}
 .x{position:absolute;top:10px;left:10px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:var(--ink);font-size:22px;cursor:pointer}
 .note{font-size:13px;color:var(--sub)}
-.schema{max-width:1240px;margin:auto;padding:clamp(36px,6vw,80px) max(4vw,16px)}
-.schema h2{font:700 36px/1.1 var(--disp);margin:0 0 10px}
-.schema pre{background:#0008;color:#e9e4d8;padding:18px;border-radius:6px;font-size:14px;line-height:1.6;direction:ltr;text-align:left}
-.schema ul{padding-inline-start:20px}
 footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
 @media(max-width:760px){.hero{grid-template-columns:1fr;gap:28px}.era-head{grid-template-columns:1fr;gap:4px}.num{font-size:64px}.sheet{grid-template-columns:1fr}.sheet .poster{max-width:180px}.logo{font-size:22px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
@@ -104,18 +100,7 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
 <main id="eras"></main>
 <div class="empty" id="empty" hidden>لا توجد أفلام تطابق البحث.</div>
 
-<section class="schema" id="schema">
-  <h2>هيكل بيانات الفيلم</h2>
-  <p>كل فيلم سجلّ واحد في ملف <code>films.json</code>، وهذا السجلّ نفسه تستخدمه الأقسام الثلاثة: الأرشيف وآلة الزمن ولعبة «خمّن الفيلم».</p>
-  <pre id="code"></pre>
-  <ul>
-    <li><b>poster.status</b>: إما <code>commons</code> (صورة من ويكيميديا كومنز مع ذكر صاحبها)، أو <code>link</code> (رابط خارجي للأفيش فقط)، أو <code>generated</code> (أفيش يُولَّد بالكود كما ترى هنا).</li>
-    <li><b>clues</b>: تلميحات «خمّن الفيلم» مرتّبة من الأصعب إلى الأسهل.</li>
-    <li><b>wikidata</b>: معرّف الفيلم في ويكي بيانات، لاستكمال البيانات آليًا لاحقًا.</li>
-  </ul>
-  <button class="btn" id="copy" type="button">انسخ نموذج السجلّ</button>
-</section>
-<footer>نموذج أولي. البيانات عيّنة قليلة للتجربة، ويجب مراجعتها قبل النشر.</footer>
+<footer>شاشة زمان · أرشيف السينما المصرية حتى عام 2000</footer>
 
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
   <div class="sheet" id="sheet"></div>
@@ -198,9 +183,6 @@ document.getElementById('q').addEventListener('input',e=>render(e.target.value))
 // لافتة السينما: إطارات العقود بالترتيب، وكل إطار رابط لقسمه
 document.getElementById('frames').innerHTML=ERAS.map(e=>{const [bg,ink]=STYLE[e.id];return `<a href="#${e.id}" style="background:${bg};color:${ink}"><b style="font-family:${FONT[e.id]}">${e.num}</b><span>${e.name}</span></a>`}).join('');
 render('');
-const SAMPLE={id:'al-ard',title:'الأرض',title_en:'The Land',year:1970,director:'يوسف شاهين',cast:['محمود المليجي','عزت العلايلي','نجوى إبراهيم'],genre:['دراما'],based_on:'رواية عبد الرحمن الشرقاوي',summary:'وصف قصير بكلماتك…',poster:{status:'generated',url:null,credit:null},clues:['السنة: 1970','المخرج: يوسف شاهين','عن رواية لعبد الرحمن الشرقاوي','بطولة محمود المليجي'],wikidata:'Q…'};
-const code=document.getElementById('code');code.textContent=JSON.stringify(SAMPLE,null,2);
-document.getElementById('copy').addEventListener('click',async e=>{try{await navigator.clipboard.writeText(code.textContent);e.target.textContent='تم النسخ ✓'}catch{e.target.textContent='انسخه يدويًا من الصندوق'}});
 }
 </script>
 </body>
