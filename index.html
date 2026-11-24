@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
 <title>شاشة زمان</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,9 +14,9 @@
    PICTURE: لافتة سينما بأضواء ورقم العقد كبيرًا، وصف أفيشات مولّدة بالكود
    COLOUR/TYPE: كل عقد له لوحته وخطّه: رقعة الأربعينيات، كوفي الخمسينيات، لاله‌زار السبعينيات، رقّاص الثمانينيات، القاهرة التسعينيات
    LAYOUT: شريط عقود علوي ثابت، أقسام بعرض الشاشة، أفيشات تُمرَّر أفقيًا */
-:root{--bg:#121212;--ink:#efeae0;--acc:#fff;--sub:#8a857c;--disp:'Aref Ruqaa',serif;--body:'Cairo',system-ui,sans-serif}
+:root{color-scheme:dark;--line:rgba(255,255,255,.18);--bg:#121212;--ink:#efeae0;--acc:#fff;--sub:#8a857c;--disp:'Aref Ruqaa',serif;--body:'Cairo',system-ui,sans-serif}
 *{box-sizing:border-box;min-width:0}
-html{scroll-behavior:smooth;scroll-padding-top:72px}
+html{scroll-padding-top:72px}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--body);overflow-x:clip;transition:background .9s,color .9s}
 body[data-era=e40]{--bg:#141414;--ink:#ece8df;--acc:#ffffff;--sub:#8d8a83;--disp:'Aref Ruqaa',serif}
 body[data-era=e50]{--bg:#12372e;--ink:#f3ead2;--acc:#e8b33a;--sub:#9fb5a6;--disp:'Reem Kufi',sans-serif}
@@ -25,29 +26,33 @@ body[data-era=e80]{--bg:#a8102b;--ink:#fff;--acc:#7fe3e8;--sub:#ffb3c0;--disp:'R
 body[data-era=e90]{--bg:#0e6e78;--ink:#fff;--acc:#ffd23f;--sub:#a9dde1;--disp:'Cairo',sans-serif}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 a{color:inherit}
-.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid color-mix(in srgb,var(--ink) 15%,transparent);transition:background .9s}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);transition:background .9s}
 .top-in{display:flex;align-items:center;gap:16px;max-width:1240px;margin:auto;padding:10px max(4vw,16px)}
 .logo{font:700 26px/1 var(--disp);white-space:nowrap;text-decoration:none}
 .strip{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1}
-.strip a{flex:none;text-decoration:none;padding:8px 14px;border-radius:4px;font-weight:600;font-size:14px;border:1px dashed color-mix(in srgb,var(--ink) 35%,transparent);min-height:40px;display:flex;align-items:center}
+.strip a{flex:none;text-decoration:none;padding:8px 14px;border-radius:4px;font-weight:600;font-size:14px;border:1px dashed var(--line);min-height:40px;display:flex;align-items:center}
 .strip a.on{background:var(--acc);color:var(--bg);border-color:var(--acc)}
 .hero{max-width:1240px;margin:auto;padding:clamp(28px,5vw,72px) max(4vw,16px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;align-items:center}
 .hero h1{font:700 clamp(40px,7vw,76px)/1.05 var(--disp);margin:0 0 14px}
-.hero p{font-size:17px;max-width:34em;margin:0 0 22px;color:color-mix(in srgb,var(--ink) 85%,transparent)}
+.hero p{font-size:17px;max-width:34em;margin:0 0 22px;opacity:.9}
 .btn{display:inline-flex;align-items:center;min-height:46px;padding:0 22px;background:var(--acc);color:var(--bg);border:0;border-radius:4px;font:700 16px var(--body);cursor:pointer;text-decoration:none}
 .btn:focus-visible,.card:focus-visible,.strip a:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
-.marquee{position:relative;aspect-ratio:5/4;border-radius:10px;background:#0b0b0b;padding:22px;box-shadow:0 30px 60px -20px #000a}
-.marquee svg{width:100%;height:100%;display:block}
-.bulb{animation:blink 1.6s infinite}
-@keyframes blink{50%{opacity:.35}}
-.era{padding:clamp(36px,6vw,80px) 0;border-top:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
+.marquee{border-radius:10px;background:#0b0b0b;padding:30px 26px 26px;outline:6px dotted #ffd77a;outline-offset:-12px;box-shadow:0 30px 60px -20px #000a;animation:glow 1.8s infinite}
+@keyframes glow{50%{outline-color:#b8913f}}
+.marquee h2{margin:0 0 14px;text-align:center;font:700 28px/1.2 'Aref Ruqaa',serif;color:#ffd77a}
+.frames{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.frames a{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1/1;border-radius:4px;text-decoration:none;border:1px solid rgba(255,255,255,.15);padding:6px;text-align:center}
+.frames b{font-size:clamp(24px,6vw,34px);line-height:1.1;white-space:nowrap}
+.frames span{font:600 13px var(--body);opacity:.85;margin-top:4px}
+.frames a:focus-visible{outline:3px solid #ffd77a;outline-offset:2px}
+.era{padding:clamp(36px,6vw,80px) 0;border-top:1px solid var(--line)}
 .era-head{max-width:1240px;margin:auto;padding:0 max(4vw,16px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 28px;align-items:end}
 .num{font:700 clamp(64px,13vw,150px)/.9 var(--disp);color:var(--acc)}
 .era h2{font:700 clamp(30px,4vw,44px)/1.1 var(--disp);margin:0}
-.era-head p{margin:6px 0 0;max-width:42em;color:color-mix(in srgb,var(--ink) 82%,transparent)}
+.era-head p{margin:6px 0 0;max-width:42em;opacity:.88}
 .row{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px max(4vw,16px) 10px;scrollbar-width:thin}
 .card{flex:none;width:200px;scroll-snap-align:start;background:none;border:0;padding:0;color:inherit;text-align:start;cursor:pointer;font:inherit}
-.poster{aspect-ratio:2/3;border-radius:4px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:14px;box-shadow:0 14px 28px -12px #000b;transition:transform .3s}
+.poster{aspect-ratio:2/3;border-radius:4px;border:1px solid rgba(255,255,255,.12);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:14px;box-shadow:0 14px 28px -12px #000b;transition:transform .3s}
 .card:hover .poster{transform:translateY(-6px) rotate(-1deg)}
 .poster .pt{font:700 30px/1.15 var(--disp);text-wrap:balance}
 .poster .py{font:800 13px var(--body);letter-spacing:.02em;opacity:.85}
@@ -57,7 +62,8 @@ a{color:inherit}
 .cap{margin-top:10px;font-weight:600;font-size:15px}
 .cap small{display:block;font-weight:400;color:var(--sub);font-size:13px}
 .tools{max-width:1240px;margin:auto;padding:0 max(4vw,16px) 8px;display:flex;gap:12px;flex-wrap:wrap}
-.tools input{flex:1 1 260px;min-height:48px;font:16px var(--body);padding:0 16px;border-radius:4px;border:1px solid color-mix(in srgb,var(--ink) 30%,transparent);background:color-mix(in srgb,var(--ink) 7%,transparent);color:var(--ink)}
+.tools input{flex:1 1 260px;min-height:48px;font:16px var(--body);padding:0 16px;border-radius:4px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--ink)}
+.tools input::placeholder{color:var(--sub)}
 .empty{padding:20px max(4vw,16px);color:var(--sub)}
 .modal{position:fixed;inset:0;z-index:20;background:#000c;display:none;align-items:center;justify-content:center;padding:16px}
 .modal.open{display:flex}
@@ -65,14 +71,14 @@ a{color:inherit}
 .sheet h3{font:700 36px/1.1 var(--disp);margin:0 0 6px}
 .sheet dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;margin:14px 0}
 .sheet dt{color:var(--sub)}.sheet dd{margin:0}
-.x{position:absolute;top:10px;left:10px;width:44px;height:44px;border-radius:50%;border:0;background:color-mix(in srgb,var(--ink) 12%,transparent);color:var(--ink);font-size:22px;cursor:pointer}
+.x{position:absolute;top:10px;left:10px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:var(--ink);font-size:22px;cursor:pointer}
 .note{font-size:13px;color:var(--sub)}
 .schema{max-width:1240px;margin:auto;padding:clamp(36px,6vw,80px) max(4vw,16px)}
 .schema h2{font:700 36px/1.1 var(--disp);margin:0 0 10px}
 .schema pre{background:#0008;color:#e9e4d8;padding:18px;border-radius:6px;font-size:14px;line-height:1.6;direction:ltr;text-align:left}
 .schema ul{padding-inline-start:20px}
 footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
-@media(max-width:760px){.hero{grid-template-columns:1fr}.sheet{grid-template-columns:1fr}.sheet .poster{max-width:180px}.logo{font-size:22px}}
+@media(max-width:760px){.hero{grid-template-columns:1fr;gap:28px}.era-head{grid-template-columns:1fr;gap:4px}.num{font-size:64px}.sheet{grid-template-columns:1fr}.sheet .poster{max-width:180px}.logo{font-size:22px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
@@ -88,9 +94,10 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
     <p>رحلة في السينما المصرية من البدايات حتى عام 2000. مرّر للأسفل وسيتغيّر لون الموقع وخطّه مع كل عقد، كأنك تقلّب بكرات الأفلام.</p>
     <a class="btn" href="#e40">ابدأ الرحلة</a>
   </div>
-  <div class="marquee" aria-hidden="true">
-    <svg viewBox="0 0 400 320" id="mq"></svg>
-  </div>
+  <nav class="marquee" aria-label="اختر عقدًا">
+    <h2>يُعرض الآن</h2>
+    <div class="frames" id="frames"></div>
+  </nav>
 </section>
 
 <div class="tools"><input id="q" type="search" placeholder="ابحث عن فيلم أو ممثل أو مخرج…" aria-label="بحث"></div>
@@ -149,7 +156,7 @@ const FILMS=[
  {id:'ismailia-rayeh-gay',title:'إسماعيلية رايح جاي',year:1997,director:'كريم ضياء الدين',cast:['محمد فؤاد','محمد هنيدي','حنان ترك'],genre:['كوميديا','غنائي'],summary:'شاب من الإسماعيلية يحلم بالغناء في القاهرة، ومعه صديقه خفيف الظل.'},
  {id:'al-masir',title:'المصير',year:1997,director:'يوسف شاهين',cast:['نور الشريف','ليلى علوي','محمود حميدة'],genre:['تاريخي','دراما'],summary:'الفيلسوف ابن رشد في الأندلس يواجه التعصب وحرق كتبه.'}
 ];
-const STYLE={e40:['#1c1c1c','#f2efe8','#9a968e'],e50:['#e8b33a','#12372e','#b5462c'],e60:['#f3a59c','#4a1426','#f6e7d8'],e70:['#2b1a10','#ffcf6b','#e8622a'],e80:['#7fe3e8','#1b0a2e','#ff3d6e'],e90:['#ffd23f','#08434a','#ff6b4a']};
+const STYLE={e40:['#e9e4d8','#151515','#151515'],e50:['#e8b33a','#12372e','#b5462c'],e60:['#f3a59c','#4a1426','#f6e7d8'],e70:['#2b1a10','#ffcf6b','#e8622a'],e80:['#7fe3e8','#1b0a2e','#ff3d6e'],e90:['#ffd23f','#08434a','#ff6b4a']};
 const FONT={e40:"'Aref Ruqaa',serif",e50:"'Reem Kufi',sans-serif",e60:"'Reem Kufi',sans-serif",e70:"'Lalezar',sans-serif",e80:"'Rakkas',serif",e90:"'Cairo',sans-serif"};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
@@ -168,10 +175,13 @@ function render(q){
   <div class="row">${list.map(f=>`<button class="card" type="button" data-id="${f.id}">${poster(f,FILMS.indexOf(f))}<div class="cap">${esc(f.title)}<small>${ar(f.year)} · ${esc(f.director)}</small></div></button>`).join('')}</div></section>`}).join('');
  document.getElementById('empty').hidden=total>0;observe();
 }
-let io;
+let io,cur='';
+function setEra(id){if(id===cur)return;cur=id;document.body.dataset.era=id;
+ for(const a of strip.children){const on=a.dataset.id===id;a.classList.toggle('on',on);
+  if(on){const left=a.offsetLeft-(strip.clientWidth-a.offsetWidth)/2;strip.scrollTo({left,behavior:'auto'})}}}
 function observe(){
  io&&io.disconnect();
- io=new IntersectionObserver(es=>{for(const x of es)if(x.isIntersecting){const id=x.target.dataset.era;document.body.dataset.era=id;for(const a of strip.children){const on=a.dataset.id===id;a.classList.toggle('on',on);if(on)a.scrollIntoView({block:'nearest',inline:'nearest'})}}},{rootMargin:'-45% 0px -50% 0px'});
+ io=new IntersectionObserver(es=>{for(const x of es)if(x.isIntersecting)setEra(x.target.dataset.era)},{rootMargin:'-45% 0px -50% 0px'});
  document.querySelectorAll('.era').forEach(s=>io.observe(s));
 }
 const modal=document.getElementById('modal'),sheet=document.getElementById('sheet');let last;
@@ -185,12 +195,8 @@ main.addEventListener('click',e=>{const c=e.target.closest('.card');if(c)open(c.
 modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('.x'))close()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))close()});
 document.getElementById('q').addEventListener('input',e=>render(e.target.value));
-// لافتة السينما
-const mq=document.getElementById('mq');
-let b='';for(let i=0;i<18;i++){b+=`<circle class="bulb" cx="${22+i*20.3}" cy="16" r="5" fill="#ffd77a" style="animation-delay:${(i%3)*.5}s"/><circle class="bulb" cx="${22+i*20.3}" cy="304" r="5" fill="#ffd77a" style="animation-delay:${((i+1)%3)*.5}s"/>`}
-for(let j=0;j<13;j++){b+=`<circle class="bulb" cx="12" cy="${36+j*20.5}" r="5" fill="#ffd77a" style="animation-delay:${(j%3)*.5}s"/><circle class="bulb" cx="388" cy="${36+j*20.5}" r="5" fill="#ffd77a" style="animation-delay:${((j+2)%3)*.5}s"/>`}
-const frames=ERAS.map((e,i)=>{const [bg,ink]=STYLE[e.id];const x=300-(i%3)*110,y=i<3?92:192;return `<g><rect x="${x}" y="${y}" width="96" height="88" rx="4" fill="${bg}" stroke="#fff3" /><text x="${x+48}" y="${y+56}" text-anchor="middle" font-size="34" font-weight="700" fill="${ink}" font-family="${FONT[e.id].replace(/"/g,'')}">${e.num.length>2?'٣٠':e.num}</text></g>`}).join('');
-mq.innerHTML=`${b}<rect x="28" y="32" width="344" height="256" rx="6" fill="#1a1410"/><text x="200" y="74" text-anchor="middle" fill="#ffd77a" font-size="30" font-family="Aref Ruqaa,serif" font-weight="700">يُعرض الآن</text>${frames}`;
+// لافتة السينما: إطارات العقود بالترتيب، وكل إطار رابط لقسمه
+document.getElementById('frames').innerHTML=ERAS.map(e=>{const [bg,ink]=STYLE[e.id];return `<a href="#${e.id}" style="background:${bg};color:${ink}"><b style="font-family:${FONT[e.id]}">${e.num}</b><span>${e.name}</span></a>`}).join('');
 render('');
 const SAMPLE={id:'al-ard',title:'الأرض',title_en:'The Land',year:1970,director:'يوسف شاهين',cast:['محمود المليجي','عزت العلايلي','نجوى إبراهيم'],genre:['دراما'],based_on:'رواية عبد الرحمن الشرقاوي',summary:'وصف قصير بكلماتك…',poster:{status:'generated',url:null,credit:null},clues:['السنة: 1970','المخرج: يوسف شاهين','عن رواية لعبد الرحمن الشرقاوي','بطولة محمود المليجي'],wikidata:'Q…'};
 const code=document.getElementById('code');code.textContent=JSON.stringify(SAMPLE,null,2);
