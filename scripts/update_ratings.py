@@ -76,7 +76,8 @@ def elc_rating(wid):
     return {"score": round(float(m.group(1)), 1)} if m else None
 
 def elc_find(f):
-    """يبحث في السينما.كوم بالعنوان العربي، ويختار العمل الذي تطابق سنته سنة الفيلم."""
+    """يحاول البحث في السينما.كوم بالعنوان العربي. صفحة البحث هناك تُحمَّل بالجافاسكربت فقد لا تعيد نتائج؛
+    الأضمن أن تضع رقم الفيلم (من رابط صفحته) في ratings.elcinema.id يدويًا."""
     page = get("https://elcinema.com/search/?s=" + urllib.parse.quote(f["title"]))
     if not page:
         return None
@@ -89,9 +90,6 @@ def elc_find(f):
         hits.append((wid, text, int(y.group(1)) if y else None))
     if DEBUG:
         print("  elc hits:", hits[:6])
-        if not hits:
-            i = page.find("work/")
-            print("  elc search snippet:", len(page), re.sub(r"\s+", " ", page[max(0, i - 800): i + 1500]) if i >= 0 else re.sub(r"\s+", " ", page[:1500]))
     for wid, text, y in hits:
         if y == f["year"] and (norm(text) == want or want in norm(text)):
             return wid
