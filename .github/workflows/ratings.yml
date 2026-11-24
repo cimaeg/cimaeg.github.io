@@ -1,0 +1,48 @@
+name: تحديث التقييمات
+
+on:
+  schedule:
+    - cron: "17 2 * * 5"   # كل جمعة 02:17 بتوقيت UTC
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["scripts/update_ratings.py", ".github/workflows/ratings.yml"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ratings
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - run: python scripts/update_ratings.py --debug
+      - id: commit
+        run: |
+          if git diff --quiet data/films.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/films.json
+            git commit -m "تحديث التقييمات تلقائيًا"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy.yml
