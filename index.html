@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>شاشة زمان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@500;700&family=Lalezar&family=Rakkas&family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: حنين دافئ، كأنك تدخل سينما مصرية قديمة
+   IDEA: شريط فيلم يتغيّر لونه وخطّه مع كل عقد، والأفيشات تُطبع بخط عصرها
+   PICTURE: لافتة سينما بأضواء ورقم العقد كبيرًا، وصف أفيشات مولّدة بالكود
+   COLOUR/TYPE: كل عقد له لوحته وخطّه: رقعة الأربعينيات، كوفي الخمسينيات، لاله‌زار السبعينيات، رقّاص الثمانينيات، القاهرة التسعينيات
+   LAYOUT: شريط عقود علوي ثابت، أقسام بعرض الشاشة، أفيشات تُمرَّر أفقيًا */
+:root{--bg:#121212;--ink:#efeae0;--acc:#fff;--sub:#8a857c;--disp:'Aref Ruqaa',serif;--body:'Cairo',system-ui,sans-serif}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--body);overflow-x:clip;transition:background .9s,color .9s}
+body[data-era=e40]{--bg:#141414;--ink:#ece8df;--acc:#ffffff;--sub:#8d8a83;--disp:'Aref Ruqaa',serif}
+body[data-era=e50]{--bg:#12372e;--ink:#f3ead2;--acc:#e8b33a;--sub:#9fb5a6;--disp:'Reem Kufi',sans-serif}
+body[data-era=e60]{--bg:#4a1426;--ink:#f6e7d8;--acc:#f3a59c;--sub:#c39aa4;--disp:'Reem Kufi',sans-serif}
+body[data-era=e70]{--bg:#c4501d;--ink:#fff3df;--acc:#2b1a10;--sub:#ffd2b0;--disp:'Lalezar',sans-serif}
+body[data-era=e80]{--bg:#a8102b;--ink:#fff;--acc:#7fe3e8;--sub:#ffb3c0;--disp:'Rakkas',serif}
+body[data-era=e90]{--bg:#0e6e78;--ink:#fff;--acc:#ffd23f;--sub:#a9dde1;--disp:'Cairo',sans-serif}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+a{color:inherit}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid color-mix(in srgb,var(--ink) 15%,transparent);transition:background .9s}
+.top-in{display:flex;align-items:center;gap:16px;max-width:1240px;margin:auto;padding:10px max(4vw,16px)}
+.logo{font:700 26px/1 var(--disp);white-space:nowrap;text-decoration:none}
+.strip{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1}
+.strip a{flex:none;text-decoration:none;padding:8px 14px;border-radius:4px;font-weight:600;font-size:14px;border:1px dashed color-mix(in srgb,var(--ink) 35%,transparent);min-height:40px;display:flex;align-items:center}
+.strip a.on{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.hero{max-width:1240px;margin:auto;padding:clamp(28px,5vw,72px) max(4vw,16px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;align-items:center}
+.hero h1{font:700 clamp(40px,7vw,76px)/1.05 var(--disp);margin:0 0 14px}
+.hero p{font-size:17px;max-width:34em;margin:0 0 22px;color:color-mix(in srgb,var(--ink) 85%,transparent)}
+.btn{display:inline-flex;align-items:center;min-height:46px;padding:0 22px;background:var(--acc);color:var(--bg);border:0;border-radius:4px;font:700 16px var(--body);cursor:pointer;text-decoration:none}
+.btn:focus-visible,.card:focus-visible,.strip a:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+.marquee{position:relative;aspect-ratio:5/4;border-radius:10px;background:#0b0b0b;padding:22px;box-shadow:0 30px 60px -20px #000a}
+.marquee svg{width:100%;height:100%;display:block}
+.bulb{animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.35}}
+.era{padding:clamp(36px,6vw,80px) 0;border-top:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
+.era-head{max-width:1240px;margin:auto;padding:0 max(4vw,16px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 28px;align-items:end}
+.num{font:700 clamp(64px,13vw,150px)/.9 var(--disp);color:var(--acc)}
+.era h2{font:700 clamp(30px,4vw,44px)/1.1 var(--disp);margin:0}
+.era-head p{margin:6px 0 0;max-width:42em;color:color-mix(in srgb,var(--ink) 82%,transparent)}
+.row{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px max(4vw,16px) 10px;scrollbar-width:thin}
+.card{flex:none;width:200px;scroll-snap-align:start;background:none;border:0;padding:0;color:inherit;text-align:start;cursor:pointer;font:inherit}
+.poster{aspect-ratio:2/3;border-radius:4px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:14px;box-shadow:0 14px 28px -12px #000b;transition:transform .3s}
+.card:hover .poster{transform:translateY(-6px) rotate(-1deg)}
+.poster .pt{font:700 30px/1.15 var(--disp);text-wrap:balance}
+.poster .py{font:800 13px var(--body);letter-spacing:.02em;opacity:.85}
+.poster .pc{font-size:12px;line-height:1.4;opacity:.9}
+.poster .sun{position:absolute;border-radius:50%;opacity:.9}
+.poster>*{position:relative}
+.cap{margin-top:10px;font-weight:600;font-size:15px}
+.cap small{display:block;font-weight:400;color:var(--sub);font-size:13px}
+.tools{max-width:1240px;margin:auto;padding:0 max(4vw,16px) 8px;display:flex;gap:12px;flex-wrap:wrap}
+.tools input{flex:1 1 260px;min-height:48px;font:16px var(--body);padding:0 16px;border-radius:4px;border:1px solid color-mix(in srgb,var(--ink) 30%,transparent);background:color-mix(in srgb,var(--ink) 7%,transparent);color:var(--ink)}
+.empty{padding:20px max(4vw,16px);color:var(--sub)}
+.modal{position:fixed;inset:0;z-index:20;background:#000c;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.sheet{background:var(--bg);color:var(--ink);max-width:760px;width:100%;max-height:92vh;overflow:auto;border-radius:8px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;padding:24px;position:relative}
+.sheet h3{font:700 36px/1.1 var(--disp);margin:0 0 6px}
+.sheet dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;margin:14px 0}
+.sheet dt{color:var(--sub)}.sheet dd{margin:0}
+.x{position:absolute;top:10px;left:10px;width:44px;height:44px;border-radius:50%;border:0;background:color-mix(in srgb,var(--ink) 12%,transparent);color:var(--ink);font-size:22px;cursor:pointer}
+.note{font-size:13px;color:var(--sub)}
+.schema{max-width:1240px;margin:auto;padding:clamp(36px,6vw,80px) max(4vw,16px)}
+.schema h2{font:700 36px/1.1 var(--disp);margin:0 0 10px}
+.schema pre{background:#0008;color:#e9e4d8;padding:18px;border-radius:6px;font-size:14px;line-height:1.6;direction:ltr;text-align:left}
+.schema ul{padding-inline-start:20px}
+footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.sheet{grid-template-columns:1fr}.sheet .poster{max-width:180px}.logo{font-size:22px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body data-era="e40">
+<header class="top"><div class="top-in">
+  <a class="logo" href="#top">شاشة زمان</a>
+  <nav class="strip" id="strip" aria-label="العقود"></nav>
+</div></header>
+
+<section class="hero" id="top">
+  <div>
+    <h1>آلة الزمن السينمائية</h1>
+    <p>رحلة في السينما المصرية من البدايات حتى عام 2000. مرّر للأسفل وسيتغيّر لون الموقع وخطّه مع كل عقد، كأنك تقلّب بكرات الأفلام.</p>
+    <a class="btn" href="#e40">ابدأ الرحلة</a>
+  </div>
+  <div class="marquee" aria-hidden="true">
+    <svg viewBox="0 0 400 320" id="mq"></svg>
+  </div>
+</section>
+
+<div class="tools"><input id="q" type="search" placeholder="ابحث عن فيلم أو ممثل أو مخرج…" aria-label="بحث"></div>
+<main id="eras"></main>
+<div class="empty" id="empty" hidden>لا توجد أفلام تطابق البحث.</div>
+
+<section class="schema" id="schema">
+  <h2>هيكل بيانات الفيلم</h2>
+  <p>كل فيلم سجلّ واحد في ملف <code>films.json</code>، وهذا السجلّ نفسه تستخدمه الأقسام الثلاثة: الأرشيف وآلة الزمن ولعبة «خمّن الفيلم».</p>
+  <pre id="code"></pre>
+  <ul>
+    <li><b>poster.status</b>: إما <code>commons</code> (صورة من ويكيميديا كومنز مع ذكر صاحبها)، أو <code>link</code> (رابط خارجي للأفيش فقط)، أو <code>generated</code> (أفيش يُولَّد بالكود كما ترى هنا).</li>
+    <li><b>clues</b>: تلميحات «خمّن الفيلم» مرتّبة من الأصعب إلى الأسهل.</li>
+    <li><b>wikidata</b>: معرّف الفيلم في ويكي بيانات، لاستكمال البيانات آليًا لاحقًا.</li>
+  </ul>
+  <button class="btn" id="copy" type="button">انسخ نموذج السجلّ</button>
+</section>
+<footer>نموذج أولي. البيانات عيّنة قليلة للتجربة، ويجب مراجعتها قبل النشر.</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+{
+const ERAS=[
+ {id:'e40',num:'٣٠–٤٠',name:'البدايات',d0:1930,d1:1949,blurb:'استوديو مصر يفتح أبوابه، والأفلام الغنائية والواقعية الأولى تصنع نجومها. الشاشة بالأبيض والأسود، والقاهرة تصبح هوليوود الشرق.'},
+ {id:'e50',num:'٥٠',name:'الخمسينيات',d0:1950,d1:1959,blurb:'جيل جديد من المخرجين ونجوم الصف الأول، وروايات كبار الأدباء تنتقل إلى الشاشة. بداية ما يسمّيه الجمهور «الزمن الجميل».'},
+ {id:'e60',num:'٦٠',name:'الستينيات',d0:1960,d1:1969,blurb:'ذروة الأدب على الشاشة: نجيب محفوظ ويوسف إدريس وغيرهما، مع إنتاج القطاع العام وأفلام تاريخية ضخمة.'},
+ {id:'e70',num:'٧٠',name:'السبعينيات',d0:1970,d1:1979,blurb:'الألوان تملأ الشاشة، والاستعراض يلتقي بالسياسة، وتظهر أفلام تراجع الماضي القريب بجرأة.'},
+ {id:'e80',num:'٨٠',name:'الثمانينيات',d0:1980,d1:1989,blurb:'الواقعية الجديدة: عاطف الطيب ومحمد خان وخيري بشارة ينزلون بالكاميرا إلى الشارع، بينما يزدهر عصر الفيديو.'},
+ {id:'e90',num:'٩٠',name:'التسعينيات',d0:1990,d1:2000,blurb:'كوميديا سياسية ذكية، ثم موجة نجوم شباب تعيد الجمهور إلى دور العرض في نهاية العقد.'}
+];
+// عيّنة للتجربة — تحتاج مراجعة قبل النشر
+const FILMS=[
+ {id:'salama-fi-khair',title:'سلامة في خير',year:1937,director:'نيازي مصطفى',cast:['نجيب الريحاني'],genre:['كوميديا'],summary:'موظف بسيط تقوده الصدفة إلى أن يُظَنّ أميرًا، فتتوالى المفارقات.'},
+ {id:'al-azima',title:'العزيمة',year:1939,director:'كمال سليم',cast:['حسين صدقي','فاطمة رشدي'],genre:['دراما','واقعية'],summary:'شاب من الحارة يكافح للعمل والزواج ممن يحب، في واحد من أوائل الأفلام الواقعية.'},
+ {id:'ghazal-al-banat',title:'غزل البنات',year:1949,director:'أنور وجدي',cast:['ليلى مراد','نجيب الريحاني','أنور وجدي','يوسف وهبي'],genre:['كوميديا','غنائي'],summary:'مدرّس لغة عربية يقع في حب تلميذته ابنة الباشا، في آخر أفلام نجيب الريحاني.'},
+ {id:'siraa-fil-wadi',title:'صراع في الوادي',year:1954,director:'يوسف شاهين',cast:['فاتن حمامة','عمر الشريف','زكي رستم'],genre:['دراما'],summary:'مهندس زراعي يواجه سطوة الباشا في الصعيد، بعد جريمة يُتَّهم بها والده ظلمًا.'},
+ {id:'bab-al-hadid',title:'باب الحديد',year:1958,director:'يوسف شاهين',cast:['فريد شوقي','هند رستم','يوسف شاهين'],genre:['دراما','تشويق'],summary:'بائع جرائد في محطة القطارات يتحول هوسه ببائعة مشروبات إلى خطر.'},
+ {id:'doaa-al-karawan',title:'دعاء الكروان',year:1959,director:'هنري بركات',cast:['فاتن حمامة','أحمد مظهر','زهرة العلا'],genre:['دراما'],based_on:'رواية طه حسين',summary:'فتاة ريفية تسعى للانتقام لأختها من الرجل الذي تسبّب في موتها.'},
+ {id:'al-les-wal-kilab',title:'اللص والكلاب',year:1962,director:'كمال الشيخ',cast:['شكري سرحان','شادية','كمال الشناوي'],genre:['دراما','جريمة'],based_on:'رواية نجيب محفوظ',summary:'لص يخرج من السجن ليجد أن أقرب الناس إليه قد خانوه، فيقرر الانتقام.'},
+ {id:'al-nasser-salah-el-din',title:'الناصر صلاح الدين',year:1963,director:'يوسف شاهين',cast:['أحمد مظهر','صلاح ذو الفقار','نادية لطفي'],genre:['تاريخي'],summary:'ملحمة عن صلاح الدين الأيوبي والحروب الصليبية واسترداد القدس.'},
+ {id:'bein-al-qasrein',title:'بين القصرين',year:1964,director:'حسن الإمام',cast:['يحيى شاهين','آمال زايد'],genre:['دراما'],based_on:'رواية نجيب محفوظ',summary:'حياة أسرة السيد أحمد عبد الجواد في القاهرة القديمة إبّان ثورة 1919.'},
+ {id:'al-haram',title:'الحرام',year:1965,director:'هنري بركات',cast:['فاتن حمامة','عبد الله غيث','زكي رستم'],genre:['دراما'],based_on:'رواية يوسف إدريس',summary:'عاملة تراحيل فقيرة تحمل سرًّا ثقيلًا في قرية لا ترحم.'},
+ {id:'shaiun-min-al-khawf',title:'شيء من الخوف',year:1969,director:'حسين كمال',cast:['شادية','محمود مرسي','يحيى شاهين'],genre:['دراما'],based_on:'قصة ثروت أباظة',summary:'قرية يحكمها طاغية، وفتاة واحدة تجرؤ على رفضه.'},
+ {id:'al-mumia',title:'المومياء',year:1969,director:'شادي عبد السلام',cast:['أحمد مرعي','نادية لطفي'],genre:['دراما','تاريخي'],summary:'شاب من قبيلة تتاجر سرًّا في آثار الفراعنة يواجه سؤال الهوية والضمير.'},
+ {id:'al-ard',title:'الأرض',year:1970,director:'يوسف شاهين',cast:['محمود المليجي','عزت العلايلي','نجوى إبراهيم'],genre:['دراما'],based_on:'رواية عبد الرحمن الشرقاوي',summary:'فلاحو قرية يقاومون من يريد انتزاع أرضهم وحقهم في الماء.'},
+ {id:'khally-balak-min-zouzou',title:'خلي بالك من زوزو',year:1972,director:'حسن الإمام',cast:['سعاد حسني','حسين فهمي','تحية كاريوكا'],genre:['استعراضي','رومانسي'],summary:'طالبة جامعية تخفي عمل أسرتها في الأفراح، حتى يفاجئها الحب.'},
+ {id:'al-karnak',title:'الكرنك',year:1975,director:'علي بدرخان',cast:['سعاد حسني','نور الشريف','كمال الشناوي'],genre:['دراما','سياسي'],based_on:'رواية نجيب محفوظ',summary:'طلاب يجتمعون في مقهى الكرنك، فتطحنهم آلة القمع في الستينيات.'},
+ {id:'al-aar',title:'العار',year:1982,director:'علي عبد الخالق',cast:['نور الشريف','محمود عبد العزيز','حسين فهمي','نورا'],genre:['دراما','جريمة'],summary:'ثلاثة إخوة يكتشفون بعد وفاة أبيهم مصدر ثروته الحقيقي.'},
+ {id:'al-bariea',title:'البريء',year:1986,director:'عاطف الطيب',cast:['أحمد زكي','محمود عبد العزيز'],genre:['دراما','سياسي'],summary:'مجنّد ريفي ساذج يُقنَع بأن المعتقلين أعداء الوطن، حتى يرى الحقيقة.'},
+ {id:'zawgat-ragol-mohem',title:'زوجة رجل مهم',year:1987,director:'محمد خان',cast:['أحمد زكي','ميرفت أمين'],genre:['دراما'],summary:'زوجة شابة تكتشف تدريجيًا الوجه المتسلّط لزوجها ضابط الأمن.'},
+ {id:'al-kit-kat',title:'الكيت كات',year:1991,director:'داود عبد السيد',cast:['محمود عبد العزيز','شريف منير'],genre:['كوميديا','دراما'],based_on:'رواية «مالك الحزين» لإبراهيم أصلان',summary:'الشيخ حسني الكفيف يعيش كأنه يرى كل شيء في حي الكيت كات.'},
+ {id:'al-irhab-wal-kabab',title:'الإرهاب والكباب',year:1992,director:'شريف عرفة',cast:['عادل إمام','يسرا','كمال الشناوي'],genre:['كوميديا','سياسي'],summary:'مواطن يذهب لإنهاء ورقة في مجمع التحرير فيجد نفسه متهمًا بالإرهاب.'},
+ {id:'ismailia-rayeh-gay',title:'إسماعيلية رايح جاي',year:1997,director:'كريم ضياء الدين',cast:['محمد فؤاد','محمد هنيدي','حنان ترك'],genre:['كوميديا','غنائي'],summary:'شاب من الإسماعيلية يحلم بالغناء في القاهرة، ومعه صديقه خفيف الظل.'},
+ {id:'al-masir',title:'المصير',year:1997,director:'يوسف شاهين',cast:['نور الشريف','ليلى علوي','محمود حميدة'],genre:['تاريخي','دراما'],summary:'الفيلسوف ابن رشد في الأندلس يواجه التعصب وحرق كتبه.'}
+];
+const STYLE={e40:['#1c1c1c','#f2efe8','#9a968e'],e50:['#e8b33a','#12372e','#b5462c'],e60:['#f3a59c','#4a1426','#f6e7d8'],e70:['#2b1a10','#ffcf6b','#e8622a'],e80:['#7fe3e8','#1b0a2e','#ff3d6e'],e90:['#ffd23f','#08434a','#ff6b4a']};
+const FONT={e40:"'Aref Ruqaa',serif",e50:"'Reem Kufi',sans-serif",e60:"'Reem Kufi',sans-serif",e70:"'Lalezar',sans-serif",e80:"'Rakkas',serif",e90:"'Cairo',sans-serif"};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const eraOf=y=>ERAS.find(e=>y>=e.d0&&y<=e.d1);
+const poster=(f,i)=>{const e=eraOf(f.year).id,[bg,ink,acc]=STYLE[e],v=i%3;
+ const sun=v===0?`<span class="sun" style="width:120px;height:120px;background:${acc};bottom:-30px;left:-30px"></span>`:v===1?`<span class="sun" style="width:100%;height:38%;border-radius:0;background:${acc};top:30%;left:0;opacity:.35"></span>`:`<span class="sun" style="width:70px;height:70px;background:${acc};top:14px;left:14px"></span>`;
+ return `<div class="poster" style="background:${bg};color:${ink};--disp:${FONT[e]}">${sun}<span class="py">${ar(f.year)}</span><span class="pt">${esc(f.title)}</span><span class="pc">${esc(f.cast.slice(0,2).join(' · '))}<br>إخراج ${esc(f.director)}</span></div>`};
+const strip=document.getElementById('strip'),main=document.getElementById('eras');
+strip.innerHTML=ERAS.map(e=>`<a href="#${e.id}" data-id="${e.id}">${e.name}</a>`).join('');
+function render(q){
+ q=(q||'').trim();let total=0;
+ main.innerHTML=ERAS.map(e=>{
+  const list=FILMS.filter(f=>eraOf(f.year)===e&&(!q||[f.title,f.director,...f.cast].join(' ').includes(q)));
+  total+=list.length;if(q&&!list.length)return '';
+  return `<section class="era" id="${e.id}" data-era="${e.id}"><div class="era-head"><div class="num">${e.num}</div><div><h2>${e.name}</h2><p>${e.blurb}</p></div></div>
+  <div class="row">${list.map(f=>`<button class="card" type="button" data-id="${f.id}">${poster(f,FILMS.indexOf(f))}<div class="cap">${esc(f.title)}<small>${ar(f.year)} · ${esc(f.director)}</small></div></button>`).join('')}</div></section>`}).join('');
+ document.getElementById('empty').hidden=total>0;observe();
+}
+let io;
+function observe(){
+ io&&io.disconnect();
+ io=new IntersectionObserver(es=>{for(const x of es)if(x.isIntersecting){const id=x.target.dataset.era;document.body.dataset.era=id;for(const a of strip.children){const on=a.dataset.id===id;a.classList.toggle('on',on);if(on)a.scrollIntoView({block:'nearest',inline:'nearest'})}}},{rootMargin:'-45% 0px -50% 0px'});
+ document.querySelectorAll('.era').forEach(s=>io.observe(s));
+}
+const modal=document.getElementById('modal'),sheet=document.getElementById('sheet');let last;
+function open(id){const f=FILMS.find(x=>x.id===id);if(!f)return;last=document.activeElement;
+ sheet.innerHTML=`<button class="x" type="button" aria-label="إغلاق">×</button><div>${poster(f,FILMS.indexOf(f))}</div><div><h3 id="mt">${esc(f.title)}</h3><div class="note">${eraOf(f.year).name}</div><p>${esc(f.summary)}</p>
+ <dl><dt>السنة</dt><dd>${ar(f.year)}</dd><dt>الإخراج</dt><dd>${esc(f.director)}</dd><dt>البطولة</dt><dd>${esc(f.cast.join('، '))}</dd><dt>النوع</dt><dd>${esc(f.genre.join('، '))}</dd>${f.based_on?`<dt>عن</dt><dd>${esc(f.based_on)}</dd>`:''}</dl>
+ <p class="note">الأفيش هنا مولّد بالكود. عند توفّر أفيش في ويكيميديا كومنز يُعرض بدلًا منه مع ذكر المصدر.</p></div>`;
+ modal.classList.add('open');sheet.querySelector('.x').focus()}
+function close(){modal.classList.remove('open');last&&last.focus()}
+main.addEventListener('click',e=>{const c=e.target.closest('.card');if(c)open(c.dataset.id)});
+modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('.x'))close()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))close()});
+document.getElementById('q').addEventListener('input',e=>render(e.target.value));
+// لافتة السينما
+const mq=document.getElementById('mq');
+let b='';for(let i=0;i<18;i++){b+=`<circle class="bulb" cx="${22+i*20.3}" cy="16" r="5" fill="#ffd77a" style="animation-delay:${(i%3)*.5}s"/><circle class="bulb" cx="${22+i*20.3}" cy="304" r="5" fill="#ffd77a" style="animation-delay:${((i+1)%3)*.5}s"/>`}
+for(let j=0;j<13;j++){b+=`<circle class="bulb" cx="12" cy="${36+j*20.5}" r="5" fill="#ffd77a" style="animation-delay:${(j%3)*.5}s"/><circle class="bulb" cx="388" cy="${36+j*20.5}" r="5" fill="#ffd77a" style="animation-delay:${((j+2)%3)*.5}s"/>`}
+const frames=ERAS.map((e,i)=>{const [bg,ink]=STYLE[e.id];const x=300-(i%3)*110,y=i<3?92:192;return `<g><rect x="${x}" y="${y}" width="96" height="88" rx="4" fill="${bg}" stroke="#fff3" /><text x="${x+48}" y="${y+56}" text-anchor="middle" font-size="34" font-weight="700" fill="${ink}" font-family="${FONT[e.id].replace(/"/g,'')}">${e.num.length>2?'٣٠':e.num}</text></g>`}).join('');
+mq.innerHTML=`${b}<rect x="28" y="32" width="344" height="256" rx="6" fill="#1a1410"/><text x="200" y="74" text-anchor="middle" fill="#ffd77a" font-size="30" font-family="Aref Ruqaa,serif" font-weight="700">يُعرض الآن</text>${frames}`;
+render('');
+const SAMPLE={id:'al-ard',title:'الأرض',title_en:'The Land',year:1970,director:'يوسف شاهين',cast:['محمود المليجي','عزت العلايلي','نجوى إبراهيم'],genre:['دراما'],based_on:'رواية عبد الرحمن الشرقاوي',summary:'وصف قصير بكلماتك…',poster:{status:'generated',url:null,credit:null},clues:['السنة: 1970','المخرج: يوسف شاهين','عن رواية لعبد الرحمن الشرقاوي','بطولة محمود المليجي'],wikidata:'Q…'};
+const code=document.getElementById('code');code.textContent=JSON.stringify(SAMPLE,null,2);
+document.getElementById('copy').addEventListener('click',async e=>{try{await navigator.clipboard.writeText(code.textContent);e.target.textContent='تم النسخ ✓'}catch{e.target.textContent='انسخه يدويًا من الصندوق'}});
+}
+</script>
+</body>
+</html>
