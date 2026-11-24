@@ -78,21 +78,30 @@ a{color:inherit}
 .meta dt{color:var(--sub);white-space:nowrap}.meta dd{margin:0}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
 .tags span{border:1px solid var(--line);border-radius:999px;padding:2px 12px;font-size:14px}
-.prose{max-width:68ch;margin:clamp(28px,5vw,56px) 0 0;font-size:18px;line-height:1.95}
-.prose h2{font:700 30px/1.25 var(--disp);color:var(--acc);margin:1.6em 0 .4em}
-.prose h3{font-size:20px;margin:1.4em 0 .3em}
+.prose{--ts:1;max-width:68ch;margin:18px 0 0;font-size:calc(18px*var(--ts));line-height:1.95}
+.prose h2{font:700 calc(30px*var(--ts))/1.25 var(--disp);color:var(--acc);margin:1.6em 0 .4em}
+.prose h3{font-size:calc(20px*var(--ts));margin:1.4em 0 .3em}
 .prose p{margin:0 0 1em}
-.prose blockquote{margin:1.4em 0;padding:4px 20px;border-inline-start:4px solid var(--acc);font-size:20px;opacity:.95}
+.prose blockquote{margin:1.4em 0;padding:4px 20px;border-inline-start:4px solid var(--acc);font-size:1.1em;opacity:.95}
 .prose ul{padding-inline-start:22px}
 .prose a{text-decoration-color:var(--acc);text-underline-offset:4px}
-.prose .lead{font-size:20px}
+.prose .lead{font-size:1.1em}
 .soon{border:1px dashed var(--line);border-radius:8px;padding:20px 24px;color:var(--sub)}
-.pn{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:68ch;margin:48px 0 0}
-.pn a{display:block;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:14px 18px;min-height:44px}
-.pn a:hover{background:rgba(255,255,255,.06)}
-.pn small{display:block;color:var(--sub)}
-.pn b{font:700 22px/1.3 var(--disp)}
-.pn .nx{text-align:left}
+.rates{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.rate{display:flex;align-items:center;gap:12px;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:8px 14px 8px 10px;min-height:56px;background:rgba(255,255,255,.04)}
+.rate:hover{background:rgba(255,255,255,.1)}
+.rate .lg{flex:none;font:800 13px/1 var(--body);padding:6px 7px;border-radius:4px;direction:ltr}
+.rate .imdb{background:#f5c518;color:#000}
+.rate .elc{background:#e5383b;color:#fff}
+.rate b{font:700 22px/1 var(--body);direction:ltr}
+.rate b small{font-size:13px;font-weight:500;opacity:.7}
+.rate span.v{display:block;font-size:12px;color:var(--sub);line-height:1.3}
+.rnote{font-size:12px;color:var(--sub);margin-top:8px}
+.tsize{display:flex;align-items:center;gap:8px;max-width:68ch;margin:clamp(28px,5vw,48px) 0 0;color:var(--sub);font-size:14px}
+.tsize button{min-width:44px;height:40px;border-radius:6px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);font:700 16px var(--body);cursor:pointer}
+.tsize button:hover{background:rgba(255,255,255,.12)}
+.tsize button:disabled{opacity:.35;cursor:default}
+.tsize .big{font-size:20px}
 /* البحث: تذكرة سينما */
 .finder{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:clamp(12px,8vh,90px) 14px 14px}
 .finder.open{display:flex}
@@ -126,7 +135,7 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
 [hidden]{display:none!important}
 @media(max-width:760px){.hero{grid-template-columns:1fr;gap:28px}.era-head{grid-template-columns:1fr;gap:4px}.num{font-size:64px}.logo{font-size:22px}
  .film-top{grid-template-columns:1fr}.film-top .poster{max-width:170px}.find-btn span,.find-btn kbd{display:none}.find-btn{padding:0 12px}
- .prose{font-size:17px}.pn{grid-template-columns:1fr}.pn .nx{text-align:start}.stub span{display:none}}
+ .prose{font-size:calc(17px*var(--ts))}.stub span{display:none}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -204,7 +213,7 @@ function renderHome(){
 let cur='';
 function setEra(id){if(id===cur)return;cur=id;document.body.dataset.era=id;
  for(const a of strip.children){const on=a.dataset.id===id;a.classList.toggle('on',on);
-  if(on){const left=a.offsetLeft-(strip.clientWidth-a.offsetWidth)/2;strip.scrollTo({left,behavior:'auto'})}}}
+  if(on){const r=a.getBoundingClientRect(),q=strip.getBoundingClientRect();strip.scrollBy({left:(r.left+r.width/2)-(q.left+q.width/2),behavior:'auto'})}}}
 const eraIO=new IntersectionObserver(es=>{if($('home').hidden)return;for(const x of es)if(x.isIntersecting)setEra(x.target.dataset.era)},{rootMargin:'-45% 0px -50% 0px'});
 
 /* ——— صفحة الفيلم ——— */
@@ -228,7 +237,7 @@ async function article(id){
 }
 async function showFilm(id){
  const f=FILMS.find(x=>x.id===id);if(!f){location.hash='';return}
- const e=eraOf(f.year),i=FILMS.indexOf(f),prev=FILMS[i-1],next=FILMS[i+1];
+ const e=eraOf(f.year);
  $('home').hidden=true;const el=$('film');el.hidden=false;cur='';setEra(e.id);
  document.title=`${f.title} (${f.year}) · شاشة زمان`;
  const row=(k,v)=>v?`<dt>${k}</dt><dd>${esc(v)}</dd>`:'';
@@ -237,14 +246,28 @@ async function showFilm(id){
   <div class="kicker">${ar(f.year)} · ${e.name}</div><h1>${esc(f.title)}</h1><p class="by">إخراج ${esc(f.director)}</p>
   <dl class="meta">${row('البطولة',(f.cast||[]).join('، '))}${row('التأليف',f.writer)}${/عن /.test(f.writer||'')?'':row('عن',f.based_on)}${row('الإنتاج',f.producer)}${row('المدة',f.duration)}${row('العرض الأول',f.premiere)}</dl>
   <div class="tags">${(f.genre||[]).map(g=>`<span>${esc(g)}</span>`).join('')}</div>
+  ${rates(f)}
  </div></div>
- <div class="prose" id="prose"><p class="lead">${esc(f.summary)}</p></div>
- <nav class="pn">${prev?`<a href="#film-${esc(prev.id)}"><small>→ الفيلم السابق</small><b>${esc(prev.title)}</b></a>`:'<span></span>'}${next?`<a class="nx" href="#film-${esc(next.id)}"><small>الفيلم التالي ←</small><b>${esc(next.title)}</b></a>`:''}</nav>`;
+ <div class="tsize" role="group" aria-label="حجم النص"><span>حجم النص</span><button type="button" data-ts="-1" aria-label="تصغير النص">أ−</button><button type="button" data-ts="0" aria-label="الحجم الافتراضي">أ</button><button type="button" class="big" data-ts="1" aria-label="تكبير النص">أ+</button></div>
+ <div class="prose" id="prose"><p class="lead">${esc(f.summary)}</p></div>`;
+ applyTs();
  window.scrollTo(0,0);
  const txt=await article(id);
  if(location.hash!=='#film-'+id)return;
  $('prose').insertAdjacentHTML('beforeend',txt?md(txt):`<div class="soon">لم تُكتب عن هذا الفيلم مقالة بعد.</div>`);
 }
+function rates(f){const r=f.ratings||{},out=[];
+ const k=n=>n>=1000?ar((n/1000).toFixed(1).replace(/\.0$/,''))+' ألف':ar(n);
+ if(r.imdb)out.push(`<a class="rate" href="https://www.imdb.com/title/${esc(r.imdb.id)}/" target="_blank" rel="noopener"><span class="lg imdb">IMDb</span><span><b>${esc(r.imdb.score.toFixed(1))}<small>/10</small></b>${r.imdb.votes?`<span class="v">${k(r.imdb.votes)} تقييم</span>`:''}</span></a>`);
+ if(r.elcinema)out.push(`<a class="rate" href="https://elcinema.com/work/${esc(r.elcinema.id)}/" target="_blank" rel="noopener"><span class="lg elc">السينما.كوم</span><span><b>${esc(r.elcinema.score.toFixed(1))}<small>/10</small></b></span></a>`);
+ return out.length?`<div class="rates">${out.join('')}</div><div class="rnote">تقييمات الجمهور على المواقع وقت إضافة الفيلم، وقد تتغيّر.</div>`:'';
+}
+const TS=[.85,1,1.15,1.3,1.5];let tsi=1;
+try{const v=+localStorage.getItem('ts');if(v>=0&&v<TS.length)tsi=v}catch{}
+function applyTs(){const p=$('prose');if(p)p.style.setProperty('--ts',TS[tsi]);
+ document.querySelectorAll('.tsize button').forEach(b=>{const d=+b.dataset.ts;b.disabled=(d<0&&tsi===0)||(d>0&&tsi===TS.length-1)||(d===0&&tsi===1)})}
+$('film').addEventListener('click',e=>{const b=e.target.closest('[data-ts]');if(!b)return;const d=+b.dataset.ts;
+ tsi=d===0?1:Math.min(TS.length-1,Math.max(0,tsi+d));try{localStorage.setItem('ts',tsi)}catch{};applyTs()});
 function showHome(target){
  const wasFilm=!$('film').hidden;$('film').hidden=true;$('home').hidden=false;document.title='شاشة زمان';
  const t=target&&document.getElementById(target);
