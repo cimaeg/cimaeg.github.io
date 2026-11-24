@@ -41,13 +41,18 @@ a{color:inherit}
 .hero h1{font:700 clamp(40px,7vw,76px)/1.1 var(--disp);margin:0 0 16px}
 .hero p{font-size:18px;line-height:1.85;max-width:32em;margin:0 0 24px;opacity:.9}
 .btn{display:inline-flex;align-items:center;min-height:46px;padding:0 22px;background:var(--acc);color:var(--bg);border:0;border-radius:4px;font:700 16px var(--body);cursor:pointer;text-decoration:none}
-.marquee{border-radius:10px;background:#0b0b0b;padding:30px 26px 26px;outline:6px dotted #ffd77a;outline-offset:-12px;box-shadow:0 30px 60px -20px #000a;animation:glow 1.8s infinite}
-@keyframes glow{50%{outline-color:#b8913f}}
-.marquee h2{margin:0 0 14px;text-align:center;font:700 28px/1.2 'Aref Ruqaa',serif;color:#ffd77a}
-.frames{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.frames a{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1/1;border-radius:4px;text-decoration:none;border:1px solid rgba(255,255,255,.15);padding:6px;text-align:center}
-.frames b{font-size:clamp(24px,6vw,34px);line-height:1.1;white-space:nowrap}
-.frames span{font:500 13px var(--body);opacity:.85;margin-top:4px}
+.dial-wrap{display:flex;justify-content:center}
+.dial{position:relative;width:min(100%,430px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#2b2622,#0b0b0b 70%);box-shadow:0 30px 60px -20px #000c,inset 0 0 0 10px #1a1612,inset 0 0 0 12px #ffd77a55}
+.dial::before{content:"";position:absolute;inset:5%;border-radius:50%;border:3px dotted #ffd77a;opacity:.75;animation:glow 1.8s infinite}
+@keyframes glow{50%{opacity:.35}}
+.rotor{position:absolute;inset:0;border-radius:50%;transition:transform .75s cubic-bezier(.3,.1,.2,1)}
+.hole{position:absolute;width:23%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;box-shadow:inset 0 4px 10px #0007,0 0 0 4px #0b0b0b,0 0 0 6px #ffd77a44;transition:box-shadow .2s}
+.hole b{font-size:clamp(17px,4.4vw,26px);line-height:1;white-space:nowrap}
+.hole:hover,.hole:focus-visible{box-shadow:inset 0 4px 10px #0007,0 0 0 4px #0b0b0b,0 0 0 7px #ffd77a,0 0 22px #ffd77a88;outline:0}
+.hub{position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle at 40% 35%,#f3ead2,#cbbd9c);color:#211a12;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 6px 18px #000a,inset 0 -4px 8px #0003;padding:6%}
+.hub strong{font:700 clamp(20px,4.6vw,30px)/1.1 'Aref Ruqaa',serif}
+.hub span{font-size:clamp(11px,2.6vw,13px);margin-top:4px;opacity:.75;line-height:1.35}
+.stop{position:absolute;width:5%;height:15%;border-radius:6px;background:linear-gradient(90deg,#9c8a5f,#ffd77a,#9c8a5f);right:9%;top:62%;transform:rotate(-40deg);box-shadow:0 3px 6px #000a}
 .era{padding:clamp(36px,6vw,80px) 0;border-top:1px solid var(--line)}
 .era-head{max-width:1240px;margin:auto;padding:0 max(4vw,16px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 28px;align-items:end}
 .num{font:700 clamp(64px,13vw,150px)/.9 var(--disp);color:var(--acc)}
@@ -75,16 +80,34 @@ a{color:inherit}
 .ctrl button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--ink);font:500 14px var(--body);cursor:pointer}
 .ctrl button[aria-pressed=true]{background:var(--acc);color:var(--bg);border-color:var(--acc)}
 .prog{list-style:none;margin:16px 0 0;padding:0;border-top:2px solid var(--ink)}
-.prog a{display:grid;grid-template-columns:56px 44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 4px;border-bottom:1px dashed var(--line);text-decoration:none;min-height:72px}
+.prog a{display:grid;grid-template-columns:52px 76px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 4px;border-bottom:1px dashed var(--line);text-decoration:none}
 .prog a:hover{background:rgba(255,255,255,.05)}
 .prog .i{font:700 34px/1 var(--disp);color:var(--acc);text-align:center}
-.prog .sw{width:44px;height:62px;border-radius:3px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:11px;font-weight:700}
-.prog b{display:block;font:700 22px/1.3 var(--disp)}
-.prog small{color:var(--sub);font-size:14px}
-.prog .sc{display:flex;gap:6px;direction:ltr}
+.mp{width:76px;aspect-ratio:2/3;border-radius:3px;display:flex;flex-direction:column;justify-content:space-between;padding:7px;box-shadow:0 8px 16px -8px #000a;overflow:hidden}
+.mp i{font:700 10px/1 var(--body);font-style:normal;opacity:.8}
+.mp b{font-size:14px!important;line-height:1.2!important;font-weight:700}
+.prog .t{display:block;font:700 22px/1.3 var(--disp)}
+.prog small{color:var(--sub);font-size:14px;display:block}
+.prog .why{color:var(--acc);font-size:13px;margin-top:4px;display:block}
+.prog mark{background:var(--acc);color:var(--bg);border-radius:3px;padding:0 2px}
+.prog .sc{display:flex;flex-direction:column;gap:6px;direction:ltr;align-items:flex-start}
 .prog .sc span{font:700 13px/1 var(--body);padding:6px 8px;border-radius:4px;white-space:nowrap}
 .prog .sc .s1{background:#f5c518;color:#000}.prog .sc .s2{background:#bfe3ff;color:#000}
-@media(max-width:600px){.prog a{grid-template-columns:36px 40px minmax(0,1fr);gap:10px}.prog .i{font-size:26px}.prog .sc{grid-column:3;justify-content:flex-end}}
+.board{margin:26px 0 0;background:#141110 repeating-linear-gradient(180deg,transparent 0 34px,rgba(255,255,255,.07) 34px 36px);border:9px solid #3b2a1c;border-radius:8px;box-shadow:inset 0 3px 12px #000,0 10px 24px -12px #000;padding:6px 14px;display:flex;align-items:center;gap:10px}
+.board label{flex:none;font:700 13px var(--body);color:#ffd77a;writing-mode:vertical-rl;transform:rotate(180deg);opacity:.8}
+.board input{flex:1;min-width:0;height:60px;background:none;border:0;outline:0;color:#f7f2e6;font:800 clamp(20px,3.6vw,28px)/1 'Cairo',var(--body);letter-spacing:.08em;text-shadow:0 2px 0 #000;caret-color:#ffd77a}
+.board input::placeholder{color:rgba(247,242,230,.32);font-weight:500;letter-spacing:0;font-size:17px}
+.board:focus-within{border-color:#5a3f28;box-shadow:inset 0 3px 12px #000,0 0 0 3px var(--acc)}
+.board button{flex:none;width:40px;height:40px;border-radius:50%;border:0;background:#ffd77a;color:#141110;font-size:20px;cursor:pointer}
+.years{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 0}
+.years span{color:var(--sub);font-size:14px;margin-inline-end:4px}
+.years button{min-width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:#0b0b0b;color:#c8bfae;font:700 13px var(--body);cursor:pointer;transition:box-shadow .2s,background .2s}
+.years button[aria-pressed=true]{background:#ffd77a;color:#0b0b0b;border-color:#ffd77a;box-shadow:0 0 14px #ffd77a99}
+.years .all{border-radius:999px;padding:0 14px}
+.lcount{margin:16px 0 0;color:var(--sub);font-size:14px}
+.lcount b{color:var(--ink)}
+.lnone{padding:28px 4px;color:var(--sub)}
+@media(max-width:600px){.prog a{grid-template-columns:30px 60px minmax(0,1fr);gap:12px}.mp{width:60px}.mp b{font-size:12px!important}.prog .i{font-size:24px}.prog .sc{grid-column:3;flex-direction:row}.board label{display:none}}
 .poster{aspect-ratio:2/3;border-radius:4px;border:1px solid rgba(255,255,255,.12);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:14px;box-shadow:0 14px 28px -12px #000b;transition:transform .3s}
 .card:hover .poster{transform:translateY(-6px) rotate(-1deg)}
 .poster .pt{font:700 clamp(22px,2.4vw,30px)/1.2 var(--disp);text-wrap:balance}
@@ -136,7 +159,9 @@ a{color:inherit}
 .tsize input::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-6px;border-radius:50%;background:var(--acc);border:3px solid #0b0b0b;box-shadow:0 0 0 2px var(--acc)}
 .tsize input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--acc);border:3px solid #0b0b0b}
 .tsize input:focus-visible{outline:3px solid var(--acc);outline-offset:4px;border-radius:6px}
-@media(max-width:600px){.tsize .lbl{display:none}.tsize input{width:150px}}
+.tsize .rst{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#0b0b0b;color:var(--acc);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .3s}
+.tsize .rst:hover{transform:rotate(-120deg)}
+@media(max-width:600px){.tsize .lbl{display:none}.tsize input{width:140px}}
 /* البحث: تذكرة سينما */
 .finder{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:clamp(12px,8vh,90px) 14px 14px}
 .finder.open{display:flex}
@@ -190,13 +215,14 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
 <section class="hero" id="top">
   <div>
     <h1>آلة الزمن السينمائية</h1>
-    <p>أكثر من سبعين عامًا من السينما المصرية، من «ليلى» أول فيلم روائي طويل عام 1927 حتى نهاية القرن العشرين. اختر عقدًا من شاشة العرض، أو انزل في الصفحة عقدًا بعد عقد، وستتبدّل ألوانها وخطوطها لتشبه أفيشات كل زمن.</p>
+    <p>أكثر من سبعين عامًا من السينما المصرية، من «ليلى» أول فيلم روائي طويل عام 1927 حتى نهاية القرن العشرين. أدر قرص الزمن إلى العقد الذي تريده، أو انزل في الصفحة عقدًا بعد عقد، وستتبدّل ألوانها وخطوطها لتشبه أفيشات كل زمن.</p>
     <a class="btn" href="#e40">ابدأ من البدايات</a>
   </div>
-  <nav class="marquee" aria-label="اختر زمنك">
-    <h2>اختر زمنك</h2>
-    <div class="frames" id="frames"></div>
-  </nav>
+  <div class="dial-wrap"><nav class="dial" id="dial" aria-label="اختر زمنك">
+    <div class="rotor" id="rotor"></div>
+    <div class="hub" aria-live="polite"><strong>اختر زمنك</strong><span id="hubsub">أدر القرص إلى عقد</span></div>
+    <div class="stop" aria-hidden="true"></div>
+  </nav></div>
 </section>
 <main id="eras"></main>
 </div>
@@ -242,7 +268,17 @@ const poster=(f)=>{const e=eraOf(f.year).id,[bg,ink,acc]=STYLE[e],v=FILMS.indexO
 /* ——— الصفحة الرئيسية ——— */
 const strip=$('strip'),main=$('eras');
 strip.innerHTML=ERAS.map(e=>`<a href="#${e.id}" data-id="${e.id}">${e.name}</a>`).join('');
-$('frames').innerHTML=ERAS.map(e=>{const [bg,ink]=STYLE[e.id];return `<a href="#${e.id}" style="background:${bg};color:${ink}"><b style="font-family:${FONT[e.id]}">${e.num}</b><span>${e.name}</span></a>`}).join('');
+const ANG=[120,165,210,255,300,345],STOP=40;
+$('rotor').innerHTML=ERAS.map((e,i)=>{const [bg,ink]=STYLE[e.id],t=ANG[i]*Math.PI/180;return `<a class="hole" href="#${e.id}" data-i="${i}" style="left:${50+37*Math.cos(t)}%;top:${50+37*Math.sin(t)}%;background:${bg};color:${ink}" aria-label="${e.name}"><b style="font-family:${FONT[e.id]}">${e.num}</b></a>`}).join('');
+const hubsub=$('hubsub'),rotor=$('rotor'),HUB0='أدر القرص إلى عقد';
+const hubFor=i=>{const e=ERAS[i],n=FILMS.filter(f=>eraOf(f.year)===e).length;hubsub.textContent=`${e.name}، ${cnt(n)}`};
+rotor.addEventListener('pointerover',ev=>{const h=ev.target.closest('.hole');if(h)hubFor(+h.dataset.i)});
+rotor.addEventListener('focusin',ev=>{const h=ev.target.closest('.hole');if(h)hubFor(+h.dataset.i)});
+rotor.addEventListener('pointerleave',()=>hubsub.textContent=HUB0);
+rotor.addEventListener('click',ev=>{const h=ev.target.closest('.hole');if(!h)return;ev.preventDefault();const i=+h.dataset.i,id=ERAS[i].id;hubFor(i);
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches){location.hash=id;return}
+ rotor.style.transform=`rotate(${(STOP-ANG[i]+360)%360}deg)`;
+ setTimeout(()=>{location.hash=id;if(location.hash==='#'+id)showHome(id);rotor.style.transition='none';rotor.style.transform='';requestAnimationFrame(()=>requestAnimationFrame(()=>rotor.style.transition=''));hubsub.textContent=HUB0},800)});
 const cnt=n=>n===1?'فيلم واحد':n===2?'فيلمان':ar(n)+(n<=10?' أفلام':' فيلمًا');
 const score=f=>f.ratings&&f.ratings.imdb?f.ratings.imdb.score:0;
 const escore=f=>f.ratings&&f.ratings.elcinema?f.ratings.elcinema.score:0;
@@ -299,7 +335,7 @@ async function showFilm(id){
   <div class="tags">${(f.genre||[]).map(g=>`<span>${esc(g)}</span>`).join('')}</div>
   ${rates(f)}
  </div></div>
- <div class="tsize"><span class="a s" aria-hidden="true">أ</span><input id="tsr" type="range" min="0" max="${TS.length-1}" step="1" value="${tsi}" aria-label="حجم نص المقالة"><span class="a l" aria-hidden="true">أ</span><label class="lbl" for="tsr">حجم القراءة</label></div>
+ <div class="tsize"><span class="a s" aria-hidden="true">أ</span><input id="tsr" type="range" min="0" max="${TS.length-1}" step="1" value="${tsi}" aria-label="حجم نص المقالة"><span class="a l" aria-hidden="true">أ</span><button type="button" class="rst" id="tsrst" aria-label="إعادة الحجم الافتراضي" title="إعادة الحجم الافتراضي">↺</button><label class="lbl" for="tsr">حجم القراءة</label></div>
  <div class="prose" id="prose"><p class="lead">${esc(f.summary)}</p></div>`;
  applyTs();
  window.scrollTo(0,0);
@@ -316,7 +352,8 @@ function rates(f){const r=f.ratings||{},out=[];
 const TS=[.85,1,1.15,1.3,1.5];let tsi=1;
 try{const g=localStorage.getItem('ts'),v=+g;if(g!==null&&v>=0&&v<TS.length)tsi=v}catch{}
 function applyTs(){const p=$('prose');if(p)p.style.setProperty('--ts',TS[tsi]);
- const r=$('tsr');if(r)r.value=tsi}
+ const r=$('tsr');if(r)r.value=tsi;const z=$('tsrst');if(z)z.hidden=tsi===1}
+$('film').addEventListener('click',e=>{if(!e.target.closest('#tsrst'))return;tsi=1;try{localStorage.removeItem('ts')}catch{};applyTs();$('tsr').focus()});
 $('film').addEventListener('input',e=>{if(e.target.id!=='tsr')return;tsi=+e.target.value;try{localStorage.setItem('ts',tsi)}catch{};applyTs()});
 function showHome(target){
  const wasFilm=!$('film').hidden||!$('list').hidden;$('film').hidden=true;$('list').hidden=true;$('home').hidden=false;document.title='شاشة زمان';
@@ -324,24 +361,44 @@ function showHome(target){
  if(t)t.scrollIntoView();else if(wasFilm)window.scrollTo(0,0);
  if(!t||target==='top'){cur='';setEra('e40')}
 }
-let lsort='rating',lgenre='';
+let lsort='rating',lgenre='',lq='',lyear=0,lera='';
+const LS={rating:['الأعلى تقييمًا',byRating],el:['السينما.كوم',(a,b)=>escore(b)-escore(a)||byRating(a,b)],old:['الأقدم',(a,b)=>a.year-b.year],new:['الأحدث',(a,b)=>b.year-a.year]};
 function showList(id){
  const e=ERAS.find(x=>x.id===id);if(!e){location.hash='';return}
+ if(lera!==id){lera=id;lq='';lyear=0;lgenre=''}
  $('home').hidden=true;$('film').hidden=true;const el=$('list');el.hidden=false;cur='';setEra(e.id);
  document.title=`أفلام ${e.name} · شاشة زمان`;
- const all=FILMS.filter(f=>eraOf(f.year)===e),genres=[...new Set(all.flatMap(f=>f.genre||[]))];
- if(lgenre&&!genres.includes(lgenre))lgenre='';
- const S={rating:['الأعلى تقييمًا',byRating],el:['السينما.كوم',(a,b)=>escore(b)-escore(a)||byRating(a,b)],old:['الأقدم',(a,b)=>a.year-b.year],new:['الأحدث',(a,b)=>b.year-a.year]};
- const list=all.filter(f=>!lgenre||(f.genre||[]).includes(lgenre)).sort(S[lsort][1]);
+ const all=FILMS.filter(f=>eraOf(f.year)===e),genres=[...new Set(all.flatMap(f=>f.genre||[]))],years=[...new Set(all.map(f=>f.year))].sort();
  const btn=(k,v,cur,attr)=>`<button type="button" data-${attr}="${esc(k)}" aria-pressed="${k===cur}">${esc(v)}</button>`;
  el.innerHTML=`<a class="back" href="#${e.id}">→ العودة إلى آلة الزمن</a>
  <div class="list-head"><div class="num">${e.num}</div><div><h1>كل أفلام ${e.name}</h1><p>${cnt(all.length)} في الأرشيف</p></div></div>
- <div class="ctrl"><span>ترتيب:</span>${Object.entries(S).map(([k,v])=>btn(k,v[0],lsort,'sort')).join('')}</div>
+ <div class="board"><label for="lq">لوحة البحث</label><input id="lq" type="text" autocomplete="off" enterkeyhint="search" value="${esc(lq)}" placeholder="اكتب على اللوحة: فيلم، ممثل، مخرج، كاتب…"><button type="button" id="lqx" aria-label="امسح اللوحة" ${lq?'':'hidden'}>×</button></div>
+ <div class="years" role="group" aria-label="سنة العرض"><span>السنة:</span><button type="button" class="all" data-year="0" aria-pressed="${!lyear}">كلها</button>${years.map(y=>`<button type="button" data-year="${y}" aria-pressed="${y===lyear}" title="${y}">${ar(String(y).slice(2))}</button>`).join('')}</div>
+ <div class="ctrl"><span>ترتيب:</span>${Object.entries(LS).map(([k,v])=>btn(k,v[0],lsort,'sort')).join('')}</div>
  ${genres.length>1?`<div class="ctrl"><span>النوع:</span>${btn('','الكل',lgenre,'genre')}${genres.map(g=>btn(g,g,lgenre,'genre')).join('')}</div>`:''}
- <ol class="prog">${list.map((f,i)=>{const [bg,ink]=STYLE[e.id],r=f.ratings||{};return `<li><a href="#film-${esc(f.id)}"><span class="i">${ar(i+1)}</span><span class="sw" style="background:${bg};color:${ink}">${ar(f.year)}</span><span><b>${esc(f.title)}</b><small>${ar(f.year)} · إخراج: ${esc(f.director)}</small></span><span class="sc">${r.imdb?`<span class="s1">IMDb ${r.imdb.score.toFixed(1)}</span>`:''}${r.elcinema?`<span class="s2">السينما ${r.elcinema.score.toFixed(1)}</span>`:''}</span></a></li>`}).join('')}</ol>`;
+ <p class="lcount" id="lcount" aria-live="polite"></p>
+ <ol class="prog" id="prog"></ol>`;
+ rows();
 }
-$('list').addEventListener('click',ev=>{const b=ev.target.closest('[data-sort],[data-genre]');if(!b)return;
- if('sort' in b.dataset)lsort=b.dataset.sort;else lgenre=b.dataset.genre;const y=scrollY;showList(location.hash.slice(6));scrollTo(0,y)});
+function mark(text,qn){if(!qn)return esc(text);const n=norm(text),i=n.indexOf(qn);if(i<0||n.length!==text.length)return esc(text);return esc(text.slice(0,i))+'<mark>'+esc(text.slice(i,i+qn.length))+'</mark>'+esc(text.slice(i+qn.length))}
+function rows(){
+ const e=ERAS.find(x=>x.id===lera),all=FILMS.filter(f=>eraOf(f.year)===e),qn=norm(lq);
+ const why=f=>{if(!qn||norm(f.title).includes(qn)||norm(f.director).includes(qn))return '';
+  const c=(f.cast||[]).find(x=>norm(x).includes(qn));if(c)return 'بطولة: '+mark(c,qn);
+  if(norm(f.writer).includes(qn))return 'تأليف: '+mark(f.writer,qn);if(norm(f.based_on).includes(qn))return 'عن '+mark(f.based_on,qn);
+  const g=(f.genre||[]).find(x=>norm(x).includes(qn));return g?'النوع: '+mark(g,qn):''};
+ const ok=f=>(!lgenre||(f.genre||[]).includes(lgenre))&&(!lyear||f.year===lyear)&&(!qn||[f.title,f.director,f.writer,f.based_on,...(f.cast||[]),...(f.genre||[])].some(x=>norm(x).includes(qn)));
+ const list=all.filter(ok).sort(LS[lsort][1]);
+ $('lcount').innerHTML=list.length===all.length?`يُعرض ${cnt(all.length)}`:`<b>${ar(list.length)}</b> من ${cnt(all.length)}`;
+ $('prog').innerHTML=list.length?list.map((f,i)=>{const [bg,ink]=STYLE[e.id],r=f.ratings||{},w=why(f);return `<li><a href="#film-${esc(f.id)}"><span class="i">${ar(i+1)}</span><span class="mp" style="background:${bg};color:${ink}"><i>${ar(f.year)}</i><b style="font-family:${FONT[e.id]}">${esc(f.title)}</b></span><span><span class="t">${mark(f.title,qn)}</span><small>${ar(f.year)} · إخراج: ${mark(f.director,qn)}</small>${w?`<span class="why">${w}</span>`:''}</span><span class="sc">${r.imdb?`<span class="s1">IMDb ${r.imdb.score.toFixed(1)}</span>`:''}${r.elcinema?`<span class="s2">السينما ${r.elcinema.score.toFixed(1)}</span>`:''}</span></a></li>`}).join(''):`<li class="lnone">لا شيء على اللوحة يطابق «${esc(lq)}». جرّب اسمًا آخر أو امسح اللوحة.</li>`;
+}
+$('list').addEventListener('input',ev=>{if(ev.target.id!=='lq')return;lq=ev.target.value;$('lqx').hidden=!lq;rows()});
+$('list').addEventListener('click',ev=>{
+ if(ev.target.closest('#lqx')){lq='';const i=$('lq');i.value='';$('lqx').hidden=true;i.focus();rows();return}
+ const b=ev.target.closest('[data-sort],[data-genre],[data-year]');if(!b)return;
+ const grp=b.parentElement;
+ if('sort' in b.dataset)lsort=b.dataset.sort;else if('genre' in b.dataset)lgenre=b.dataset.genre;else lyear=+b.dataset.year;
+ grp.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));rows()});
 function route(){const h=decodeURIComponent(location.hash.slice(1));
  if(h.startsWith('film-'))showFilm(h.slice(5));else if(h.startsWith('list-')){showList(h.slice(5));scrollTo(0,0)}else showHome(h)}
 addEventListener('hashchange',route);
