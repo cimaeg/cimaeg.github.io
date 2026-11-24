@@ -1,6 +1,6 @@
 """يحدّث تقييمات IMDb والسينما.كوم لكل الأفلام في data/films.json.
 يعمل أسبوعيًا عبر GitHub Actions. إن فشل جلب تقييم فيلم، يُترك تقييمه السابق كما هو."""
-import json, re, sys, time, html, urllib.parse
+import json, re, sys, time, html, gzip, io, urllib.parse
 import requests
 
 DATA = "data/films.json"
@@ -29,21 +29,26 @@ def norm(s):
     return re.sub(r"\s+", " ", s.replace("أ", "ا").replace("إ", "ا").replace("آ", "ا").replace("ة", "ه").replace("ى", "ي")).strip()
 
 # ——— IMDb ———
+# صفحات IMDb تحجب الطلبات الآلية، لذلك نستخدم ملف التقييمات الرسمي الذي ينشره IMDb يوميًا.
+IMDB_RATINGS = None
+
+def imdb_load(ids):
+    global IMDB_RATINGS
+    IMDB_RATINGS = {}
+    try:
+        r = S.get("https://datasets.imdbws.com/title.ratings.tsv.gz", timeout=120)
+        r.raise_for_status()
+        with gzip.open(io.BytesIO(r.content), "rt", encoding="utf-8") as fp:
+            for line in fp:
+                tid, score, votes = line.rstrip("\n").split("\t")
+                if tid in ids:
+                    IMDB_RATINGS[tid] = {"score": round(float(score), 1), "votes": int(votes)}
+        print(f"IMDb dataset: {len(IMDB_RATINGS)}/{len(ids)} titles found")
+    except Exception as e:
+        print("  ! IMDb dataset failed:", e)
+
 def imdb_rating(tid):
-    page = get(f"https://www.imdb.com/title/{tid}/")
-    if not page:
-        return None
-    for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', page, re.S):
-        try:
-            d = json.loads(block)
-        except Exception:
-            continue
-        ar = d.get("aggregateRating") if isinstance(d, dict) else None
-        if ar and ar.get("ratingValue"):
-            return {"score": round(float(ar["ratingValue"]), 1), "votes": int(ar.get("ratingCount") or 0)}
-    if DEBUG:
-        print("  imdb: no JSON-LD rating found")
-    return None
+    return IMDB_RATINGS.get(tid)
 
 def imdb_find(f):
     """يبحث عن رقم الفيلم في IMDb بالعنوان الإنجليزي (title_en) والسنة."""
@@ -64,11 +69,7 @@ def elc_rating(wid):
     page = get(f"https://elcinema.com/work/{wid}/")
     if not page:
         return None
-    m = re.search(r'"ratingValue"\s*:\s*"?([\d.]+)', page)
-    if not m:
-        m = re.search(r'class="[^"]*legend[^"]*"[^>]*>\s*([\d.]+)\s*<', page)
-    if not m:
-        m = re.search(r'<span[^>]*>\s*(\d\.\d|10)\s*</span>\s*</div>\s*<div[^>]*>\s*(?:[^<]*)?(?:التقييم|Rating)', page)
+    m = re.search(r'title="(?:التقييم|Rating)\s*:\s*([\d.]+)"', page)
     if DEBUG and not m:
         i = page.find("rating")
         print("  elc snippet:", re.sub(r"\s+", " ", page[max(0, i - 600): i + 600]))
@@ -88,6 +89,9 @@ def elc_find(f):
         hits.append((wid, text, int(y.group(1)) if y else None))
     if DEBUG:
         print("  elc hits:", hits[:6])
+        if not hits:
+            i = page.find("work/")
+            print("  elc search snippet:", len(page), re.sub(r"\s+", " ", page[max(0, i - 800): i + 1500]) if i >= 0 else re.sub(r"\s+", " ", page[:1500]))
     for wid, text, y in hits:
         if y == f["year"] and (norm(text) == want or want in norm(text)):
             return wid
@@ -98,7 +102,7 @@ def elc_find(f):
 
 def main():
     films = json.load(open(DATA, encoding="utf-8"))
-    changed = 0
+    imdb_load({(f.get("ratings") or {}).get("imdb", {}).get("id") for f in films} - {None})
     for f in films:
         print(f"• {f['title']} ({f['year']})")
         r = f.setdefault("ratings", {})
@@ -127,7 +131,7 @@ def main():
             if el.get("score"):
                 r["elcinema"] = el
             print("  elCinema:", el)
-        time.sleep(1)
+        time.sleep(0.5)
     with open(DATA, encoding="utf-8") as fp:
         before = fp.read()
     after = "[\n" + ",\n".join(json.dumps(x, ensure_ascii=False) for x in films) + "\n]\n"

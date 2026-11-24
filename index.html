@@ -53,11 +53,21 @@ a{color:inherit}
 .num{font:700 clamp(64px,13vw,150px)/.9 var(--disp);color:var(--acc)}
 .era h2{font:700 clamp(30px,4vw,44px)/1.1 var(--disp);margin:0}
 .era-head p{margin:6px 0 0;max-width:42em;opacity:.88}
-.row{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px max(4vw,16px) 10px;scrollbar-width:thin}
-.card{flex:none;width:200px;scroll-snap-align:start;text-decoration:none;color:inherit}
+.wall{max-width:1240px;margin:auto;padding:30px max(4vw,16px) 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:26px 18px}
+.card{text-decoration:none;color:inherit;display:block}
+.card.extra{display:none}.wall.open .card.extra{display:block}
+.poster .chip{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.6);color:#fff;font:700 12px/1 var(--body);padding:5px 7px;border-radius:4px;direction:ltr}
+.spot{grid-column:span 2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center;padding:16px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.spot .flag{display:inline-block;white-space:nowrap;color:var(--bg);background:var(--acc);font-weight:700;font-size:13px;padding:2px 10px;border-radius:999px}
+.spot h3{font:700 clamp(26px,3vw,34px)/1.2 var(--disp);margin:10px 0 4px}
+.spot .meta2{color:var(--sub);font-size:14px}
+.spot p{font-size:15px;line-height:1.7;margin:10px 0 0;opacity:.9}
+.spot .go{display:inline-block;margin-top:12px;font-weight:700;color:var(--acc)}
+.more-btn{display:flex;align-items:center;gap:10px;margin:26px auto 0;min-height:46px;padding:0 22px;border-radius:999px;border:1px dashed var(--line);background:none;color:var(--ink);font:500 15px var(--body);cursor:pointer}
+.more-btn:hover{background:rgba(255,255,255,.07)}
 .poster{aspect-ratio:2/3;border-radius:4px;border:1px solid rgba(255,255,255,.12);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:14px;box-shadow:0 14px 28px -12px #000b;transition:transform .3s}
 .card:hover .poster{transform:translateY(-6px) rotate(-1deg)}
-.poster .pt{font:700 30px/1.2 var(--disp);text-wrap:balance}
+.poster .pt{font:700 clamp(22px,2.4vw,30px)/1.2 var(--disp);text-wrap:balance}
 .poster .py{font:700 14px var(--body);opacity:.85}
 .poster .pc{font:500 13px/1.5 var(--body);opacity:.92}
 .poster .sun{position:absolute;border-radius:50%;opacity:.9}
@@ -96,12 +106,11 @@ a{color:inherit}
 .rate b{font:700 22px/1 var(--body);direction:ltr}
 .rate b small{font-size:13px;font-weight:500;opacity:.7}
 .rate span.v{display:block;font-size:12px;color:var(--sub);line-height:1.3}
-.rnote{font-size:12px;color:var(--sub);margin-top:8px}
-.tsize{display:flex;align-items:center;gap:8px;max-width:68ch;margin:clamp(28px,5vw,48px) 0 0;color:var(--sub);font-size:14px}
-.tsize button{min-width:44px;height:40px;border-radius:6px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);font:700 16px var(--body);cursor:pointer}
-.tsize button:hover{background:rgba(255,255,255,.12)}
-.tsize button:disabled{opacity:.35;cursor:default}
-.tsize .big{font-size:20px}
+.tsize{position:fixed;z-index:8;bottom:max(16px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;gap:2px;padding:6px 10px;border-radius:999px;background:#0b0b0b;outline:3px dotted #ffd77a;outline-offset:-6px;box-shadow:0 12px 30px #0009}
+.tsize button{width:44px;height:44px;border:0;border-radius:50%;background:none;color:#f3ead2;font-family:var(--body);font-weight:700;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
+.tsize button:hover{background:rgba(255,215,122,.15)}
+.tsize button[aria-pressed=true]{background:#ffd77a;color:#0b0b0b}
+.film{padding-bottom:110px}
 /* البحث: تذكرة سينما */
 .finder{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:clamp(12px,8vh,90px) 14px 14px}
 .finder.open{display:flex}
@@ -133,6 +142,7 @@ a{color:inherit}
 .none{padding:18px 12px;opacity:.7}
 footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
 [hidden]{display:none!important}
+@media(max-width:600px){.spot{grid-column:1/-1}}
 @media(max-width:760px){.hero{grid-template-columns:1fr;gap:28px}.era-head{grid-template-columns:1fr;gap:4px}.num{font-size:64px}.logo{font-size:22px}
  .film-top{grid-template-columns:1fr}.film-top .poster{max-width:170px}.find-btn span,.find-btn kbd{display:none}.find-btn{padding:0 12px}
  .prose{font-size:calc(17px*var(--ts))}.stub span{display:none}}
@@ -156,8 +166,8 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
     <p>أكثر من سبعين عامًا من السينما المصرية، من «ليلى» أول فيلم روائي طويل عام 1927 حتى نهاية القرن العشرين. اختر عقدًا من شاشة العرض، أو انزل في الصفحة عقدًا بعد عقد، وستتبدّل ألوانها وخطوطها لتشبه أفيشات كل زمن.</p>
     <a class="btn" href="#e40">ابدأ من البدايات</a>
   </div>
-  <nav class="marquee" aria-label="اختر عقدًا">
-    <h2>يُعرض الآن</h2>
+  <nav class="marquee" aria-label="اختر زمنك">
+    <h2>اختر زمنك</h2>
     <div class="frames" id="frames"></div>
   </nav>
 </section>
@@ -198,16 +208,29 @@ const eraOf=y=>ERAS.find(e=>y>=e.d0&&y<=e.d1)||ERAS[ERAS.length-1];
 const norm=s=>String(s||'').replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[«»"()]/g,'').toLowerCase().trim();
 const poster=(f)=>{const e=eraOf(f.year).id,[bg,ink,acc]=STYLE[e],v=FILMS.indexOf(f)%3;
  const sun=v===0?`<span class="sun" style="width:120px;height:120px;background:${acc};bottom:-30px;left:-30px"></span>`:v===1?`<span class="sun" style="width:100%;height:38%;border-radius:0;background:${acc};top:30%;left:0;opacity:.3"></span>`:`<span class="sun" style="width:70px;height:70px;background:${acc};top:14px;left:14px"></span>`;
- return `<div class="poster" style="background:${bg};color:${ink};--disp:${FONT[e]}">${sun}<span class="py">${ar(f.year)}</span><span class="pt">${esc(f.title)}</span><span class="pc">${esc((f.cast||[]).slice(0,2).join(' · '))}<br>إخراج ${esc(f.director)}</span></div>`};
+ const sc=f.ratings&&f.ratings.imdb?`<span class="chip">★ ${f.ratings.imdb.score.toFixed(1)}</span>`:'';
+ return `<div class="poster" style="background:${bg};color:${ink};--disp:${FONT[e]}">${sun}${sc}<span class="py">${ar(f.year)}</span><span class="pt">${esc(f.title)}</span><span class="pc">${esc((f.cast||[]).slice(0,2).join(' · '))}<br>إخراج: ${esc(f.director)}</span></div>`};
 
 /* ——— الصفحة الرئيسية ——— */
 const strip=$('strip'),main=$('eras');
 strip.innerHTML=ERAS.map(e=>`<a href="#${e.id}" data-id="${e.id}">${e.name}</a>`).join('');
 $('frames').innerHTML=ERAS.map(e=>{const [bg,ink]=STYLE[e.id];return `<a href="#${e.id}" style="background:${bg};color:${ink}"><b style="font-family:${FONT[e.id]}">${e.num}</b><span>${e.name}</span></a>`}).join('');
+const SHOW=8;
+const score=f=>f.ratings&&f.ratings.imdb?f.ratings.imdb.score:0;
+function wall(e,list){
+ if(!list.length)return '';
+ const top=[...list].sort((a,b)=>score(b)-score(a))[0],rest=list.filter(f=>f!==top);
+ const card=(f,i)=>`<a class="card${i>=SHOW-1?' extra':''}" href="#film-${esc(f.id)}">${poster(f)}<div class="cap">${esc(f.title)}<small>${ar(f.year)} · ${esc(f.director)}</small></div></a>`;
+ const spot=`<a class="card spot" href="#film-${esc(top.id)}"><div>${poster(top)}</div><div><span class="flag">★ الأعلى تقييمًا</span><h3>${esc(top.title)}</h3><div class="meta2">${ar(top.year)} · إخراج: ${esc(top.director)}</div><p>${esc(top.summary)}</p><span class="go">ادخل إلى الفيلم ←</span></div></a>`;
+ const label=`عرض كل أفلام ${e.name} (${ar(list.length)})`;
+ const more=list.length>SHOW?`<button class="more-btn" type="button" aria-expanded="false" data-more="${e.id}" data-label="${label}">${label}</button>`:'';
+ return `<div class="wall" id="w-${e.id}">${spot}${rest.map(card).join('')}</div>${more}`;
+}
+main.addEventListener('click',ev=>{const b=ev.target.closest('[data-more]');if(!b)return;const w=$('w-'+b.dataset.more),open=!w.classList.contains('open');w.classList.toggle('open',open);b.setAttribute('aria-expanded',open);b.textContent=open?'عرض أقل':b.dataset.label;if(!open)w.scrollIntoView({block:'start'})});
 function renderHome(){
  main.innerHTML=ERAS.map(e=>{const list=FILMS.filter(f=>eraOf(f.year)===e);
   return `<section class="era" id="${e.id}" data-era="${e.id}"><div class="era-head"><div class="num">${e.num}</div><div><h2>${e.name}</h2><p>${e.blurb}</p></div></div>
-  <div class="row">${list.map(f=>`<a class="card" href="#film-${esc(f.id)}">${poster(f)}<div class="cap">${esc(f.title)}<small>${ar(f.year)} · ${esc(f.director)}</small></div></a>`).join('')}</div></section>`}).join('');
+  ${wall(e,list)}</section>`}).join('');
  document.querySelectorAll('.era').forEach(s=>eraIO.observe(s));
 }
 let cur='';
@@ -243,13 +266,13 @@ async function showFilm(id){
  const row=(k,v)=>v?`<dt>${k}</dt><dd>${esc(v)}</dd>`:'';
  el.innerHTML=`<a class="back" href="#${e.id}">→ العودة إلى ${e.name}</a>
  <div class="film-top"><div>${poster(f)}</div><div>
-  <div class="kicker">${ar(f.year)} · ${e.name}</div><h1>${esc(f.title)}</h1><p class="by">إخراج ${esc(f.director)}</p>
+  <div class="kicker">${ar(f.year)} · ${e.name}</div><h1>${esc(f.title)}</h1><p class="by">إخراج: ${esc(f.director)}</p>
   <dl class="meta">${row('البطولة',(f.cast||[]).join('، '))}${row('التأليف',f.writer)}${/عن /.test(f.writer||'')?'':row('عن',f.based_on)}${row('الإنتاج',f.producer)}${row('المدة',f.duration)}${row('العرض الأول',f.premiere)}</dl>
   <div class="tags">${(f.genre||[]).map(g=>`<span>${esc(g)}</span>`).join('')}</div>
   ${rates(f)}
  </div></div>
- <div class="tsize" role="group" aria-label="حجم النص"><span>حجم النص</span><button type="button" data-ts="-1" aria-label="تصغير النص">أ−</button><button type="button" data-ts="0" aria-label="الحجم الافتراضي">أ</button><button type="button" class="big" data-ts="1" aria-label="تكبير النص">أ+</button></div>
- <div class="prose" id="prose"><p class="lead">${esc(f.summary)}</p></div>`;
+ <div class="tsize" role="group" aria-label="حجم نص المقالة">${TS.map((v,i)=>`<button type="button" data-ts="${i}" style="font-size:${13+i*3}px" aria-label="حجم ${i+1} من ${TS.length}">أ</button>`).join('')}</div>
+ <div class="prose" id="prose" style="margin-top:clamp(28px,5vw,48px)"><p class="lead">${esc(f.summary)}</p></div>`;
  applyTs();
  window.scrollTo(0,0);
  const txt=await article(id);
@@ -260,14 +283,14 @@ function rates(f){const r=f.ratings||{},out=[];
  const k=n=>n>=1000?ar((n/1000).toFixed(1).replace(/\.0$/,''))+' ألف':ar(n);
  if(r.imdb)out.push(`<a class="rate" href="https://www.imdb.com/title/${esc(r.imdb.id)}/" target="_blank" rel="noopener"><span class="lg imdb">IMDb</span><span><b>${esc(r.imdb.score.toFixed(1))}<small>/10</small></b>${r.imdb.votes?`<span class="v">${k(r.imdb.votes)} تقييم</span>`:''}</span></a>`);
  if(r.elcinema)out.push(`<a class="rate" href="https://elcinema.com/work/${esc(r.elcinema.id)}/" target="_blank" rel="noopener"><span class="lg elc">السينما.كوم</span><span><b>${esc(r.elcinema.score.toFixed(1))}<small>/10</small></b></span></a>`);
- return out.length?`<div class="rates">${out.join('')}</div><div class="rnote">تقييمات الجمهور على المواقع وقت إضافة الفيلم، وقد تتغيّر.</div>`:'';
+ return out.length?`<div class="rates">${out.join('')}</div>`:'';
 }
 const TS=[.85,1,1.15,1.3,1.5];let tsi=1;
 try{const v=+localStorage.getItem('ts');if(v>=0&&v<TS.length)tsi=v}catch{}
 function applyTs(){const p=$('prose');if(p)p.style.setProperty('--ts',TS[tsi]);
- document.querySelectorAll('.tsize button').forEach(b=>{const d=+b.dataset.ts;b.disabled=(d<0&&tsi===0)||(d>0&&tsi===TS.length-1)||(d===0&&tsi===1)})}
+ document.querySelectorAll('.tsize button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.ts===tsi))}
 $('film').addEventListener('click',e=>{const b=e.target.closest('[data-ts]');if(!b)return;const d=+b.dataset.ts;
- tsi=d===0?1:Math.min(TS.length-1,Math.max(0,tsi+d));try{localStorage.setItem('ts',tsi)}catch{};applyTs()});
+ tsi=d;try{localStorage.setItem('ts',tsi)}catch{};applyTs()});
 function showHome(target){
  const wasFilm=!$('film').hidden;$('film').hidden=true;$('home').hidden=false;document.title='شاشة زمان';
  const t=target&&document.getElementById(target);
@@ -310,7 +333,7 @@ function search(raw){
  const byPerson=exact?[...exact.films].filter(f=>!films.includes(f)):[];
  const fl=[...films,...byPerson];
  let h='';
- if(fl.length)h+=`<div class="grp">${exact?'أفلام '+esc(exact.name):'أفلام'}</div>`+fl.map(f=>{const [bg,ink]=STYLE[eraOf(f.year).id];return `<a class="hit" href="#film-${esc(f.id)}"><span class="sw" style="background:${bg};color:${ink}">${ar(String(f.year).slice(2))}</span><span><b>${hl(f.title,qn)}</b><small>${ar(f.year)} · إخراج ${esc(f.director)}${f.based_on?' · عن '+esc(f.based_on):''}</small></span></a>`}).join('');
+ if(fl.length)h+=`<div class="grp">${exact?'أفلام '+esc(exact.name):'أفلام'}</div>`+fl.map(f=>{const [bg,ink]=STYLE[eraOf(f.year).id];return `<a class="hit" href="#film-${esc(f.id)}"><span class="sw" style="background:${bg};color:${ink}">${ar(String(f.year).slice(2))}</span><span><b>${hl(f.title,qn)}</b><small>${ar(f.year)} · إخراج: ${esc(f.director)}${f.based_on?' · عن '+esc(f.based_on):''}</small></span></a>`}).join('');
  const pl=ppl.filter(p=>!exact||p.name!==exact.name);
  if(pl.length)h+=`<div class="grp">ممثلون ومخرجون</div>`+pl.map(p=>`<button class="hit" type="button" data-q="${esc(p.name)}"><span class="av">${esc(p.name[0])}</span><span><b>${hl(p.name,qn)}</b><small>${[...p.roles].join(' و')} · ${ar(p.films.size)} ${p.films.size>2?'أفلام':'فيلم'} في الأرشيف</small></span></button>`).join('');
  res.innerHTML=h||`<div class="none">لا نتائج لـ «${esc(raw)}». جرّب اسمًا آخر أو جزءًا من العنوان.</div>`;
