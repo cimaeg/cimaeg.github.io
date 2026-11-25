@@ -227,7 +227,7 @@ async function renderPerson(name) {
     <div class="prose" id="pprose"></div>
    </div><aside class="side">
     ${coTop.length || coOne.length ? `<div class="box"><h4>${coTop.length ? (f ? 'أكثر من عملت معهم' : 'أكثر من عمل معهم') : (f ? 'عملت معهم' : 'عمل معهم')}</h4><ul class="co">${(coTop.length ? coTop : coOne.map(n => [n, 1])).map(([n, c]) => `<li><a href="#p-${encodeURIComponent(n)}">${esc(n)}</a>${c > 1 ? `<small>${cnt(c)}</small>` : ''}</li>`).join('')}</ul></div>` : ''}
-    <div class="box"><h4>شبكة النجوم</h4><p class="note">كيف يتصل ${esc(p.name)} بغيره من النجوم؟</p><a class="btn" href="#network">افتح الشبكة</a></div>
+    <div class="box"><h4>شبكة النجوم</h4><p class="note">كيف ${f ? 'تتصل' : 'يتصل'} ${esc(p.name)} ${f ? 'بغيرها' : 'بغيره'} من النجوم؟</p><a class="btn" href="#network">افتح الشبكة</a></div>
    </aside></div></div>`;
   netFrom = p.name;
   const txt = await personArticle(p.name);
