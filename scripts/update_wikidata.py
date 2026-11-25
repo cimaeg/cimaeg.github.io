@@ -8,6 +8,8 @@ OUT = "data/wikidata.json"
 S = requests.Session()
 S.headers.update({"User-Agent": "ShashaZaman/1.0 (https://cimaeg.github.io; github.com/cimaeg)", "Accept": "application/sparql-results+json"})
 
+FEMALE = {"Q6581072", "Q1052281"}  # أنثى في ويكي بيانات (P21)
+
 def norm(s):
     s = re.sub(r"[ً-ْـ«»\"()]", "", s or "")
     s = s.replace("أ", "ا").replace("إ", "ا").replace("آ", "ا").replace("ة", "ه").replace("ى", "ي")
@@ -52,13 +54,14 @@ def main():
 
     values = " ".join(f'"{i}"' for i in by_imdb)
     q = f"""
-SELECT ?imdb ?film ?rd ?rdp ?p ?label ?b ?bp ?d ?dp WHERE {{
+SELECT ?imdb ?film ?rd ?rdp ?p ?label ?sx ?b ?bp ?d ?dp WHERE {{
   VALUES ?imdb {{ {values} }}
   ?film wdt:P345 ?imdb .
   OPTIONAL {{ ?film p:P577/psv:P577 [ wikibase:timeValue ?rd ; wikibase:timePrecision ?rdp ] }}
   OPTIONAL {{
     {{ ?film wdt:P161 ?p }} UNION {{ ?film wdt:P57 ?p }} UNION {{ ?film wdt:P58 ?p }}
     ?p rdfs:label ?label FILTER(LANG(?label) = "ar")
+    OPTIONAL {{ ?p wdt:P21 ?sx }}
     OPTIONAL {{ ?p p:P569/psv:P569 [ wikibase:timeValue ?b ; wikibase:timePrecision ?bp ] }}
     OPTIONAL {{ ?p p:P570/psv:P570 [ wikibase:timeValue ?d ; wikibase:timePrecision ?dp ] }}
   }}
@@ -83,7 +86,9 @@ SELECT ?imdb ?film ?rd ?rdp ?p ?label ?b ?bp ?d ?dp WHERE {{
             fo["released"] = rel
         if "p" in r:
             pq = r["p"]["value"].rsplit("/", 1)[-1]
-            c = cand.setdefault(f["id"], {}).setdefault(pq, {"label": r["label"]["value"], "born": None, "died": None})
+            c = cand.setdefault(f["id"], {}).setdefault(pq, {"label": r["label"]["value"], "born": None, "died": None, "f": False})
+            if r.get("sx", {}).get("value", "").rsplit("/", 1)[-1] in FEMALE:
+                c["f"] = True
             b = day(r.get("b", {}).get("value"), r.get("bp", {}).get("value"))
             d = day(r.get("d", {}).get("value"), r.get("dp", {}).get("value"))
             if b and (not c["born"] or len(b) > len(c["born"])):
@@ -111,6 +116,10 @@ SELECT ?imdb ?film ?rd ?rdp ?p ?label ?b ?bp ?d ?dp WHERE {{
                 for k in ("born", "died"):
                     if c[k]:
                         po[k] = c[k]
+                if c["f"]:
+                    po["f"] = True
+                else:
+                    po.pop("f", None)
             elif name not in out["people"]:
                 unmatched.append(f"{name} ({f['title']})")
     # الأسماء التي لم تُذكر في صفحة الفيلم على ويكي بيانات: نبحث عنها بالاسم العربي بين أهل السينما
@@ -118,10 +127,11 @@ SELECT ?imdb ?film ?rd ?rdp ?p ?label ?b ?bp ?d ?dp WHERE {{
     if names:
         vals = " ".join('"' + n.replace('"', "") + '"@ar' for n in names)
         q2 = f"""
-SELECT ?label ?p ?b ?bp ?d ?dp WHERE {{
+SELECT ?label ?p ?sx ?b ?bp ?d ?dp WHERE {{
   VALUES ?label {{ {vals} }}
   ?p rdfs:label ?label ; wdt:P31 wd:Q5 .
   ?p wdt:P106 ?occ . VALUES ?occ {{ wd:Q33999 wd:Q10800557 wd:Q2526255 wd:Q28389 wd:Q2405480 wd:Q177220 wd:Q3282637 wd:Q10798782 wd:Q2259451 }}
+  OPTIONAL {{ ?p wdt:P21 ?sx }}
   OPTIONAL {{ ?p p:P569/psv:P569 [ wikibase:timeValue ?b ; wikibase:timePrecision ?bp ] }}
   OPTIONAL {{ ?p p:P570/psv:P570 [ wikibase:timeValue ?d ; wikibase:timePrecision ?dp ] }}
 }}"""
@@ -130,7 +140,9 @@ SELECT ?label ?p ?b ?bp ?d ?dp WHERE {{
         for r in rows2:
             n = r["label"]["value"]
             pq = r["p"]["value"].rsplit("/", 1)[-1]
-            c = found.setdefault(n, {}).setdefault(pq, {"born": None, "died": None})
+            c = found.setdefault(n, {}).setdefault(pq, {"born": None, "died": None, "f": False})
+            if r.get("sx", {}).get("value", "").rsplit("/", 1)[-1] in FEMALE:
+                c["f"] = True
             b = day(r.get("b", {}).get("value"), r.get("bp", {}).get("value"))
             d = day(r.get("d", {}).get("value"), r.get("dp", {}).get("value"))
             if b and (not c["born"] or len(b) > len(c["born"])):
@@ -147,6 +159,10 @@ SELECT ?label ?p ?b ?bp ?d ?dp WHERE {{
                 for k in ("born", "died"):
                     if c[k]:
                         po[k] = c[k]
+                if c["f"]:
+                    po["f"] = True
+                else:
+                    po.pop("f", None)
             else:
                 still.append(n + (f" [{len(opts)} نتائج]" if opts else ""))
         if still:

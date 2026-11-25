@@ -21,7 +21,8 @@ function people() {
   for (const p of m.values()) p.films.sort((a, b) => a.year - b.year);
   PEOPLE = m; return m;
 }
-const roleText = p => [...p.roles].join(' و');
+const fem = n => !!((WD.people || {})[n] || {}).f;
+const roleText = p => [...p.roles].map(r => fem(p.name) ? r + 'ة' : r).join(' و');
 const initials = n => esc(n.replace(/^(ال)/, '').trim()[0] || n[0]);
 let PX = {};
 const photo = n => { const x = PX[n]; return x && /^people\/[\w.-]+\.webp$/.test(x.photo || '') ? { ...x, photo: '/img/' + x.photo } : null; };
@@ -207,7 +208,7 @@ async function renderPerson(name) {
   if (!p) { const el = showPage('e60', name); el.innerHTML = `<div class="pwrap"><a class="back" href="#people">→ كل الصنّاع</a><p class="lnone">لا يوجد في الأرشيف اسم «${esc(name)}».</p></div>`; return; }
   const era = eraOf(p.films[Math.floor(p.films.length / 2)].year).id;
   const el = showPage(era, p.name);
-  const w = (WD.people || {})[p.name] || {};
+  const w = (WD.people || {})[p.name] || {}, f = !!w.f;
   const scored = p.films.filter(score), avg = scored.length ? scored.reduce((s, f) => s + score(f), 0) / scored.length : 0;
   const co = new Map();
   for (const f of p.films) for (const n of [...(f.cast || []), f.director].map(pname)) if (n && n !== p.name) co.set(n, (co.get(n) || 0) + 1);
@@ -217,15 +218,15 @@ async function renderPerson(name) {
   const roleIn = f => pname(f.director) === p.name ? ((f.cast || []).map(pname).includes(p.name) ? 'إخراج وتمثيل' : 'إخراج') : 'تمثيل';
   el.innerHTML = `<div class="pwrap"><a class="back" href="#people">→ كل الصنّاع</a>
    <div class="phead">${avatar(p, true)}<div><span class="lk">${esc(roleText(p))}</span><h1>${esc(p.name)}</h1>
-    <p class="life">${w.born ? `وُلد ${w.born.includes('-') ? 'في' : 'عام'} ${fmtDate(w.born)}` : ''}${w.died ? `، ورحل ${w.died.includes('-') ? 'في' : 'عام'} ${fmtDate(w.died)}` : ''}${age !== null ? ` <small>(${w.died ? 'عن' : 'العمر'} ${ar(age)} عامًا)</small>` : ''}</p>
+    <p class="life">${w.born ? `${f ? 'وُلدت' : 'وُلد'} ${w.born.includes('-') ? 'في' : 'عام'} ${fmtDate(w.born)}` : ''}${w.died ? `، ${f ? 'ورحلت' : 'ورحل'} ${w.died.includes('-') ? 'في' : 'عام'} ${fmtDate(w.died)}` : ''}${age !== null ? ` <small>(${w.died ? 'عن' : 'العمر'} ${ar(age)} عامًا)</small>` : ''}</p>
     </div></div>
    <dl class="pnums"><div><dt>في الأرشيف</dt><dd>${cnt(p.films.length)}</dd></div><div><dt>الفترة</dt><dd>${ar(p.films[0].year)}${p.films.length > 1 ? '–' + ar(p.films[p.films.length - 1].year) : ''}</dd></div>${avg ? `<div><dt>متوسط IMDb</dt><dd>${avg.toFixed(1)}</dd></div>` : ''}</dl>
    <div class="pcols"><div>
-    <h2 class="pg">أفلامه في الأرشيف</h2>
+    <h2 class="pg">${f ? 'أفلامها' : 'أفلامه'} في الأرشيف</h2>
     <ol class="tline">${p.films.map(f => `<li><span class="ty">${ar(f.year)}</span><a href="#film-${esc(f.id)}">${mpo(f, eraOf(f.year).id)}<span><b>${esc(f.title)}</b><small>${roleIn(f)}${roleIn(f) === 'تمثيل' ? ' · إخراج: ' + esc(pname(f.director)) : ''}${score(f) ? ' · ★ ' + score(f).toFixed(1) : ''}</small></span></a></li>`).join('')}</ol>
     <div class="prose" id="pprose"></div>
    </div><aside class="side">
-    ${coTop.length || coOne.length ? `<div class="box"><h4>${coTop.length ? 'أكثر من عمل معهم' : 'عمل معهم'}</h4><ul class="co">${(coTop.length ? coTop : coOne.map(n => [n, 1])).map(([n, c]) => `<li><a href="#p-${encodeURIComponent(n)}">${esc(n)}</a>${c > 1 ? `<small>${cnt(c)}</small>` : ''}</li>`).join('')}</ul></div>` : ''}
+    ${coTop.length || coOne.length ? `<div class="box"><h4>${coTop.length ? (f ? 'أكثر من عملت معهم' : 'أكثر من عمل معهم') : (f ? 'عملت معهم' : 'عمل معهم')}</h4><ul class="co">${(coTop.length ? coTop : coOne.map(n => [n, 1])).map(([n, c]) => `<li><a href="#p-${encodeURIComponent(n)}">${esc(n)}</a>${c > 1 ? `<small>${cnt(c)}</small>` : ''}</li>`).join('')}</ul></div>` : ''}
     <div class="box"><h4>شبكة النجوم</h4><p class="note">كيف يتصل ${esc(p.name)} بغيره من النجوم؟</p><a class="btn" href="#network">افتح الشبكة</a></div>
    </aside></div></div>`;
   netFrom = p.name;
@@ -257,7 +258,7 @@ function renderNetwork() {
    <div class="ghead"><h1>شبكة النجوم</h1><p>اختر نجمين، وستعرف كيف يلتقيان عبر الأفلام. كل خطوة فيلم جمع اثنين منهم.</p></div>
    <div class="pickers">${pickerHTML('na', netFrom, 'من')}<button type="button" class="swap" id="nswap" aria-label="بدّل الاسمين">⇄</button>${pickerHTML('nb', netTo, 'إلى')}</div>
    <div id="nres"></div>
-   <h2 class="pg">دائرة <span id="egoName"></span></h2><p class="note">الأفلام في الحلقة الداخلية، ومن شاركه فيها في الحلقة الخارجية. اضغط أي اسم لتنقل الدائرة إليه.</p>
+   <h2 class="pg">دائرة <span id="egoName"></span></h2><p class="note">الأفلام في الحلقة الداخلية، وشركاء العمل فيها في الحلقة الخارجية. اضغط أي اسم لتنقل الدائرة إليه.</p>
    <div class="ego" id="ego"></div></div>`;
   for (const id of ['na', 'nb']) wirePicker(id);
   $('nswap').addEventListener('click', () => { [netFrom, netTo] = [netTo, netFrom]; $('na').value = netFrom; $('nb').value = netTo; drawNet(); });
