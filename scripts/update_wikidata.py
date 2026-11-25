@@ -8,6 +8,7 @@ OUT = "data/wikidata.json"
 S = requests.Session()
 S.headers.update({"User-Agent": "ShashaZaman/1.0 (https://cimaeg.github.io; github.com/cimaeg)", "Accept": "application/sparql-results+json"})
 
+IMDB_PEOPLE = {"ستيفان روستي": "nm0744587", "يوسف وهبي": "nm0906234"}
 FEMALE = {"Q6581072", "Q1052281"}  # أنثى في ويكي بيانات (P21)
 
 def norm(s):
@@ -167,6 +168,24 @@ SELECT ?label ?p ?sx ?b ?bp ?d ?dp WHERE {{
                 still.append(n + (f" [{len(opts)} نتائج]" if opts else ""))
         if still:
             print("not matched:", "، ".join(still))
+
+    # أسماء يلتبس البحث عنها بالاسم العربي: نحددها بمعرّفها في IMDb
+    for n, nm in IMDB_PEOPLE.items():
+        rows4 = sparql(f"""
+SELECT ?p ?b ?bp ?d ?dp WHERE {{
+  ?p wdt:P345 "{nm}" .
+  OPTIONAL {{ ?p p:P569/psv:P569 [ wikibase:timeValue ?b ; wikibase:timePrecision ?bp ] }}
+  OPTIONAL {{ ?p p:P570/psv:P570 [ wikibase:timeValue ?d ; wikibase:timePrecision ?dp ] }}
+}}""") or []
+        po = None
+        for r in rows4:
+            po = out["people"].setdefault(n, {})
+            po["qid"] = r["p"]["value"].rsplit("/", 1)[-1]
+            for k, kp in (("born", "b"), ("died", "d")):
+                v = day(r.get(kp, {}).get("value"), r.get(kp + "p", {}).get("value"))
+                if v and (not po.get(k) or len(v) > len(po[k])):
+                    po[k] = v
+        print(n, nm, "->", po)
 
     # الجنس لكل من له معرّف في ويكي بيانات (لتأنيث العبارات: وُلدت، ممثلة…)
     qids = {v["qid"]: n for n, v in out["people"].items() if v.get("qid")}
