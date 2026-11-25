@@ -113,8 +113,44 @@ SELECT ?imdb ?film ?rd ?rdp ?p ?label ?b ?bp ?d ?dp WHERE {{
                         po[k] = c[k]
             elif name not in out["people"]:
                 unmatched.append(f"{name} ({f['title']})")
-    if unmatched:
-        print("not matched:", "، ".join(unmatched))
+    # الأسماء التي لم تُذكر في صفحة الفيلم على ويكي بيانات: نبحث عنها بالاسم العربي بين أهل السينما
+    names = sorted({u.rsplit(" (", 1)[0] for u in unmatched})
+    if names:
+        vals = " ".join('"' + n.replace('"', "") + '"@ar' for n in names)
+        q2 = f"""
+SELECT ?label ?p ?b ?bp ?d ?dp WHERE {{
+  VALUES ?label {{ {vals} }}
+  ?p rdfs:label ?label ; wdt:P31 wd:Q5 .
+  ?p wdt:P106 ?occ . VALUES ?occ {{ wd:Q33999 wd:Q10800557 wd:Q2526255 wd:Q28389 wd:Q2405480 wd:Q177220 wd:Q3282637 wd:Q10798782 wd:Q2259451 }}
+  OPTIONAL {{ ?p p:P569/psv:P569 [ wikibase:timeValue ?b ; wikibase:timePrecision ?bp ] }}
+  OPTIONAL {{ ?p p:P570/psv:P570 [ wikibase:timeValue ?d ; wikibase:timePrecision ?dp ] }}
+}}"""
+        rows2 = sparql(q2) or []
+        found = {}
+        for r in rows2:
+            n = r["label"]["value"]
+            pq = r["p"]["value"].rsplit("/", 1)[-1]
+            c = found.setdefault(n, {}).setdefault(pq, {"born": None, "died": None})
+            b = day(r.get("b", {}).get("value"), r.get("bp", {}).get("value"))
+            d = day(r.get("d", {}).get("value"), r.get("dp", {}).get("value"))
+            if b and (not c["born"] or len(b) > len(c["born"])):
+                c["born"] = b
+            if d and (not c["died"] or len(d) > len(c["died"])):
+                c["died"] = d
+        still = []
+        for n in names:
+            opts = found.get(n, {})
+            if len(opts) == 1:
+                pq, c = next(iter(opts.items()))
+                po = out["people"].setdefault(n, {})
+                po["qid"] = pq
+                for k in ("born", "died"):
+                    if c[k]:
+                        po[k] = c[k]
+            else:
+                still.append(n + (f" [{len(opts)} نتائج]" if opts else ""))
+        if still:
+            print("not matched:", "، ".join(still))
 
     out["updated"] = datetime.date.today().isoformat()
     text = json.dumps(out, ensure_ascii=False, indent=1, sort_keys=True) + "\n"
