@@ -24,7 +24,7 @@ function people() {
 const roleText = p => [...p.roles].join(' و');
 const initials = n => esc(n.replace(/^(ال)/, '').trim()[0] || n[0]);
 let PX = {};
-const photo = n => { const x = PX[n]; return x && /^people\/[\w.-]+\.(webp|jpg|png)$/.test(x.photo || '') ? x : null; };
+const photo = n => { const x = PX[n]; return x && /^people\/[\w.-]+\.webp$/.test(x.photo || '') ? { ...x, photo: '/img/' + x.photo } : null; };
 function avatar(p, big) {
   const ph = photo(p.name);
   if (ph) return `<span class="av2 ph${big ? ' big' : ''}"><img src="${ph.photo}" alt="${big ? esc(p.name) : ''}" loading="lazy" style="object-position:${esc(ph.focus || '50% 20%')}"></span>`;

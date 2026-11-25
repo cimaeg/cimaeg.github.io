@@ -300,7 +300,8 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
 const eraOf=y=>ERAS.find(e=>y>=e.d0&&y<=e.d1)||ERAS[ERAS.length-1];
 const norm=s=>String(s||'').replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[«»"()]/g,'').toLowerCase().trim();
-const pimg=f=>f.poster&&f.poster.url&&/^posters\/[\w.-]+$/.test(f.poster.url)?f.poster.url:'';
+const IMG='/img/';
+const pimg=f=>f.poster&&f.poster.url&&/^posters\/[\w.-]+\.webp$/.test(f.poster.url)?IMG+f.poster.url:'';
 const mpo=(x,eid)=>{const [bg,ink]=STYLE[eid],u=pimg(x);return u?`<span class="mp img"><img src="${u}" alt="" loading="lazy"></span>`:`<span class="mp" style="background:${bg};color:${ink}"><i>${ar(x.year)}</i><b style="font-family:${FONT[eid]}">${esc(x.title)}</b></span>`};
 const poster=(f)=>{const e=eraOf(f.year).id,[bg,ink,acc]=STYLE[e],v=FILMS.indexOf(f)%3;
  if(pimg(f)){const sc0=f.ratings&&f.ratings.imdb?`<span class="chip">★ ${f.ratings.imdb.score.toFixed(1)}</span>`:'';return `<div class="poster img">${sc0}<img src="${pimg(f)}" alt="أفيش فيلم ${esc(f.title)}" loading="lazy"></div>`}
