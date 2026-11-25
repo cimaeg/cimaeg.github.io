@@ -14,5 +14,17 @@
  "محمود المليجي": {
   "photo": "people/mahmoud-el-meliguy.webp",
   "focus": "50% 30%"
+ },
+ "يحيى شاهين": {
+  "photo": "people/yehia-chahine.webp",
+  "focus": "50% 30%"
+ },
+ "يوسف شاهين": {
+  "photo": "people/youssef-chahine.webp",
+  "focus": "55% 35%"
+ },
+ "حسين كمال": {
+  "photo": "people/hussein-kamal.webp",
+  "focus": "50% 35%"
  }
 }
