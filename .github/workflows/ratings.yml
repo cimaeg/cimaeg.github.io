@@ -1,4 +1,4 @@
-name: تحديث التقييمات
+name: تحديث البيانات
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["scripts/update_ratings.py", ".github/workflows/ratings.yml"]
+    paths: ["scripts/**", ".github/workflows/ratings.yml"]
 
 permissions:
   contents: write
@@ -28,16 +28,17 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install requests
-      - run: python scripts/update_ratings.py --debug
+      - run: python scripts/update_ratings.py
+      - run: python scripts/update_wikidata.py
       - id: commit
         run: |
-          if git diff --quiet data/films.json; then
+          if git diff --quiet data/ && [ -z "$(git status --porcelain data/)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data/films.json
-            git commit -m "تحديث التقييمات تلقائيًا"
+            git add data/
+            git commit -m "تحديث التقييمات والتواريخ تلقائيًا"
             git push
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
