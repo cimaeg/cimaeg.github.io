@@ -26,5 +26,13 @@
  "حسين كمال": {
   "photo": "people/hussein-kamal.webp",
   "focus": "50% 35%"
+ },
+ "عبد الوارث عسر": {
+  "photo": "people/abdel-warith-asar.webp",
+  "focus": "50% 30%"
+ },
+ "فردوس محمد": {
+  "photo": "people/ferdoos-mohamed.webp",
+  "focus": "50% 32%"
  }
 }
