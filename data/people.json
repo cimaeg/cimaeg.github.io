@@ -1,3 +1,18 @@
 {
- "نجيب الريحاني": {"photo": "people/naguib-el-rihani.webp", "focus": "50% 22%"}
+ "نجيب الريحاني": {
+  "photo": "people/naguib-el-rihani.webp",
+  "focus": "50% 22%"
+ },
+ "ليلى مراد": {
+  "photo": "people/laila-mourad.webp",
+  "focus": "50% 30%"
+ },
+ "توفيق الدقن": {
+  "photo": "people/tawfik-el-deken.webp",
+  "focus": "50% 25%"
+ },
+ "محمود المليجي": {
+  "photo": "people/mahmoud-el-meliguy.webp",
+  "focus": "50% 30%"
+ }
 }
