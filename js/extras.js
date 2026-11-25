@@ -217,8 +217,8 @@ async function renderPerson(name) {
   const roleIn = f => pname(f.director) === p.name ? ((f.cast || []).map(pname).includes(p.name) ? 'إخراج وتمثيل' : 'إخراج') : 'تمثيل';
   el.innerHTML = `<div class="pwrap"><a class="back" href="#people">→ كل الصنّاع</a>
    <div class="phead">${avatar(p, true)}<div><span class="lk">${esc(roleText(p))}</span><h1>${esc(p.name)}</h1>
-    <p class="life">${w.born ? `وُلد ${fmtDate(w.born)}` : ''}${w.died ? `، ورحل ${fmtDate(w.died)}` : ''}${age !== null ? ` <small>(${w.died ? 'عن' : 'العمر'} ${ar(age)} عامًا)</small>` : ''}</p>
-    ${w.qid ? `<p class="src">التواريخ من <a href="https://www.wikidata.org/wiki/${esc(w.qid)}" target="_blank" rel="noopener">ويكي بيانات</a></p>` : ''}</div></div>
+    <p class="life">${w.born ? `وُلد ${w.born.includes('-') ? 'في' : 'عام'} ${fmtDate(w.born)}` : ''}${w.died ? `، ورحل ${w.died.includes('-') ? 'في' : 'عام'} ${fmtDate(w.died)}` : ''}${age !== null ? ` <small>(${w.died ? 'عن' : 'العمر'} ${ar(age)} عامًا)</small>` : ''}</p>
+    </div></div>
    <dl class="pnums"><div><dt>في الأرشيف</dt><dd>${cnt(p.films.length)}</dd></div><div><dt>الفترة</dt><dd>${ar(p.films[0].year)}${p.films.length > 1 ? '–' + ar(p.films[p.films.length - 1].year) : ''}</dd></div>${avg ? `<div><dt>متوسط IMDb</dt><dd>${avg.toFixed(1)}</dd></div>` : ''}</dl>
    <div class="pcols"><div>
     <h2 class="pg">أفلامه في الأرشيف</h2>
