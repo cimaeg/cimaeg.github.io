@@ -188,3 +188,9 @@ a.lob:hover{background:rgba(255,255,255,.09)}
 /* المعيّن للسينما.كوم: ترميز بالشكل إلى جانب اللون */
 .legend i.d2{border-radius:2px;transform:rotate(45deg) scale(.9)}
 .dumb i.d2{border-radius:2px;transform:translateX(50%) rotate(45deg) scale(.9)}
+
+/* صور الصنّاع */
+.av2.ph{background:#222;overflow:hidden;padding:0}
+.av2.ph img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.15)}
+.av2.ph.big{box-shadow:0 0 0 4px var(--acc),0 18px 36px -12px #000c}
+.phead .av2.ph.big{width:clamp(150px,24vw,230px);height:auto;aspect-ratio:3/4;border-radius:12px}

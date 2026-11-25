@@ -23,7 +23,11 @@ function people() {
 }
 const roleText = p => [...p.roles].join(' و');
 const initials = n => esc(n.replace(/^(ال)/, '').trim()[0] || n[0]);
+let PX = {};
+const photo = n => { const x = PX[n]; return x && /^people\/[\w.-]+\.(webp|jpg|png)$/.test(x.photo || '') ? x : null; };
 function avatar(p, big) {
+  const ph = photo(p.name);
+  if (ph) return `<span class="av2 ph${big ? ' big' : ''}"><img src="${ph.photo}" alt="${big ? esc(p.name) : ''}" loading="lazy" style="object-position:${esc(ph.focus || '50% 20%')}"></span>`;
   const e = eraOf(p.films[0].year).id, [bg, ink] = STYLE[e];
   return `<span class="av2${big ? ' big' : ''}" style="background:${bg};color:${ink};font-family:${FONT[e]}">${initials(p.name)}</span>`;
 }
@@ -213,7 +217,7 @@ async function renderPerson(name) {
   const roleIn = f => pname(f.director) === p.name ? ((f.cast || []).map(pname).includes(p.name) ? 'إخراج وتمثيل' : 'إخراج') : 'تمثيل';
   el.innerHTML = `<div class="pwrap"><a class="back" href="#people">→ كل الصنّاع</a>
    <div class="phead">${avatar(p, true)}<div><span class="lk">${esc(roleText(p))}</span><h1>${esc(p.name)}</h1>
-    <p class="life">${w.born ? `وُلد ${fmtDate(w.born)}` : ''}${w.died ? ` · رحل ${fmtDate(w.died)}` : ''}${age !== null ? ` <small>(${w.died ? 'عن' : 'العمر'} ${ar(age)} عامًا)</small>` : ''}</p>
+    <p class="life">${w.born ? `وُلد ${fmtDate(w.born)}` : ''}${w.died ? `، ورحل ${fmtDate(w.died)}` : ''}${age !== null ? ` <small>(${w.died ? 'عن' : 'العمر'} ${ar(age)} عامًا)</small>` : ''}</p>
     ${w.qid ? `<p class="src">التواريخ من <a href="https://www.wikidata.org/wiki/${esc(w.qid)}" target="_blank" rel="noopener">ويكي بيانات</a></p>` : ''}</div></div>
    <dl class="pnums"><div><dt>في الأرشيف</dt><dd>${cnt(p.films.length)}</dd></div><div><dt>الفترة</dt><dd>${ar(p.films[0].year)}${p.films.length > 1 ? '–' + ar(p.films[p.films.length - 1].year) : ''}</dd></div>${avg ? `<div><dt>متوسط IMDb</dt><dd>${avg.toFixed(1)}</dd></div>` : ''}</dl>
    <div class="pcols"><div>
@@ -306,7 +310,7 @@ function drawEgo(name) {
   films.forEach((f, i) => { const [x, y] = pt(R1, fa[i]), [bg, ink] = STYLE[eraOf(f.year).id]; nodes += `<a href="#film-${esc(f.id)}" class="nf"><rect x="${(x - 46).toFixed(1)}" y="${(y - 17).toFixed(1)}" width="92" height="34" rx="5" fill="${bg}"/><text x="${x.toFixed(1)}" y="${(y + 5).toFixed(1)}" fill="${ink}">${esc(f.title.length > 12 ? f.title.slice(0, 11) + '…' : f.title)}</text></a>`; });
   cos.forEach(c => { const [x, y] = pt(R2, c.b), cosA = Math.cos(c.b), anchor = Math.abs(cosA) < .25 ? 'middle' : cosA > 0 ? 'start' : 'end'; nodes += `<a href="#network" class="np" data-n="${esc(c.n)}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${5 + Math.min(4, c.idx.length) * 1.5}"/><text x="${(x + (anchor === 'start' ? 10 : anchor === 'end' ? -10 : 0)).toFixed(1)}" y="${(y + (anchor === 'middle' ? (Math.sin(c.b) > 0 ? 20 : -12) : 5)).toFixed(1)}" text-anchor="${anchor}">${esc(c.n)}</text></a>`; });
   const [bg, ink] = STYLE[e];
-  box.innerHTML = `<svg direction="ltr" viewBox="-150 -10 ${W + 300} ${H + 20}" role="img" aria-label="دائرة ${esc(p.name)}: ${cnt(films.length)} و${ar(cos.length)} شريكًا">${lines}${nodes}<circle cx="${cx}" cy="${cy}" r="62" fill="${bg}"/><text x="${cx}" y="${cy + 7}" class="nc" fill="${ink}" style="font-family:${FONT[e]}">${esc(p.name.length > 12 ? p.name.split(' ')[0] : p.name)}</text></svg>`;
+  box.innerHTML = `<svg direction="ltr" viewBox="-150 -10 ${W + 300} ${H + 20}" role="img" aria-label="دائرة ${esc(p.name)}: ${cnt(films.length)} و${ar(cos.length)} شريكًا">${lines}${nodes}${photo(p.name) ? `<defs><clipPath id="egoc"><circle cx="${cx}" cy="${cy}" r="62"/></clipPath></defs><circle cx="${cx}" cy="${cy}" r="66" fill="${bg}"/><image href="${photo(p.name).photo}" x="${cx - 62}" y="${cy - 62}" width="124" height="124" preserveAspectRatio="xMidYMin slice" clip-path="url(#egoc)"/><text x="${cx}" y="${cy + 92}" class="nc">${esc(p.name)}</text>` : `<circle cx="${cx}" cy="${cy}" r="62" fill="${bg}"/><text x="${cx}" y="${cy + 7}" class="nc" fill="${ink}" style="font-family:${FONT[e]}">${esc(p.name.length > 12 ? p.name.split(' ')[0] : p.name)}</text>`}</svg>`;
   box.querySelectorAll('.np').forEach(a => a.addEventListener('click', ev => { ev.preventDefault(); netFrom = a.dataset.n; $('na').value = netFrom; drawNet(); }));
 }
 
@@ -354,8 +358,9 @@ window.SZX = {
     else if (h.startsWith('p-')) renderPerson(h.slice(2));
   }
 };
-fetch('data/wikidata.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({})).then(d => {
-  WD = { people: {}, films: {}, ...d };
+const getj = u => fetch(u, { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+Promise.all([getj('data/wikidata.json'), getj('data/people.json')]).then(([d, px]) => {
+  WD = { people: {}, films: {}, ...d }; PX = px || {};
   lobby();
   const h = decodeURIComponent(location.hash.slice(1));
   if (/^(game|people|network|stats|p-)/.test(h)) SZX.route(h);
