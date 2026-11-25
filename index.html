@@ -228,6 +228,7 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
  .prose{font-size:calc(17px*var(--ts))}.stub span{display:none}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+<link rel="stylesheet" href="css/extras.css">
 </head>
 <body data-era="e40">
 <header class="top"><div class="top-in">
@@ -237,7 +238,16 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
     <span>ابحث</span><kbd>/</kbd>
   </button>
-</div></header>
+  <button class="find-btn" id="menuBtn" type="button" aria-label="القائمة" aria-expanded="false" aria-controls="menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+</div>
+<nav class="menu" id="menu" hidden aria-label="أقسام الموقع">
+  <a href="#game"><b>خمّن الفيلم</b><span>لغز جديد كل يوم</span></a>
+  <a href="#people"><b>الصنّاع</b><span>ممثلون ومخرجون</span></a>
+  <a href="#network"><b>شبكة النجوم</b><span>كيف يلتقي نجمان؟</span></a>
+  <a href="#stats"><b>أرقام الزمن الجميل</b><span>الأرشيف بالأرقام</span></a>
+</nav></header>
 
 <div id="home">
 <section class="hero" id="top">
@@ -252,12 +262,14 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
     <div class="stop" aria-hidden="true"></div>
   </nav></div>
 </section>
+<div id="lobby"></div>
 <main id="eras"></main>
 </div>
 
 <article class="film" id="film" hidden></article>
 <section class="list" id="list" hidden></section>
-<footer>شاشة زمان · أرشيف السينما المصرية حتى عام 2000</footer>
+<section class="page" id="page" hidden></section>
+<footer><nav class="fnav"><a href="#top">آلة الزمن</a><a href="#game">خمّن الفيلم</a><a href="#people">الصنّاع</a><a href="#network">شبكة النجوم</a><a href="#stats">أرقام الزمن الجميل</a></nav>شاشة زمان · أرشيف السينما المصرية حتى عام 2000</footer>
 
 <div class="finder" id="finder" role="dialog" aria-modal="true" aria-label="البحث">
   <div class="ticket">
@@ -353,16 +365,18 @@ async function article(id){
  try{const r=await fetch(`films/${encodeURIComponent(id)}.md`,{cache:'no-cache'});cache[id]=r.ok?await r.text():null}catch{cache[id]=null}
  return cache[id];
 }
+const pname=n=>String(n||'').replace(/\s*\(.*?\)/,'').trim();
+const plink=n=>{const c=pname(n);return c?`<a class="pl" href="#p-${encodeURIComponent(c)}">${esc(n)}</a>`:esc(n)};
 async function showFilm(id){
  const f=FILMS.find(x=>x.id===id);if(!f){location.hash='';return}
  const e=eraOf(f.year);
- $('home').hidden=true;$('list').hidden=true;const el=$('film');el.hidden=false;cur='';setEra(e.id);
+ $('home').hidden=true;$('list').hidden=true;$('page').hidden=true;const el=$('film');el.hidden=false;cur='';setEra(e.id);
  document.title=`${f.title} (${f.year}) · شاشة زمان`;
  const row=(k,v)=>v?`<dt>${k}</dt><dd>${esc(v)}</dd>`:'';
  el.innerHTML=`<a class="back" href="#${e.id}">→ العودة إلى ${e.name}</a>
  <div class="film-top"><div>${poster(f)}</div><div>
-  <div class="kicker">${ar(f.year)} · ${e.name}</div><h1>${esc(f.title)}</h1><p class="by">إخراج: ${esc(f.director)}</p>
-  <dl class="meta">${row('البطولة',(f.cast||[]).join('، '))}${row('التأليف',f.writer)}${/عن /.test(f.writer||'')?'':row('عن',f.based_on)}${row('الإنتاج',f.producer)}${row('المدة',f.duration)}${row('العرض الأول',f.premiere)}</dl>
+  <div class="kicker">${ar(f.year)} · ${e.name}</div><h1>${esc(f.title)}</h1><p class="by">إخراج: ${plink(f.director)}</p>
+  <dl class="meta">${(f.cast||[]).length?`<dt>البطولة</dt><dd>${f.cast.map(plink).join('، ')}</dd>`:''}${row('التأليف',f.writer)}${/عن /.test(f.writer||'')?'':row('عن',f.based_on)}${row('الإنتاج',f.producer)}${row('المدة',f.duration)}${row('العرض الأول',f.premiere)}</dl>
   <div class="tags">${(f.genre||[]).map(g=>`<span>${esc(g)}</span>`).join('')}</div>
   ${rates(f)}
  </div></div>
@@ -401,7 +415,7 @@ function applyTs(){const p=$('prose');if(p)p.style.setProperty('--ts',tsv);
 $('film').addEventListener('click',e=>{if(!e.target.closest('#tsrst'))return;tsv=1;try{localStorage.removeItem('tsv')}catch{};applyTs()});
 let tsT;$('film').addEventListener('input',e=>{if(e.target.id!=='tsr')return;tsv=+e.target.value;applyTs();clearTimeout(tsT);tsT=setTimeout(()=>{try{localStorage.setItem('tsv',tsv)}catch{}},300)});
 function showHome(target){
- const wasFilm=!$('film').hidden||!$('list').hidden;$('film').hidden=true;$('list').hidden=true;$('home').hidden=false;document.title='شاشة زمان';
+ const wasFilm=!$('film').hidden||!$('list').hidden||!$('page').hidden;$('film').hidden=true;$('list').hidden=true;$('page').hidden=true;$('home').hidden=false;document.title='شاشة زمان';
  const t=target&&document.getElementById(target);
  if(t)t.scrollIntoView();else if(wasFilm)window.scrollTo(0,0);
  if(!t||target==='top'){cur='';setEra('e40')}
@@ -411,7 +425,7 @@ const LS={rating:['الأعلى تقييمًا',byRating],el:['السينما.ك
 function showList(id){
  const e=ERAS.find(x=>x.id===id);if(!e){location.hash='';return}
  if(lera!==id){lera=id;lq='';lyear=0;lgenre=''}
- $('home').hidden=true;$('film').hidden=true;const el=$('list');el.hidden=false;cur='';setEra(e.id);
+ $('home').hidden=true;$('film').hidden=true;$('page').hidden=true;const el=$('list');el.hidden=false;cur='';setEra(e.id);
  document.title=`أفلام ${e.name} · شاشة زمان`;
  const all=FILMS.filter(f=>eraOf(f.year)===e),genres=[...new Set(all.flatMap(f=>f.genre||[]))],years=[...new Set(all.map(f=>f.year))].sort();
  const btn=(k,v,cur,attr)=>`<button type="button" data-${attr}="${esc(k)}" aria-pressed="${k===cur}">${esc(v)}</button>`;
@@ -449,8 +463,16 @@ $('list').addEventListener('click',ev=>{
  const grp=b.parentElement;
  if('sort' in b.dataset)lsort=b.dataset.sort;else if('genre' in b.dataset)lgenre=b.dataset.genre;else lyear=+b.dataset.year;
  grp.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));rows()});
-function route(){const h=decodeURIComponent(location.hash.slice(1));
- if(h.startsWith('film-'))showFilm(h.slice(5));else if(h.startsWith('list-')){showList(h.slice(5));scrollTo(0,0)}else showHome(h)}
+const XR=/^(game|people|network|stats|p-)/;
+function showPage(eraId,title){$('home').hidden=true;$('film').hidden=true;$('list').hidden=true;const el=$('page');el.hidden=false;cur='';setEra(eraId);for(const x of strip.children)x.classList.remove('on');document.title=(title?title+' · ':'')+'شاشة زمان';scrollTo(0,0);return el}
+function route(){const h=decodeURIComponent(location.hash.slice(1));closeMenu();
+ if(h.startsWith('film-'))showFilm(h.slice(5));else if(h.startsWith('list-')){showList(h.slice(5));scrollTo(0,0)}
+ else if(XR.test(h)){if(window.SZX)SZX.route(h)}
+ else showHome(h)}
+const menu=$('menu'),menuBtn=$('menuBtn');
+function closeMenu(){menu.hidden=true;menuBtn.setAttribute('aria-expanded','false')}
+menuBtn.addEventListener('click',e=>{e.stopPropagation();const o=menu.hidden;menu.hidden=!o;menuBtn.setAttribute('aria-expanded',String(o))});
+document.addEventListener('click',e=>{if(!menu.hidden&&!e.target.closest('#menu'))closeMenu()});
 addEventListener('hashchange',route);
 
 /* ——— البحث ——— */
@@ -488,7 +510,7 @@ function search(raw){
  let h='';
  if(fl.length)h+=`<div class="grp">${exact?'أفلام '+esc(exact.name):'أفلام'}</div>`+fl.map(f=>{const [bg,ink]=STYLE[eraOf(f.year).id];return `<a class="hit" href="#film-${esc(f.id)}"><span class="sw" style="background:${bg};color:${ink}">${ar(String(f.year).slice(2))}</span><span><b>${hl(f.title,qn)}</b><small>${ar(f.year)} · إخراج: ${esc(f.director)}${f.based_on?' · عن '+esc(f.based_on):''}</small></span></a>`}).join('');
  const pl=ppl.filter(p=>!exact||p.name!==exact.name);
- if(pl.length)h+=`<div class="grp">ممثلون ومخرجون</div>`+pl.map(p=>`<button class="hit" type="button" data-q="${esc(p.name)}"><span class="av">${esc(p.name[0])}</span><span><b>${hl(p.name,qn)}</b><small>${[...p.roles].join(' و')} · ${ar(p.films.size)} ${p.films.size>2?'أفلام':'فيلم'} في الأرشيف</small></span></button>`).join('');
+ if(pl.length)h+=`<div class="grp">ممثلون ومخرجون</div>`+pl.map(p=>`<a class="hit" href="#p-${encodeURIComponent(p.name)}"><span class="av">${esc(p.name[0])}</span><span><b>${hl(p.name,qn)}</b><small>${[...p.roles].join(' و')} · ${ar(p.films.size)} ${p.films.size>2?'أفلام':'فيلم'} في الأرشيف</small></span></a>`).join('');
  res.innerHTML=h||`<div class="none">لا نتائج لـ «${esc(raw)}». جرّب اسمًا آخر أو جزءًا من العنوان.</div>`;
  hits=[...res.querySelectorAll('.hit')];paint();
 }
@@ -501,7 +523,8 @@ res.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b)retu
  else if(b.tagName==='A')closeFind()});
 
 /* ——— تحميل البيانات ——— */
-fetch('data/films.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{FILMS=d.sort((a,b)=>a.year-b.year);renderHome();route()})
+window.SZ={get FILMS(){return FILMS},ERAS,STYLE,FONT,esc,ar,norm,eraOf,poster,mpo,cnt,score,escore,byRating,md,pname,plink,showPage,route,ready:false};
+fetch('data/films.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{FILMS=d.sort((a,b)=>a.year-b.year);renderHome();SZ.ready=true;route();const sc=document.createElement('script');sc.src='js/extras.js';document.body.appendChild(sc)})
  .catch(()=>{main.innerHTML='<p style="padding:40px;text-align:center">تعذّر تحميل بيانات الأفلام.</p>'});
 }
 </script>
