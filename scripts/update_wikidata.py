@@ -168,6 +168,18 @@ SELECT ?label ?p ?sx ?b ?bp ?d ?dp WHERE {{
         if still:
             print("not matched:", "، ".join(still))
 
+    # الجنس لكل من له معرّف في ويكي بيانات (لتأنيث العبارات: وُلدت، ممثلة…)
+    qids = {v["qid"]: n for n, v in out["people"].items() if v.get("qid")}
+    if qids:
+        rows3 = sparql("SELECT ?p ?sx WHERE { VALUES ?p { " + " ".join("wd:" + q for q in qids) + " } ?p wdt:P21 ?sx }")
+        if rows3 is not None:
+            fem = {r["p"]["value"].rsplit("/", 1)[-1] for r in rows3 if r["sx"]["value"].rsplit("/", 1)[-1] in FEMALE}
+            for q, n in qids.items():
+                if q in fem:
+                    out["people"][n]["f"] = True
+                else:
+                    out["people"][n].pop("f", None)
+
     out["updated"] = datetime.date.today().isoformat()
     text = json.dumps(out, ensure_ascii=False, indent=1, sort_keys=True) + "\n"
     try:
