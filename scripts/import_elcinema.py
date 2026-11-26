@@ -330,14 +330,16 @@ def main():
     # ——— الأفلام الجديدة ———
     taken = {f["id"] for f in films}
     added = []
-    old_elc = {f["id"]: f for f in films if f.get("src") == "elcinema"}
-    films = [f for f in films if f.get("src") != "elcinema"]
+    # الأفلام المضافة في تشغيلات سابقة تبقى كما هي؛ لا يُضاف هنا إلا الجديد
+    old_elc = {}
     for wid in new_ids:
         w, x = cache["works"].get(wid), index[wid]
         if not w or not w.get("movie", True) or w.get("country_eg") is False:
             continue
         year = x["year"]
         rid = f"{year}-elc{wid}"
+        if rid in taken:
+            continue
         # نفس الفيلم بسنة مختلفة قليلًا في المصدر الآخر: نفس العنوان، ونفس المخرج أو ممثل مشترك
         raw_cast = {name(p, n) for p, n in w.get("cast", [])[:CAST_N]}
         raw_dir = name(*w["director"][0]) if w.get("director") else None
