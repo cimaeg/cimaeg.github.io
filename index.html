@@ -84,6 +84,19 @@ a{color:inherit}
 .prog{list-style:none;margin:16px 0 0;padding:0;border-top:2px solid var(--ink)}
 .prog a{display:grid;grid-template-columns:52px 76px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 4px;border-bottom:1px dashed var(--line);text-decoration:none}
 .prog a:hover{background:rgba(255,255,255,.05)}
+.pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px;margin:30px 0 6px}
+.pager .frames{display:flex;align-items:center;gap:6px;padding:9px 12px;background:#141210;border-radius:6px;position:relative;box-shadow:inset 0 0 0 1px #ffffff14}
+.pager .frames::before,.pager .frames::after{content:"";position:absolute;inset-inline:6px;height:4px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='4'%3E%3Crect x='3' y='0' width='6' height='4' rx='1' fill='%23e9e2d2' fill-opacity='.55'/%3E%3C/svg%3E") repeat-x}
+.pager .frames::before{top:2px}.pager .frames::after{bottom:2px}
+.pager .fr{min-width:38px;height:42px;padding:0 6px;border:0;border-radius:3px;background:#2a2622;color:#efe7d6;font:700 16px var(--body);cursor:pointer;transition:transform .15s,background .15s}
+.pager .fr:hover{background:#3a342e;transform:translateY(-2px)}
+.pager .fr[aria-current]{background:var(--acc);color:#111;transform:scale(1.08)}
+.pager .gap{color:#efe7d6aa;padding:0 2px}
+.pager .nv{height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font:600 15px var(--body);cursor:pointer}
+.pager .nv:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
+.pager .nv:disabled{opacity:.35;cursor:default}
+.pager .pinfo{flex-basis:100%;text-align:center;margin:0;color:var(--sub);font-size:14px}
+@media(max-width:560px){.pager .pinfo{order:3}.pager .nv{order:2}.pager .frames{order:1;flex-basis:100%;justify-content:center}.pager .fr{min-width:34px}}
 .prog .i{font:700 34px/1 var(--disp);color:var(--acc);text-align:center}
 .mp{width:76px;aspect-ratio:2/3;border-radius:3px;display:flex;flex-direction:column;justify-content:space-between;padding:7px;box-shadow:0 8px 16px -8px #000a;overflow:hidden}
 .mp i{font:700 10px/1 var(--body);font-style:normal;opacity:.8}
@@ -447,11 +460,11 @@ function showHome(target){
  if(t)t.scrollIntoView();else if(wasFilm)window.scrollTo(0,0);
  if(!t||target==='top'){cur='';setEra('e40')}
 }
-let lsort='rating',lgenre='',lq='',lyear=0,lera='';
+let lsort='rating',lgenre='',lq='',lyear=0,lera='',lpage=1;const PER=20;
 const LS={rating:['الأعلى تقييمًا',byRating],el:['السينما.كوم',(a,b)=>escore(b)-escore(a)||byRating(a,b)],old:['الأقدم',(a,b)=>a.year-b.year],new:['الأحدث',(a,b)=>b.year-a.year]};
 function showList(id){
  const e=ERAS.find(x=>x.id===id);if(!e){location.hash='';return}
- if(lera!==id){lera=id;lq='';lyear=0;lgenre=''}
+ if(lera!==id){lera=id;lq='';lyear=0;lgenre='';lpage=1}
  $('home').hidden=true;$('film').hidden=true;$('page').hidden=true;const el=$('list');el.hidden=false;cur='';setEra(e.id);
  document.title=`أفلام ${e.name} · شاشة زمان`;
  const all=FILMS.filter(f=>eraOf(f.year)===e),genres=[...new Set(all.flatMap(f=>f.genre||[]))],years=[...new Set(all.map(f=>f.year))].sort();
@@ -467,12 +480,13 @@ function showList(id){
   </div>
  </div>
  ${genres.length>1?`<span class="clab">النوع</span><div class="stamps" role="group" aria-label="النوع">${btn('','الكل',lgenre,'genre')}${genres.map(g=>btn(g,g,lgenre,'genre')).join('')}</div>`:''}
- <ol class="prog" id="prog"></ol>`;
+ <ol class="prog" id="prog"></ol>
+ <nav class="pager" id="pager" aria-label="صفحات القائمة"></nav>`;
  rows();
 }
 function mark(text,qn){if(!qn)return esc(text);const n=norm(text),i=n.indexOf(qn);if(i<0||n.length!==text.length)return esc(text);return esc(text.slice(0,i))+'<mark>'+esc(text.slice(i,i+qn.length))+'</mark>'+esc(text.slice(i+qn.length))}
 let clapT;function clap(){const c=document.querySelector('.clap');if(!c||matchMedia('(prefers-reduced-motion: reduce)').matches)return;c.classList.remove('go');void c.offsetWidth;c.classList.add('go')}
-function rows(){
+function rows(jump){
  const e=ERAS.find(x=>x.id===lera),all=FILMS.filter(f=>eraOf(f.year)===e),qn=norm(lq);
  const why=f=>{if(!qn||norm(f.title).includes(qn)||norm(f.director).includes(qn))return '';
   const c=(f.cast||[]).find(x=>norm(x).includes(qn));if(c)return 'بطولة: '+mark(c,qn);
@@ -480,16 +494,22 @@ function rows(){
   const g=(f.genre||[]).find(x=>norm(x).includes(qn));return g?'النوع: '+mark(g,qn):''};
  const ok=f=>(!lgenre||(f.genre||[]).includes(lgenre))&&(!lyear||f.year===lyear)&&(!qn||[f.title,f.director,f.writer,f.based_on,...(f.cast||[]),...(f.genre||[])].some(x=>norm(x).includes(qn)));
  const list=all.filter(ok).sort(LS[lsort][1]);
+ const pages=Math.max(1,Math.ceil(list.length/PER));lpage=Math.min(Math.max(1,lpage),pages);const off=(lpage-1)*PER,shown=list.slice(off,off+PER);
  const lc=$('lcount'),txt=`النتائج: ${ar(list.length)} من ${ar(all.length)}`;if(lc.textContent&&lc.textContent!==txt)clap();lc.textContent=txt;
- $('prog').innerHTML=list.length?list.map((f,i)=>{const [bg,ink]=STYLE[e.id],r=f.ratings||{},w=why(f);return `<li><a href="#film-${esc(f.id)}"><span class="i">${ar(i+1)}</span>${mpo(f,e.id)}<span><span class="t">${mark(f.title,qn)}</span><small>${ar(f.year)}${f.director?' · إخراج: '+mark(f.director,qn):''}</small>${w?`<span class="why">${w}</span>`:''}</span><span class="sc">${r.imdb?`<span class="s1">IMDb ${r.imdb.score.toFixed(1)}</span>`:''}${r.elcinema?`<span class="s2">السينما ${r.elcinema.score.toFixed(1)}</span>`:''}</span></a></li>`}).join(''):`<li class="lnone">لا شيء على اللوحة يطابق «${esc(lq)}». جرّب اسمًا آخر أو امسح اللوحة.</li>`;
+ $('prog').innerHTML=list.length?shown.map((f,i)=>{const [bg,ink]=STYLE[e.id],r=f.ratings||{},w=why(f);return `<li><a href="#film-${esc(f.id)}"><span class="i">${ar(off+i+1)}</span>${mpo(f,e.id)}<span><span class="t">${mark(f.title,qn)}</span><small>${ar(f.year)}${f.director?' · إخراج: '+mark(f.director,qn):''}</small>${w?`<span class="why">${w}</span>`:''}</span><span class="sc">${r.imdb?`<span class="s1">IMDb ${r.imdb.score.toFixed(1)}</span>`:''}${r.elcinema?`<span class="s2">السينما ${r.elcinema.score.toFixed(1)}</span>`:''}</span></a></li>`}).join(''):`<li class="lnone">لا شيء على اللوحة يطابق «${esc(lq)}». جرّب اسمًا آخر أو امسح اللوحة.</li>`;
+ const nums=[...new Set([1,pages,lpage-2,lpage-1,lpage,lpage+1,lpage+2].filter(n=>n>=1&&n<=pages))].sort((a,b)=>a-b);
+ let pg='';nums.forEach((n,k)=>{if(k&&n-nums[k-1]>1)pg+='<span class="gap" aria-hidden="true">…</span>';pg+=`<button type="button" class="fr" data-page="${n}" ${n===lpage?'aria-current="page"':''} aria-label="الصفحة ${ar(n)}">${ar(n)}</button>`});
+ $('pager').innerHTML=pages>1?`<button type="button" class="nv" data-page="${lpage-1}" ${lpage===1?'disabled':''}>→ السابق</button><div class="frames">${pg}</div><button type="button" class="nv" data-page="${lpage+1}" ${lpage===pages?'disabled':''}>التالي ←</button><p class="pinfo">${ar(off+1)}–${ar(off+shown.length)} من ${ar(list.length)}</p>`:'';
+ if(jump){const t=$('prog').getBoundingClientRect().top+scrollY-90;scrollTo({top:t,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
 }
-$('list').addEventListener('input',ev=>{if(ev.target.id!=='lq')return;lq=ev.target.value;$('lqx').hidden=!lq;rows()});
+$('list').addEventListener('input',ev=>{if(ev.target.id!=='lq')return;lq=ev.target.value;$('lqx').hidden=!lq;lpage=1;rows()});
 $('list').addEventListener('click',ev=>{
- if(ev.target.closest('#lqx')){lq='';const i=$('lq');i.value='';$('lqx').hidden=true;i.focus();rows();return}
+ if(ev.target.closest('#lqx')){lq='';const i=$('lq');i.value='';$('lqx').hidden=true;i.focus();lpage=1;rows();return}
+ const pb=ev.target.closest('[data-page]');if(pb){if(!pb.disabled){lpage=+pb.dataset.page;rows(true)}return}
  const b=ev.target.closest('[data-sort],[data-genre],[data-year]');if(!b)return;
  const grp=b.parentElement;
  if('sort' in b.dataset)lsort=b.dataset.sort;else if('genre' in b.dataset)lgenre=b.dataset.genre;else lyear=+b.dataset.year;
- grp.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));rows()});
+ grp.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));lpage=1;rows()});
 const XR=/^(game|people|network|stats|p-)/;
 function showPage(eraId,title){$('home').hidden=true;$('film').hidden=true;$('list').hidden=true;const el=$('page');el.hidden=false;cur='';setEra(eraId);for(const x of strip.children)x.classList.remove('on');document.title=(title?title+' · ':'')+'شاشة زمان';scrollTo(0,0);return el}
 function route(){const h=decodeURIComponent(location.hash.slice(1));closeMenu();
