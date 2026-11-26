@@ -1,21 +1,17 @@
-import requests, time, json
-S = requests.Session(); S.headers.update({"User-Agent": "ShashaZaman/1.0 (https://cimaeg.github.io)", "Accept": "application/sparql-results+json"})
-def q(s):
-    for i in range(5):
-        r = S.post("https://query.wikidata.org/sparql", data={"query": s}, timeout=120)
-        if r.status_code == 200: return r.json()["results"]["bindings"]
-        print("!", r.status_code); time.sleep(20)
-    return []
-def show(t, rows):
-    print("==", t, len(rows))
-    for r in rows[:40]: print("  ", {k: v["value"].rsplit("/",1)[-1] for k, v in r.items()})
-show("lipstick label search", q('''SELECT ?f ?l ?t ?c ?d WHERE { ?f rdfs:label ?l . FILTER(LANG(?l)="ar") FILTER(STR(?l) IN ("أحمر شفايف","احمر شفايف","أحمر شفاه")) OPTIONAL{?f wdt:P31 ?t} OPTIONAL{?f wdt:P495 ?c} OPTIONAL{?f wdt:P577 ?d} }'''))
-show("rihani films (P161)", q('''SELECT ?f ?l ?t ?c ?d WHERE { ?f wdt:P161 wd:Q2621467 . OPTIONAL{?f rdfs:label ?l FILTER(LANG(?l)="ar")} OPTIONAL{?f wdt:P31 ?t} OPTIONAL{?f wdt:P495 ?c} OPTIONAL{?f wdt:P577 ?d} }'''))
-for name, cond in [
-  ("film, arabic/egyptian lang, no P495", '?f wdt:P31 wd:Q11424 . ?f wdt:P364 ?lg . VALUES ?lg {wd:Q13955 wd:Q29919} FILTER NOT EXISTS {?f wdt:P495 ?c}'),
-  ("film, has elCinema id, not P495 Egypt", '?f wdt:P31 wd:Q11424 . ?f wdt:P3135 ?e . FILTER NOT EXISTS {?f wdt:P495 wd:Q79}'),
-  ("has elCinema id, not P31 film", '?f wdt:P3135 ?e . FILTER NOT EXISTS {?f wdt:P31 wd:Q11424}'),
-  ("film Egypt, no date", '?f wdt:P31 wd:Q11424 ; wdt:P495 wd:Q79 . FILTER NOT EXISTS {?f wdt:P577 ?d}'),
-]:
-    r = q(f"SELECT (COUNT(DISTINCT ?f) AS ?n) WHERE {{ {cond} }}"); print("COUNT", name, r[0]["n"]["value"] if r else "?")
-show("elCinema not P31 film: types", q('SELECT ?t (COUNT(?f) AS ?n) WHERE { ?f wdt:P3135 ?e . ?f wdt:P31 ?t . FILTER NOT EXISTS {?f wdt:P31 wd:Q11424} } GROUP BY ?t ORDER BY DESC(?n) LIMIT 10'))
+import requests, re, time, html
+S = requests.Session()
+S.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Accept-Language": "ar,en;q=0.8"})
+r = S.post("https://query.wikidata.org/sparql", data={"query": 'SELECT ?e WHERE { wd:Q4165427 wdt:P3136 ?e }'}, headers={"Accept": "application/sparql-results+json", "User-Agent": "ShashaZaman/1.0"}, timeout=60)
+pid = r.json()["results"]["bindings"][0]["e"]["value"] if r.ok and r.json()["results"]["bindings"] else None
+print("PERSON", pid)
+def dump(url, n=9000):
+    t = S.get(url, timeout=30); print("\n##### ", url, t.status_code, len(t.text))
+    s = re.sub(r"<script.*?</script>|<style.*?</style>|<svg.*?</svg>", "", t.text, flags=re.S)
+    s = re.sub(r"\s+", " ", s)
+    i = s.find("<main") if "<main" in s else 0
+    print(s[i:i+n])
+    return t.text
+dump("https://elcinema.com/work/1005029/")
+dump("https://elcinema.com/work/1005029/cast/", 7000)
+if pid:
+    t = dump(f"https://elcinema.com/person/{pid}/filmography/", 9000)
