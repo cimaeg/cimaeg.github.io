@@ -108,11 +108,11 @@ def clean_label(s):
     return s
 
 
-def slug(en, year, taken):
+def slug(en, year, taken, q):
     s = unicodedata.normalize("NFKD", en or "").encode("ascii", "ignore").decode()
     s = re.sub(r"\(.*?\)", "", s).lower()
     s = re.sub(r"[^a-z0-9]+", "-", s).strip("-")[:48].strip("-")
-    base = f"{s}-{year}" if s else f"film-{year}"
+    base = f"{s}-{year}" if s else f"{year}-{q.lower()}"
     out, n = base, 2
     while out in taken:
         out, n = f"{base}-{n}", n + 1
@@ -386,10 +386,11 @@ def main():
         def names(role, imdb_cat):
             ks = [p for p, _ in c[role]]
             ks += [known_nm[nc] for _, nc, cat in sorted(prin.get(tt, [])) if cat == imdb_cat and nc in known_nm]
-            out = []
+            out, seen = [], set()
             for p in ks:
                 n = name(p)
-                if n and n not in out:
+                if n and n not in seen:
+                    seen.add(n)
                     out.append((p, n))
             return out
 
@@ -406,12 +407,12 @@ def main():
         if not dur and tt in basics and basics[tt]["runtime"].isdigit():
             dur = int(basics[tt]["runtime"])
 
-        rec = old if old else {"id": slug(f["en"], f["year"], taken)}
+        rec = old if old else {"id": slug(f["en"], f["year"], taken, k)}
         used.add(rec["id"])
         rec.update({
             "title": title,
             "year": f["year"],
-            "director": "، ".join(n for _, n in directors[:2]) or None,
+            "director": directors[0][1] if directors else None,
             "cast": [n for _, n in cast],
             "genre": genre,
             "writer": "، ".join(n for _, n in writers[:3]) or None,
@@ -435,7 +436,7 @@ def main():
         records.append(rec)
 
         # تواريخ الصنّاع وجنسهم لصفحات الأشخاص
-        for p, n in cast + directors[:2]:
+        for p, n in cast + directors[:1]:
             pd = people[p]
             po = people_out.setdefault(n, {})
             if po.get("qid") and po["qid"] != p:

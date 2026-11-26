@@ -343,7 +343,9 @@ rotor.addEventListener('click',ev=>{const h=ev.target.closest('.hole');if(!h)ret
 const cnt=n=>n===1?'فيلم واحد':n===2?'فيلمان':ar(n)+(n<=10?' أفلام':' فيلمًا');
 const score=f=>f.ratings&&f.ratings.imdb?f.ratings.imdb.score:0;
 const escore=f=>f.ratings&&f.ratings.elcinema?f.ratings.elcinema.score:0;
-const byRating=(a,b)=>score(b)-score(a)||escore(b)-escore(a)||a.year-b.year;
+// ترتيب موزون: تقييم IMDb بأصوات قليلة يُقرَّب من المتوسط حتى لا يتصدّر فيلم قيّمه خمسة أشخاص
+const wscore=f=>{const i=f.ratings&&f.ratings.imdb,v=i&&i.votes||0,e=escore(f);if(!i||!i.score)return e?e*.85:0;const w=v/(v+150);return w*i.score+(1-w)*(e?(e+6)/2:6)};
+const byRating=(a,b)=>wscore(b)-wscore(a)||escore(b)-escore(a)||a.year-b.year;
 const REEL='<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="#ffd77a" stroke-width="4"/><circle cx="50" cy="50" r="7" fill="#ffd77a"/>'+[0,72,144,216,288].map(d=>{const r=d*Math.PI/180;return `<circle cx="${50+26*Math.cos(r)}" cy="${50+26*Math.sin(r)}" r="11" fill="none" stroke="#ffd77a" stroke-width="4"/>`}).join('')+'</svg>';
 function top5(e,list){
  if(!list.length)return '';
@@ -407,7 +409,7 @@ async function showFilm(id){
  ${castStrip(f,e)}
  <div class="read"><div class="main">
  <div class="tsize"><span class="a s" aria-hidden="true">أ</span><input id="tsr" type="range" min="${TSMIN}" max="${TSMAX}" step="0.01" value="${tsv}" aria-label="حجم نص المقالة"><span class="a l" aria-hidden="true">أ</span><button type="button" class="rst" id="tsrst" aria-label="إعادة الحجم الافتراضي" title="إعادة الحجم الافتراضي">↺</button><label class="lbl" for="tsr">حجم القراءة</label></div>
- <div class="prose" id="prose"><p class="lead">${esc(f.summary)}</p></div></div>
+ <div class="prose" id="prose">${f.summary?`<p class="lead">${esc(f.summary)}</p>`:''}</div></div>
  <aside class="side" id="side">${sideRel(f,e)}</aside></div>`;
  applyTs();
  window.scrollTo(0,0);

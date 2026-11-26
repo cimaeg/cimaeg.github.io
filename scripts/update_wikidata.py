@@ -35,7 +35,7 @@ def day(v, prec):
 def sparql(q):
     for i in range(4):
         try:
-            r = S.get("https://query.wikidata.org/sparql", params={"query": q}, timeout=90)
+            r = S.post("https://query.wikidata.org/sparql", data={"query": q}, timeout=120)
             if r.status_code == 200:
                 return r.json()["results"]["bindings"]
             print("  !", r.status_code, r.text[:200])
@@ -46,6 +46,8 @@ def sparql(q):
 
 def main():
     films = json.load(open(FILMS, encoding="utf-8"))
+    # الأفلام المستوردة (src=wikidata) يتولّاها import_films.py؛ هنا الأفلام المكتوبة يدويًا فقط
+    films = [f for f in films if f.get("src") != "wikidata"]
     by_imdb = {f["ratings"]["imdb"]["id"]: f for f in films if f.get("ratings", {}).get("imdb", {}).get("id")}
     try:
         old = json.load(open(OUT, encoding="utf-8"))

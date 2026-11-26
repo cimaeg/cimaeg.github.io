@@ -102,10 +102,10 @@ def main():
     films = json.load(open(DATA, encoding="utf-8"))
     imdb_load({(f.get("ratings") or {}).get("imdb", {}).get("id") for f in films} - {None})
     for f in films:
-        print(f"• {f['title']} ({f['year']})")
+        print(f"• {f['title']} ({f['year']})", flush=True)
         r = f.setdefault("ratings", {})
         im = r.get("imdb") or {}
-        if not im.get("id"):
+        if not im.get("id") and f.get("src") != "wikidata":
             tid = imdb_find(f)
             if tid:
                 im["id"] = tid
@@ -118,7 +118,7 @@ def main():
             r["imdb"] = im
             print("  IMDb:", im)
         el = r.get("elcinema") or {}
-        if not el.get("id"):
+        if not el.get("id") and f.get("src") != "wikidata":
             wid = elc_find(f)
             if wid:
                 el["id"] = wid

@@ -79,7 +79,7 @@ function lobby() {
   $('pull').addEventListener('click', pullTicket);
 }
 function pullTicket() {
-  const list = FILMS().filter(f => f !== lastTicket), f = list[Math.floor(Math.random() * list.length)]; lastTicket = f;
+  const list = KNOWN().filter(f => f !== lastTicket), f = list[Math.floor(Math.random() * list.length)]; lastTicket = f;
   const tk = $('tk'), e = eraOf(f.year).id, [bg, ink] = STYLE[e];
   tk.hidden = false; tk.classList.remove('out'); void tk.offsetWidth;
   tk.style.setProperty('--tbg', bg); tk.style.setProperty('--tink', ink);
@@ -91,9 +91,11 @@ function pullTicket() {
 /* ——— خمّن الفيلم ——— */
 const EPOCH = Date.UTC(2026, 10, 25);
 function seeded(n, seed) { const a = [...Array(n).keys()]; let s = seed; for (let i = n - 1; i > 0; i--) { s = (s * 1103515245 + 12345) % 2147483648; const j = s % (i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+// الأفلام المعروفة: لها ملخص، أو قيّمها على IMDb عدد كافٍ من الناس
+const KNOWN = () => { const k = FILMS().filter(f => f.summary || (((f.ratings || {}).imdb || {}).votes || 0) >= 250); return k.length >= 20 ? k : FILMS(); };
 function gameToday() {
   const now = new Date(), day = Math.floor((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - EPOCH) / 864e5);
-  const list = [...FILMS()].sort((a, b) => a.id < b.id ? -1 : 1), n = list.length;
+  const list = [...KNOWN()].sort((a, b) => a.id < b.id ? -1 : 1), n = list.length;
   const cycle = Math.floor(day / n), order = seeded(n, 7919 + cycle * 31);
   return { day, no: day + 1, f: list[order[((day % n) + n) % n]] };
 }
@@ -176,11 +178,11 @@ function paintGame(anim) {
     ${!G.practice && s ? `<dl class="gst"><div><dt>لعبت</dt><dd>${ar(s.played)}</dd></div><div><dt>فزت</dt><dd>${ar(s.played ? Math.round(s.won / s.played * 100) : 0)}٪</dd></div><div><dt>سلسلة</dt><dd>${ar(s.streak)}</dd></div><div><dt>أفضل سلسلة</dt><dd>${ar(s.best)}</dd></div></dl>` : ''}
     ${!G.practice ? '<p class="note">لغز جديد كل يوم عند منتصف الليل.</p>' : ''}</div></div>`;
   $('gshare').addEventListener('click', async e => { try { await navigator.clipboard.writeText(share); e.target.textContent = 'نُسخت ✓'; } catch { e.target.textContent = 'تعذّر النسخ'; } });
-  $('gprac').addEventListener('click', () => { const pool = FILMS().filter(x => x !== f); renderGame(pool[Math.floor(Math.random() * pool.length)]); });
+  $('gprac').addEventListener('click', () => { const pool = KNOWN().filter(x => x !== f); renderGame(pool[Math.floor(Math.random() * pool.length)]); });
 }
 
 /* ——— فهرس الصنّاع ——— */
-let pq = '';
+let pq = '', plim = 120;
 function renderPeople() {
   const el = showPage('e60', 'الصنّاع');
   el.innerHTML = `<div class="pwrap"><a class="back" href="#top">→ العودة إلى آلة الزمن</a>
@@ -189,11 +191,14 @@ function renderPeople() {
    <div id="plist"></div></div>`;
   const draw = () => {
     const qn = norm(pq), all = [...people().values()].filter(p => !qn || norm(p.name).includes(qn)).sort((a, b) => b.films.length - a.films.length || a.name.localeCompare(b.name, 'ar'));
-    const grp = (t, arr) => arr.length ? `<h2 class="pg">${t} <small>${ar(arr.length)}</small></h2><div class="pgrid">${arr.map(p => `<a class="pc" href="#p-${encodeURIComponent(p.name)}">${avatar(p)}<span><b>${esc(p.name)}</b><small>${cnt(p.films.length)} · ${ar(p.films[0].year)}${p.films.length > 1 ? '–' + ar(p.films[p.films.length - 1].year) : ''}</small></span></a>`).join('')}</div>` : '';
-    $('plist').innerHTML = grp('مخرجون', all.filter(p => p.roles.has('مخرج'))) + grp('ممثلون', all.filter(p => !p.roles.has('مخرج'))) || '<p class="lnone">لا يوجد اسم يطابق البحث.</p>';
+    const grp = (t, arr, n) => arr.length ? `<h2 class="pg">${t} <small>${ar(n)}</small></h2><div class="pgrid">${arr.map(p => `<a class="pc" href="#p-${encodeURIComponent(p.name)}">${avatar(p)}<span><b>${esc(p.name)}</b><small>${cnt(p.films.length)} · ${ar(p.films[0].year)}${p.films.length > 1 ? '–' + ar(p.films[p.films.length - 1].year) : ''}</small></span></a>`).join('')}</div>` : '';
+    const ds = all.filter(p => p.roles.has('مخرج')), as = all.filter(p => !p.roles.has('مخرج')), more = ds.length > plim || as.length > plim;
+    $('plist').innerHTML = (grp('مخرجون', ds.slice(0, plim), ds.length) + grp('ممثلون', as.slice(0, plim), as.length) || '<p class="lnone">لا يوجد اسم يطابق البحث.</p>')
+      + (more ? `<button type="button" class="btn ghost pmore" id="pmore">أظهر المزيد</button>` : '');
+    const mb = $('pmore'); if (mb) mb.addEventListener('click', () => { plim += 240; draw(); });
   };
   draw();
-  $('pq').addEventListener('input', e => { pq = e.target.value; draw(); });
+  $('pq').addEventListener('input', e => { pq = e.target.value; plim = 120; draw(); });
 }
 
 /* ——— صفحة الشخص ——— */
