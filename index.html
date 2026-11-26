@@ -84,6 +84,7 @@ a{color:inherit}
 .prog{list-style:none;margin:16px 0 0;padding:0;border-top:2px solid var(--ink)}
 .prog a{display:grid;grid-template-columns:52px 76px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 4px;border-bottom:1px dashed var(--line);text-decoration:none}
 .prog a:hover{background:rgba(255,255,255,.05)}
+.prog .sc:empty{display:none}
 .pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px;margin:30px 0 6px}
 .pager .frames{display:flex;align-items:center;gap:6px;padding:9px 12px;background:#141210;border-radius:6px;position:relative;box-shadow:inset 0 0 0 1px #ffffff14}
 .pager .frames::before,.pager .frames::after{content:"";position:absolute;inset-inline:6px;height:4px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='4'%3E%3Crect x='3' y='0' width='6' height='4' rx='1' fill='%23e9e2d2' fill-opacity='.55'/%3E%3C/svg%3E") repeat-x}
@@ -95,8 +96,12 @@ a{color:inherit}
 .pager .nv{height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font:600 15px var(--body);cursor:pointer}
 .pager .nv:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
 .pager .nv:disabled{opacity:.35;cursor:default}
+.pager .pjump{display:flex;align-items:center;gap:8px;color:var(--sub);font-size:14px}
+.pager .pjump input{width:64px;height:42px;text-align:center;border-radius:8px;border:1.5px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:700 16px var(--body)}
+.pager .pjump input:focus{outline:0;border-color:var(--acc)}
+.pager .pjump button{height:42px;padding:0 14px;border-radius:8px;border:0;background:var(--acc);color:#111;font:700 15px var(--body);cursor:pointer}
 .pager .pinfo{flex-basis:100%;text-align:center;margin:0;color:var(--sub);font-size:14px}
-@media(max-width:560px){.pager .pinfo{order:3}.pager .nv{order:2}.pager .frames{order:1;flex-basis:100%;justify-content:center}.pager .fr{min-width:34px}}
+@media(max-width:560px){.pager .pjump{order:3;flex-basis:100%;justify-content:center}.pager .pinfo{order:4}.pager .nv{order:2}.pager .frames{order:1;flex-basis:100%;justify-content:center}.pager .fr{min-width:34px}}
 .prog .i{font:700 34px/1 var(--disp);color:var(--acc);text-align:center}
 .mp{width:76px;aspect-ratio:2/3;border-radius:3px;display:flex;flex-direction:column;justify-content:space-between;padding:7px;box-shadow:0 8px 16px -8px #000a;overflow:hidden}
 .mp i{font:700 10px/1 var(--body);font-style:normal;opacity:.8}
@@ -499,9 +504,10 @@ function rows(jump){
  $('prog').innerHTML=list.length?shown.map((f,i)=>{const [bg,ink]=STYLE[e.id],r=f.ratings||{},w=why(f);return `<li><a href="#film-${esc(f.id)}"><span class="i">${ar(off+i+1)}</span>${mpo(f,e.id)}<span><span class="t">${mark(f.title,qn)}</span><small>${ar(f.year)}${f.director?' · إخراج: '+mark(f.director,qn):''}</small>${w?`<span class="why">${w}</span>`:''}</span><span class="sc">${r.imdb?`<span class="s1">IMDb ${r.imdb.score.toFixed(1)}</span>`:''}${r.elcinema?`<span class="s2">السينما ${r.elcinema.score.toFixed(1)}</span>`:''}</span></a></li>`}).join(''):`<li class="lnone">لا شيء على اللوحة يطابق «${esc(lq)}». جرّب اسمًا آخر أو امسح اللوحة.</li>`;
  const nums=[...new Set([1,pages,lpage-2,lpage-1,lpage,lpage+1,lpage+2].filter(n=>n>=1&&n<=pages))].sort((a,b)=>a-b);
  let pg='';nums.forEach((n,k)=>{if(k&&n-nums[k-1]>1)pg+='<span class="gap" aria-hidden="true">…</span>';pg+=`<button type="button" class="fr" data-page="${n}" ${n===lpage?'aria-current="page"':''} aria-label="الصفحة ${ar(n)}">${ar(n)}</button>`});
- $('pager').innerHTML=pages>1?`<button type="button" class="nv" data-page="${lpage-1}" ${lpage===1?'disabled':''}>→ السابق</button><div class="frames">${pg}</div><button type="button" class="nv" data-page="${lpage+1}" ${lpage===pages?'disabled':''}>التالي ←</button><p class="pinfo">${ar(off+1)}–${ar(off+shown.length)} من ${ar(list.length)}</p>`:'';
+ $('pager').innerHTML=pages>1?`<button type="button" class="nv" data-page="${lpage-1}" ${lpage===1?'disabled':''}>→ السابق</button><div class="frames">${pg}</div><button type="button" class="nv" data-page="${lpage+1}" ${lpage===pages?'disabled':''}>التالي ←</button><form class="pjump" id="pjump"><label for="pji">انتقل إلى</label><input id="pji" type="text" inputmode="numeric" autocomplete="off" placeholder="${ar(lpage)}" aria-label="رقم الصفحة من ${ar(pages)}"><span>من ${ar(pages)}</span><button type="submit">اذهب</button></form><p class="pinfo">${ar(off+1)}–${ar(off+shown.length)} من ${ar(list.length)}</p>`:'';
  if(jump){const t=$('prog').getBoundingClientRect().top+scrollY-90;scrollTo({top:t,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
 }
+$('list').addEventListener('submit',ev=>{if(ev.target.id!=='pjump')return;ev.preventDefault();const i=$('pji'),n=parseInt(String(i.value).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)),10);if(!n){i.focus();return}lpage=n;rows(true)});
 $('list').addEventListener('input',ev=>{if(ev.target.id!=='lq')return;lq=ev.target.value;$('lqx').hidden=!lq;lpage=1;rows()});
 $('list').addEventListener('click',ev=>{
  if(ev.target.closest('#lqx')){lq='';const i=$('lq');i.value='';$('lqx').hidden=true;i.focus();lpage=1;rows();return}
