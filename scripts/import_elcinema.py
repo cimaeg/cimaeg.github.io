@@ -94,7 +94,9 @@ def crawl_index(cache):
             y = re.search(r"(1[89]\d\d|20\d\d)", text(tds[4]))
             year = int(y.group(1)) if y else None
             years.append(year or 9999)
-            cat = text(tds[2])
+            cat, sub = text(tds[2]), text(tds[3])
+            if any(x in sub for x in ("قصير", "تسجيلي", "وثائقي", "تلفزيون", "إذاعي")):
+                continue
             if cat == "فيلم" and year and MIN_YEAR <= year <= MAX_YEAR:
                 works[m.group(1)] = {"title": text(m.group(2)), "year": year}
         if years and max(years) < MIN_YEAR:
