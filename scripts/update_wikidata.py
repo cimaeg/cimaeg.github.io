@@ -47,7 +47,7 @@ def sparql(q):
 def main():
     films = json.load(open(FILMS, encoding="utf-8"))
     # الأفلام المستوردة (src=wikidata) يتولّاها import_films.py؛ هنا الأفلام المكتوبة يدويًا فقط
-    films = [f for f in films if f.get("src") != "wikidata"]
+    films = [f for f in films if not f.get("src")]
     by_imdb = {f["ratings"]["imdb"]["id"]: f for f in films if f.get("ratings", {}).get("imdb", {}).get("id")}
     try:
         old = json.load(open(OUT, encoding="utf-8"))

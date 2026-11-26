@@ -105,7 +105,7 @@ def main():
         print(f"• {f['title']} ({f['year']})", flush=True)
         r = f.setdefault("ratings", {})
         im = r.get("imdb") or {}
-        if not im.get("id") and f.get("src") != "wikidata":
+        if not im.get("id") and not f.get("src"):
             tid = imdb_find(f)
             if tid:
                 im["id"] = tid
@@ -118,7 +118,7 @@ def main():
             r["imdb"] = im
             print("  IMDb:", im)
         el = r.get("elcinema") or {}
-        if not el.get("id") and f.get("src") != "wikidata":
+        if not el.get("id") and not f.get("src"):
             wid = elc_find(f)
             if wid:
                 el["id"] = wid

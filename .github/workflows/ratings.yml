@@ -30,6 +30,7 @@ jobs:
           python-version: "3.12"
       - run: pip install requests
       - run: python scripts/import_films.py
+      - run: python scripts/import_elcinema.py --minutes 40
       - run: python scripts/update_ratings.py
       - run: python scripts/update_wikidata.py
       - id: commit

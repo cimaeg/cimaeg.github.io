@@ -20,7 +20,7 @@ concurrency:
 jobs:
   import:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 130
     outputs:
       changed: ${{ steps.commit.outputs.changed }}
     steps:
@@ -29,7 +29,12 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install requests
-      - run: python scripts/import_films.py ${{ inputs.dry && '--dry' || '' }}
+      - if: ${{ !inputs.dry }}
+        run: python scripts/import_films.py
+      - if: ${{ !inputs.dry }}
+        run: python scripts/import_elcinema.py --minutes 100
+      - if: ${{ inputs.dry }}
+        run: python scripts/import_elcinema.py --test
       - id: commit
         if: ${{ !inputs.dry }}
         run: |
