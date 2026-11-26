@@ -338,6 +338,13 @@ def main():
             continue
         year = x["year"]
         rid = f"{year}-elc{wid}"
+        # نفس الفيلم بسنة مختلفة قليلًا في المصدر الآخر: نفس العنوان، ونفس المخرج أو ممثل مشترك
+        raw_cast = {name(p, n) for p, n in w.get("cast", [])[:CAST_N]}
+        raw_dir = name(*w["director"][0]) if w.get("director") else None
+        if any(norm(o["title"]) == norm(w.get("title") or x["title"]) and abs(o["year"] - year) <= 3
+               and ((raw_dir and o.get("director") == raw_dir) or raw_cast & set(o.get("cast") or []))
+               for o in films):
+            continue
         rec = old_elc.get(rid, {"id": rid})
         cast = [(p, name(p, n)) for p, n in w.get("cast", [])[:CAST_N]]
         director = [(p, name(p, n)) for p, n in w.get("director", [])[:1]]
