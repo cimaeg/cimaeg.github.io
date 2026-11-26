@@ -1,23 +1,27 @@
-import requests, re, html
+import requests, re
 S = requests.Session()
 S.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Accept-Language": "ar,en;q=0.8"})
 def get(u):
-    t = S.get(u, timeout=30).text
+    r = S.get(u, timeout=30); t = r.text
     t = re.sub(r"<script.*?</script>|<style.*?</style>|<svg.*?</svg>|<head>.*?</head>", "", t, flags=re.S)
-    return re.sub(r"\s+", " ", t)
-def ctx(t, words, w=500):
-    for k in words:
-        for m in list(re.finditer(k, t))[:2]:
-            print(f"--[{k}]", t[max(0, m.start()-w): m.end()+w].replace("\n"," "))
-t = get("https://elcinema.com/work/1005029/")
-ctx(t, ["إخراج", "تأليف", "مصر", "دقيقة", "النوع", "تاريخ العرض"], 350)
-print("PERSONLINKS", re.findall(r'href="/person/(\d+)/"[^>]*>([^<]+)<', t)[:30])
-t = get("https://elcinema.com/work/1005029/cast/")
-ctx(t, ["إخراج", "تأليف", "تمثيل", "سيناريو"], 600)
-print("CASTLINKS", re.findall(r'href="/person/(\d+)/"[^>]*>([^<]+)<', t)[:40])
-t = get("https://elcinema.com/person/1049796/")
-print("WORKLINKS", re.findall(r'href="/work/(\d+)/"[^>]*>([^<]+)<', t)[:60])
-ctx(t, ["أحمر شفايف"], 700)
-t2 = get("https://elcinema.com/person/1049796/filmography/")
-print("FILMO", len(t2), re.findall(r'href="/work/(\d+)/"[^>]*>([^<]+)<', t2)[:60])
-ctx(t2, ["أحمر شفايف"], 900)
+    return r.status_code, r.url, re.sub(r"\s+", " ", t)
+for u in ["https://elcinema.com/index/work/release_year/1946/",
+          "https://elcinema.com/index/work/release_year/1946/?page=2",
+          "https://elcinema.com/index/work/country/eg/?year=1946",
+          "https://elcinema.com/index/work/country/eg/1946/",
+          "https://elcinema.com/index/work/category/1/country/eg/release_year/1946/",
+          "https://elcinema.com/en/index/work/release_year/1946/"]:
+    try:
+        c, url, t = get(u)
+    except Exception as e:
+        print("ERR", u, e); continue
+    works = re.findall(r'href="/(?:en/)?work/(\d+)/"[^>]*>([^<]{2,})<', t)
+    pages = sorted(set(re.findall(r'[?&]page=(\d+)', t)), key=int)
+    print("\n###", u, c, url, "works:", len(set(w for w, _ in works)), "pages:", pages[-5:])
+    print("  sample:", list(dict.fromkeys(works))[:12])
+    m = re.search(r'href="/(?:en/)?work/(\d+)/"', t)
+    if m:
+        i = m.start(); print("  ctx:", t[max(0, i-300): i+1200])
+    for k in ["نتيجة", "عدد", "results"]:
+        mm = re.search(k, t)
+        if mm: print("  [", k, "]", t[max(0, mm.start()-200): mm.end()+200])
