@@ -49,7 +49,11 @@ GENRE_IMDB = {
 }
 
 
-def sparql(q, tries=4):
+class WDFail(Exception):
+    pass
+
+
+def sparql(q, tries=6):
     for i in range(tries):
         try:
             r = S.post("https://query.wikidata.org/sparql", data={"query": q},
@@ -59,8 +63,8 @@ def sparql(q, tries=4):
             print("  !", r.status_code, r.text[:200])
         except Exception as e:
             print("  !", e)
-        time.sleep(8 + i * 15)
-    raise SystemExit("Wikidata query failed")
+        time.sleep(20 + i * 40)
+    raise WDFail("Wikidata query failed")
 
 
 def qid(v):
@@ -476,4 +480,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except WDFail as e:
+        # ويكي بيانات مشغول: نُبقي البيانات كما هي ونكمل تحديث التقييمات
+        print("!", e, "— keeping existing data")
