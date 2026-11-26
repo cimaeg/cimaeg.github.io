@@ -324,7 +324,7 @@ const poster=(f)=>{const e=eraOf(f.year).id,[bg,ink,acc]=STYLE[e],v=FILMS.indexO
  if(pimg(f)){const sc0=f.ratings&&f.ratings.imdb?`<span class="chip">★ ${f.ratings.imdb.score.toFixed(1)}</span>`:'';return `<div class="poster img">${sc0}<img src="${pimg(f)}" alt="أفيش فيلم ${esc(f.title)}" loading="lazy"></div>`}
  const sun=v===0?`<span class="sun" style="width:120px;height:120px;background:${acc};bottom:-30px;left:-30px"></span>`:v===1?`<span class="sun" style="width:100%;height:38%;border-radius:0;background:${acc};top:30%;left:0;opacity:.3"></span>`:`<span class="sun" style="width:70px;height:70px;background:${acc};top:14px;left:14px"></span>`;
  const sc=f.ratings&&f.ratings.imdb?`<span class="chip">★ ${f.ratings.imdb.score.toFixed(1)}</span>`:'';
- return `<div class="poster" style="background:${bg};color:${ink};--disp:${FONT[e]}">${sun}${sc}<span class="py">${ar(f.year)}</span><span class="pt">${esc(f.title)}</span><span class="pc">${esc((f.cast||[]).slice(0,2).join(' · '))}<br>إخراج: ${esc(f.director)}</span></div>`};
+ return `<div class="poster" style="background:${bg};color:${ink};--disp:${FONT[e]}">${sun}${sc}<span class="py">${ar(f.year)}</span><span class="pt">${esc(f.title)}</span><span class="pc">${esc((f.cast||[]).slice(0,2).join(' · '))}<br>${f.director ? 'إخراج: ' + esc(f.director) : ''}</span></div>`};
 
 /* ——— الصفحة الرئيسية ——— */
 const strip=$('strip'),main=$('eras');
@@ -350,7 +350,7 @@ const REEL='<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50
 function top5(e,list){
  if(!list.length)return '';
  const top=[...list].sort(byRating).slice(0,5),rest=list.length-top.length;
- const card=(f,i)=>`<a class="card rk" href="#film-${esc(f.id)}"><span class="n">${ar(i+1)}</span>${poster(f)}<div class="cap">${esc(f.title)}<small>${ar(f.year)} · ${esc(f.director)}</small></div></a>`;
+ const card=(f,i)=>`<a class="card rk" href="#film-${esc(f.id)}"><span class="n">${ar(i+1)}</span>${poster(f)}<div class="cap">${esc(f.title)}<small>${ar(f.year)}${f.director?' · '+esc(f.director):''}</small></div></a>`;
  const reel=`<a class="reel" href="#list-${e.id}" aria-label="كل أفلام ${e.name}">${REEL}<b>${rest>0?'+'+ar(rest):ar(list.length)}</b><span>${rest>0?(rest===1?'فيلم آخر في':rest===2?'فيلمان آخران في':rest<=10?'أفلام أخرى في':'فيلمًا آخر في'):'كل أفلام'} ${e.name}</span><em>افتح البكرة ←</em></a>`;
  return `<div class="top5">${top.map(card).join('')}${reel}</div>`;
 }
@@ -401,7 +401,7 @@ async function showFilm(id){
  const row=(k,v)=>v?`<dt>${k}</dt><dd>${esc(v)}</dd>`:'';
  el.innerHTML=`<a class="back" href="#${e.id}">→ العودة إلى ${e.name}</a>
  <div class="film-top"><div>${poster(f)}</div><div>
-  <div class="kicker">${ar(f.year)} · ${e.name}</div><h1>${esc(f.title)}</h1><p class="by">إخراج: ${plink(f.director)}</p>
+  <div class="kicker">${ar(f.year)} · ${e.name}</div><h1>${esc(f.title)}</h1>${f.director?`<p class="by">إخراج: ${plink(f.director)}</p>`:''}
   ${(m=>m?`<dl class="meta">${m}</dl>`:'')(row('التأليف',f.writer)+(/عن /.test(f.writer||'')?'':row('عن',f.based_on))+row('الإنتاج',f.producer)+row('المدة',f.duration)+row('العرض الأول',f.premiere))}
   <div class="tags">${(f.genre||[]).map(g=>`<span>${esc(g)}</span>`).join('')}</div>
   ${rates(f)}
@@ -481,7 +481,7 @@ function rows(){
  const ok=f=>(!lgenre||(f.genre||[]).includes(lgenre))&&(!lyear||f.year===lyear)&&(!qn||[f.title,f.director,f.writer,f.based_on,...(f.cast||[]),...(f.genre||[])].some(x=>norm(x).includes(qn)));
  const list=all.filter(ok).sort(LS[lsort][1]);
  const lc=$('lcount'),txt=`النتائج: ${ar(list.length)} من ${ar(all.length)}`;if(lc.textContent&&lc.textContent!==txt)clap();lc.textContent=txt;
- $('prog').innerHTML=list.length?list.map((f,i)=>{const [bg,ink]=STYLE[e.id],r=f.ratings||{},w=why(f);return `<li><a href="#film-${esc(f.id)}"><span class="i">${ar(i+1)}</span>${mpo(f,e.id)}<span><span class="t">${mark(f.title,qn)}</span><small>${ar(f.year)} · إخراج: ${mark(f.director,qn)}</small>${w?`<span class="why">${w}</span>`:''}</span><span class="sc">${r.imdb?`<span class="s1">IMDb ${r.imdb.score.toFixed(1)}</span>`:''}${r.elcinema?`<span class="s2">السينما ${r.elcinema.score.toFixed(1)}</span>`:''}</span></a></li>`}).join(''):`<li class="lnone">لا شيء على اللوحة يطابق «${esc(lq)}». جرّب اسمًا آخر أو امسح اللوحة.</li>`;
+ $('prog').innerHTML=list.length?list.map((f,i)=>{const [bg,ink]=STYLE[e.id],r=f.ratings||{},w=why(f);return `<li><a href="#film-${esc(f.id)}"><span class="i">${ar(i+1)}</span>${mpo(f,e.id)}<span><span class="t">${mark(f.title,qn)}</span><small>${ar(f.year)}${f.director?' · إخراج: '+mark(f.director,qn):''}</small>${w?`<span class="why">${w}</span>`:''}</span><span class="sc">${r.imdb?`<span class="s1">IMDb ${r.imdb.score.toFixed(1)}</span>`:''}${r.elcinema?`<span class="s2">السينما ${r.elcinema.score.toFixed(1)}</span>`:''}</span></a></li>`}).join(''):`<li class="lnone">لا شيء على اللوحة يطابق «${esc(lq)}». جرّب اسمًا آخر أو امسح اللوحة.</li>`;
 }
 $('list').addEventListener('input',ev=>{if(ev.target.id!=='lq')return;lq=ev.target.value;$('lqx').hidden=!lq;rows()});
 $('list').addEventListener('click',ev=>{
@@ -535,7 +535,7 @@ function search(raw){
  const byPerson=exact?[...exact.films].filter(f=>!films.includes(f)):[];
  const fl=[...films,...byPerson];
  let h='';
- if(fl.length)h+=`<div class="grp">${exact?'أفلام '+esc(exact.name):'أفلام'}</div>`+fl.map(f=>{const [bg,ink]=STYLE[eraOf(f.year).id];return `<a class="hit" href="#film-${esc(f.id)}"><span class="sw" style="background:${bg};color:${ink}">${ar(String(f.year).slice(2))}</span><span><b>${hl(f.title,qn)}</b><small>${ar(f.year)} · إخراج: ${esc(f.director)}${f.based_on?' · عن '+esc(f.based_on):''}</small></span></a>`}).join('');
+ if(fl.length)h+=`<div class="grp">${exact?'أفلام '+esc(exact.name):'أفلام'}</div>`+fl.map(f=>{const [bg,ink]=STYLE[eraOf(f.year).id];return `<a class="hit" href="#film-${esc(f.id)}"><span class="sw" style="background:${bg};color:${ink}">${ar(String(f.year).slice(2))}</span><span><b>${hl(f.title,qn)}</b><small>${ar(f.year)} · ${f.director ? 'إخراج: ' + esc(f.director) : ''}${f.based_on?' · عن '+esc(f.based_on):''}</small></span></a>`}).join('');
  const pl=ppl.filter(p=>!exact||p.name!==exact.name);
  if(pl.length)h+=`<div class="grp">ممثلون ومخرجون</div>`+pl.map(p=>`<a class="hit" href="#p-${encodeURIComponent(p.name)}"><span class="av">${esc(p.name[0])}</span><span><b>${hl(p.name,qn)}</b><small>${[...p.roles].join(' و')} · ${ar(p.films.size)} ${p.films.size>2?'أفلام':'فيلم'} في الأرشيف</small></span></a>`).join('');
  res.innerHTML=h||`<div class="none">لا نتائج لـ «${esc(raw)}». جرّب اسمًا آخر أو جزءًا من العنوان.</div>`;
@@ -552,7 +552,8 @@ res.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b)retu
 /* ——— تحميل البيانات ——— */
 window.SZ={get FILMS(){return FILMS},ERAS,STYLE,FONT,esc,ar,norm,eraOf,poster,mpo,cnt,score,escore,byRating,md,pname,plink,showPage,route,ready:false};
 fetch('data/people.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>{PPX=x||{};const m=location.hash.match(/^#film-(.+)$/),c=document.querySelector('#film .cast'),f=m&&FILMS.find(y=>y.id===m[1]);if(c&&f)c.outerHTML=castStrip(f,eraOf(f.year))});
-fetch('data/films.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{FILMS=d.sort((a,b)=>a.year-b.year);renderHome();SZ.ready=true;route();const sc=document.createElement('script');sc.src='js/extras.js';document.body.appendChild(sc)})
+fetch('data/films.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{for(const f of d){const r=f.ratings||(f.ratings={});for(const k of ['imdb','elcinema'])if(r[k]&&typeof r[k].score!=='number')delete r[k];f.cast=f.cast||[];f.genre=f.genre||[]}
+ FILMS=d.sort((a,b)=>a.year-b.year);renderHome();SZ.ready=true;route();const sc=document.createElement('script');sc.src='js/extras.js';document.body.appendChild(sc)})
  .catch(()=>{main.innerHTML='<p style="padding:40px;text-align:center">تعذّر تحميل بيانات الأفلام.</p>'});
 }
 </script>

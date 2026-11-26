@@ -83,7 +83,7 @@ function pullTicket() {
   const tk = $('tk'), e = eraOf(f.year).id, [bg, ink] = STYLE[e];
   tk.hidden = false; tk.classList.remove('out'); void tk.offsetWidth;
   tk.style.setProperty('--tbg', bg); tk.style.setProperty('--tink', ink);
-  tk.innerHTML = `<a href="#film-${esc(f.id)}"><span class="tno">تذكرة رقم ${ar(String(Math.floor(Math.random() * 9000) + 1000))}</span><b style="font-family:${FONT[e]}">${esc(f.title)}</b><span>${ar(f.year)} · إخراج: ${esc(f.director)}</span><em>ادخل القاعة ←</em></a>`;
+  tk.innerHTML = `<a href="#film-${esc(f.id)}"><span class="tno">تذكرة رقم ${ar(String(Math.floor(Math.random() * 9000) + 1000))}</span><b style="font-family:${FONT[e]}">${esc(f.title)}</b><span>${ar(f.year)} · ${f.director ? 'إخراج: ' + esc(f.director) : ''}</span><em>ادخل القاعة ←</em></a>`;
   if (!reduce()) tk.classList.add('out');
   $('pull').textContent = 'اسحب تذكرة أخرى';
 }
@@ -107,7 +107,7 @@ function clues(f) {
     `من أفلام ${e.name}، ونوعه ${(f.genre || []).join(' و') || 'غير مصنّف'}`,
     `عُرض عام ${ar(f.year)}`,
     f.based_on ? `مأخوذ عن ${f.based_on}` : f.writer ? `التأليف: ${f.writer}` : `تقييمه على IMDb ${score(f) ? score(f).toFixed(1) : 'غير متاح'}`,
-    `إخراج: ${pname(f.director)}`,
+    f.director ? `إخراج: ${pname(f.director)}` : `تقييمه على السينما.كوم ${escore(f) ? escore(f).toFixed(1) : 'غير متاح'}`,
     lead.length ? `من أبطاله: ${lead[lead.length > 1 ? 1 : 0]}` : `تقييمه على السينما.كوم ${escore(f) ? escore(f).toFixed(1) : 'غير متاح'}`,
     `يبدأ عنوانه بحرف «${f.title.replace(/^ال/, '')[0]}»، ويتكوّن من ${words === 1 ? 'كلمة واحدة' : words === 2 ? 'كلمتين' : ar(words) + ' كلمات'}`
   ];
@@ -172,7 +172,7 @@ function paintGame(anim) {
   const s = store.get('gstats', null);
   end.innerHTML = `<div class="gres ${st.won ? 'won' : 'lost'}">
     <div class="gpo">${poster(f)}</div>
-    <div><span class="lk">${st.won ? 'أحسنت!' : 'فاتك هذه المرة'}</span><h2>${esc(f.title)}</h2><p>${ar(f.year)} · إخراج: ${esc(f.director)}</p>
+    <div><span class="lk">${st.won ? 'أحسنت!' : 'فاتك هذه المرة'}</span><h2>${esc(f.title)}</h2><p>${ar(f.year)}${f.director ? ' · إخراج: ' + esc(f.director) : ''}</p>
     <div class="sq" aria-label="${st.won ? 'عرفته في المحاولة ' + (st.guesses.length) : 'لم تعرفه'}">${sq}</div>
     <div class="gact"><a class="btn" href="#film-${esc(f.id)}">صفحة الفيلم</a><button type="button" class="btn ghost" id="gshare">انسخ النتيجة</button><button type="button" class="btn ghost" id="gprac">جولة تدريب</button></div>
     ${!G.practice && s ? `<dl class="gst"><div><dt>لعبت</dt><dd>${ar(s.played)}</dd></div><div><dt>فزت</dt><dd>${ar(s.played ? Math.round(s.won / s.played * 100) : 0)}٪</dd></div><div><dt>سلسلة</dt><dd>${ar(s.streak)}</dd></div><div><dt>أفضل سلسلة</dt><dd>${ar(s.best)}</dd></div></dl>` : ''}
