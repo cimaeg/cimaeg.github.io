@@ -46,5 +46,13 @@
  "يوسف وهبي": {
   "photo": "people/youssef-wahbi.webp",
   "focus": "50% 30%"
+ },
+ "سليمان نجيب": {
+  "photo": "people/soliman-naguib.webp",
+  "focus": "50% 30%"
+ },
+ "أنور وجدي": {
+  "photo": "people/anwar-wagdi.webp",
+  "focus": "50% 30%"
  }
 }
