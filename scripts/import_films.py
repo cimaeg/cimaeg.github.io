@@ -132,45 +132,47 @@ def chunks(xs, n):
 
 # ——— ١) الأفلام ———
 def fetch_films():
-    q = f"""
-SELECT ?f ?ar ?en ?d ?dp ?imdb ?elc ?lang ?dur ?ctry ?g WHERE {{
-  ?f wdt:P495 wd:{EGYPT} ; wdt:P31/wdt:P279* wd:Q11424 .
+    # استعلام خفيف أولًا (القائمة والتواريخ)، ثم التفاصيل على دفعات حتى لا يتجاوز مهلة ويكي بيانات
+    rows = sparql(f"""
+SELECT ?f ?d ?dp WHERE {{
+  ?f wdt:P495 wd:{EGYPT} ; wdt:P31 wd:Q11424 .
   ?f p:P577/psv:P577 [ wikibase:timeValue ?d ; wikibase:timePrecision ?dp ] .
-  OPTIONAL {{ ?f rdfs:label ?ar FILTER(LANG(?ar) = "ar") }}
-  OPTIONAL {{ ?f rdfs:label ?en FILTER(LANG(?en) = "en") }}
-  OPTIONAL {{ ?f wdt:P345 ?imdb }}
-  OPTIONAL {{ ?f wdt:P3135 ?elc }}
-  OPTIONAL {{ ?f wdt:P364 ?lang }}
-  OPTIONAL {{ ?f wdt:P2047 ?dur }}
-  OPTIONAL {{ ?f wdt:P495 ?ctry }}
-  OPTIONAL {{ ?f wdt:P136 ?g }}
-  FILTER NOT EXISTS {{ ?f wdt:P31 wd:Q24862 }}   # فيلم قصير
-  FILTER NOT EXISTS {{ ?f wdt:P31 wd:Q506240 }}  # فيلم تلفزيوني
-  FILTER NOT EXISTS {{ ?f wdt:P31 wd:Q93204 }}   # وثائقي
-}}"""
-    rows = sparql(q)
+}}""")
     films = {}
     for r in rows:
         k = qid(r["f"]["value"])
         f = films.setdefault(k, {"qid": k, "ar": None, "en": None, "date": None, "imdb": set(), "elc": set(),
-                                 "lang": set(), "dur": None, "ctry": set(), "genre": set()})
-        f["ar"] = f["ar"] or val(r, "ar")
-        f["en"] = f["en"] or val(r, "en")
+                                 "lang": set(), "dur": None, "ctry": set(), "genre": set(), "types": set()})
         f["date"] = better(f["date"], day(val(r, "d"), val(r, "dp")))
-        for key, field in (("imdb", "imdb"), ("elc", "elc")):
-            if val(r, key):
-                f[field].add(val(r, key))
-        if val(r, "lang"):
-            f["lang"].add(qid(val(r, "lang")))
-        if val(r, "ctry"):
-            f["ctry"].add(qid(val(r, "ctry")))
-        if val(r, "g"):
-            f["genre"].add(qid(val(r, "g")))
-        if val(r, "dur"):
-            try:
-                f["dur"] = f["dur"] or round(float(val(r, "dur")))
-            except ValueError:
-                pass
+    films = {k: f for k, f in films.items() if f["date"] and int(f["date"][:4]) <= MAX_YEAR}
+    print("candidates:", len(films))
+    for part in chunks(films, 200):
+        vals = " ".join("wd:" + k for k in part)
+        rows = sparql(f"""
+SELECT ?f ?ar ?en ?imdb ?elc ?lang ?dur ?ctry ?g ?t WHERE {{
+  VALUES ?f {{ {vals} }}
+  {{ ?f rdfs:label ?ar FILTER(LANG(?ar) = "ar") }} UNION {{ ?f rdfs:label ?en FILTER(LANG(?en) = "en") }}
+  UNION {{ ?f wdt:P345 ?imdb }} UNION {{ ?f wdt:P3135 ?elc }} UNION {{ ?f wdt:P364 ?lang }}
+  UNION {{ ?f wdt:P2047 ?dur }} UNION {{ ?f wdt:P495 ?ctry }} UNION {{ ?f wdt:P136 ?g }} UNION {{ ?f wdt:P31 ?t }}
+}}""")
+        for r in rows:
+            f = films[qid(r["f"]["value"])]
+            f["ar"] = f["ar"] or val(r, "ar")
+            f["en"] = f["en"] or val(r, "en")
+            for key in ("imdb", "elc"):
+                if val(r, key):
+                    f[key].add(val(r, key))
+            for key, field in (("lang", "lang"), ("ctry", "ctry"), ("g", "genre"), ("t", "types")):
+                if val(r, key):
+                    f[field].add(qid(val(r, key)))
+            if val(r, "dur") and not f["dur"]:
+                try:
+                    f["dur"] = round(float(val(r, "dur")))
+                except ValueError:
+                    pass
+        time.sleep(1)
+    # قصير، تلفزيوني، وثائقي
+    films = {k: f for k, f in films.items() if not f["types"] & {"Q24862", "Q506240", "Q93204"}}
     # أقدم تاريخ عرض هو سنة الفيلم
     out = {}
     stats = collections.Counter()
@@ -201,18 +203,19 @@ SELECT ?f ?ar ?en ?d ?dp ?imdb ?elc ?lang ?dur ?ctry ?g WHERE {{
 def fetch_credits(films):
     credits = collections.defaultdict(lambda: {"cast": [], "director": [], "writer": [], "producer": []})
     roles = {"P161": "cast", "P57": "director", "P58": "writer", "P162": "producer"}
-    for part in chunks(films, 250):
+    for part in chunks(films, 200):
         vals = " ".join("wd:" + k for k in part)
         rows = sparql(f"""
 SELECT ?f ?prop ?p ?ord WHERE {{
   VALUES ?f {{ {vals} }}
-  VALUES ?prop {{ p:P161 p:P57 p:P58 p:P162 }}
-  ?f ?prop ?st . ?st ?ps ?p .
-  ?pp wikibase:claim ?prop ; wikibase:statementProperty ?ps .
+  {{ ?f p:P161 ?st . ?st ps:P161 ?p . BIND("P161" AS ?prop) }}
+  UNION {{ ?f p:P57 ?st . ?st ps:P57 ?p . BIND("P57" AS ?prop) }}
+  UNION {{ ?f p:P58 ?st . ?st ps:P58 ?p . BIND("P58" AS ?prop) }}
+  UNION {{ ?f p:P162 ?st . ?st ps:P162 ?p . BIND("P162" AS ?prop) }}
   OPTIONAL {{ ?st pq:P1545 ?ord }}
 }}""")
         for r in rows:
-            role = roles[qid(r["prop"]["value"])]
+            role = roles[r["prop"]["value"]]
             p = r["p"]["value"]
             if not p.startswith("http://www.wikidata.org/entity/Q"):
                 continue
