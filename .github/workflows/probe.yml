@@ -1,8 +1,14 @@
-name: استكشاف
-on: { workflow_dispatch: {} }
+name: جمع مواد النبذ
+on:
+  workflow_dispatch:
+    inputs:
+      n: { default: "300" }
+      skip: { default: "0" }
 jobs:
   p:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: pip install requests && python tools/probe.py
+      - run: pip install requests && python tools/fetch_sources.py ${{ inputs.n }} ${{ inputs.skip }}
+      - uses: actions/upload-artifact@v4
+        with: { name: sources, path: sources.json, retention-days: 3 }
