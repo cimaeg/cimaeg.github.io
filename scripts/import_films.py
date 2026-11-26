@@ -334,7 +334,14 @@ def main():
     known_nm = {p["nm"]: k for k, p in people.items() if p["nm"]}
     print("people:", len(people), "with Arabic name:", sum(1 for p in people.values() if p["ar"]))
 
+    # الأسماء كما كُتبت في الأفلام المكتوبة يدويًا تتقدّم على عناوين ويكي بيانات (مثل «ستيفان» لا «إستفان»)
+    curated_names = {re.sub(r"\s*\(.*?\)", "", n).strip() for f in existing if f.get("src") != "wikidata"
+                     for n in (f.get("cast") or []) + [f.get("director") or ""]}
+    preferred = {v["qid"]: n for n, v in wd.get("people", {}).items() if v.get("qid") and n in curated_names}
+
     def name(k):
+        if k in preferred:
+            return preferred[k]
         p = people.get(k)
         if not p or not p["ar"] or not re.search(r"[؀-ۿ]", p["ar"]):
             return None
