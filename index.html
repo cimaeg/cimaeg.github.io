@@ -18,12 +18,12 @@
 *{box-sizing:border-box;min-width:0}
 html{scroll-padding-top:72px}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 var(--body);overflow-x:clip;transition:background .9s,color .9s}
-body[data-era=e40]{--bg:#141414;--ink:#ece8df;--acc:#ffffff;--sub:#8d8a83;--disp:'Aref Ruqaa',serif}
-body[data-era=e50]{--bg:#12372e;--ink:#f3ead2;--acc:#e8b33a;--sub:#9fb5a6;--disp:'Reem Kufi',sans-serif}
+body[data-era=e40]{--bg:#1a1918;--ink:#e8e3d9;--acc:#d6d0c4;--sub:#94908a;--disp:'Aref Ruqaa',serif}
+body[data-era=e50]{--bg:#1f3029;--ink:#eee6d3;--acc:#cfb06e;--sub:#a3b3a7;--disp:'Reem Kufi',sans-serif}
 body[data-era=e60]{--bg:#2f2a35;--ink:#efe6e0;--acc:#d8a7a2;--sub:#b3a5b0;--disp:'Reem Kufi',sans-serif}
 body[data-era=e70]{--bg:#30271e;--ink:#f0e4d0;--acc:#d4a066;--sub:#bba78c;--disp:'Lalezar',sans-serif}
 body[data-era=e80]{--bg:#202537;--ink:#eceaf4;--acc:#b6aae3;--sub:#a3a0bd;--disp:'Rakkas',serif}
-body[data-era=e90]{--bg:#0f3f45;--ink:#eaf5f5;--acc:#f2c94c;--sub:#94bfc2;--disp:'Cairo',sans-serif}
+body[data-era=e90]{--bg:#1d363a;--ink:#e8f0ee;--acc:#d6cd8c;--sub:#9db9b9;--disp:'Cairo',sans-serif}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 a{color:inherit}
 :focus-visible{outline:3px solid var(--acc);outline-offset:3px}
@@ -58,8 +58,8 @@ a{color:inherit}
 .reelbar button:hover,.reelbar button:focus-visible{background:#2b241c;outline:2px solid #ffd77a;outline-offset:2px}
 .strip-r{flex:1;-webkit-appearance:none;appearance:none;height:46px;background:transparent;cursor:grab;direction:ltr}
 .strip-r:active{cursor:grabbing}
-.strip-r::-webkit-slider-runnable-track{height:34px;border-radius:3px;background:radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 4px/12px 7px repeat-x,radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 27px/12px 7px repeat-x,linear-gradient(90deg,#e9e4d8,#e8b33a,#d8a7a2,#d4a066,#b6aae3,#f2c94c)}
-.strip-r::-moz-range-track{height:34px;border-radius:3px;background:radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 4px/12px 7px repeat-x,radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 27px/12px 7px repeat-x,linear-gradient(90deg,#e9e4d8,#e8b33a,#d8a7a2,#d4a066,#b6aae3,#f2c94c)}
+.strip-r::-webkit-slider-runnable-track{height:34px;border-radius:3px;background:radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 4px/12px 7px repeat-x,radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 27px/12px 7px repeat-x,linear-gradient(90deg,#d6d0c4,#cfb06e,#d8a7a2,#d4a066,#b6aae3,#d6cd8c)}
+.strip-r::-moz-range-track{height:34px;border-radius:3px;background:radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 4px/12px 7px repeat-x,radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 27px/12px 7px repeat-x,linear-gradient(90deg,#d6d0c4,#cfb06e,#d8a7a2,#d4a066,#b6aae3,#d6cd8c)}
 .strip-r::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:46px;margin-top:-6px;border-radius:5px;background:#0d0b09;border:3px solid #ffd77a;box-shadow:0 0 14px #ffd77a99}
 .strip-r::-moz-range-thumb{width:20px;height:40px;border-radius:5px;background:#0d0b09;border:3px solid #ffd77a;box-shadow:0 0 14px #ffd77a99}
 .strip-r:focus-visible{outline:2px solid #ffd77a;outline-offset:4px;border-radius:4px}
@@ -379,7 +379,7 @@ const ERAS=[
  {id:'e80',num:'٨٠',name:'الثمانينيات',d0:1980,d1:1989,blurb:'الواقعية الجديدة: عاطف الطيب ومحمد خان وخيري بشارة ينزلون بالكاميرا إلى الشارع، بينما يزدهر عصر الفيديو.'},
  {id:'e90',num:'٩٠',name:'التسعينيات',d0:1990,d1:2000,blurb:'كوميديا سياسية ذكية، ثم موجة نجوم شباب تعيد الجمهور إلى دور العرض في نهاية العقد.'}
 ];
-const STYLE={e40:['#e9e4d8','#151515','#151515'],e50:['#e8b33a','#12372e','#b5462c'],e60:['#d8a7a2','#2f2a35','#efe6e0'],e70:['#d4a066','#30271e','#f0e4d0'],e80:['#b6aae3','#202537','#eceaf4'],e90:['#f2c94c','#0f3f45','#e8623f']};
+const STYLE={e40:['#e9e4d8','#151515','#151515'],e50:['#cfb06e','#1f3029','#a8644a'],e60:['#d8a7a2','#2f2a35','#efe6e0'],e70:['#d4a066','#30271e','#f0e4d0'],e80:['#b6aae3','#202537','#eceaf4'],e90:['#d6cd8c','#1d363a','#c47a62']};
 const FONT={e40:"'Aref Ruqaa',serif",e50:"'Reem Kufi',sans-serif",e60:"'Reem Kufi',sans-serif",e70:"'Lalezar',sans-serif",e80:"'Rakkas',serif",e90:"'Cairo',sans-serif"};
 let FILMS=[];
 const $=id=>document.getElementById(id);
