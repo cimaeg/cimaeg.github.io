@@ -78,5 +78,13 @@
  "نور الشريف": {
   "photo": "people/nour-el-sherif.webp",
   "focus": "50% 30%"
+ },
+ "فاتن حمامة": {
+  "photo": "people/faten-hamama.webp",
+  "focus": "50% 35%"
+ },
+ "أحمد مظهر": {
+  "photo": "people/ahmed-mazhar.webp",
+  "focus": "50% 35%"
  }
 }
