@@ -28,7 +28,10 @@ for x in T:
             if s and wid not in [c[0] for c in cands]: cands.append((wid, s))
         o["cands"] = cands[:8]
         yr = str(x["year"])
-        for wid, s in cands[:8]:
+        nz = lambda v: re.sub(r"[\s/()،,:.!؟?-]", "", re.sub("[أإآ]", "ا", v).replace("ة", "ه").replace("ى", "ي"))
+        a = nz(x["title"])
+        good = [c for c in cands if nz(c[1]) and (nz(c[1]) in a or a in nz(c[1]))]
+        for wid, s in good[:5]:
             m = cast_country(wid); time.sleep(0.3)
             if any(str(int(yr) + d) in m["h1"] for d in (0, -1, 1)):
                 o["match"] = wid; o.update(m); break
