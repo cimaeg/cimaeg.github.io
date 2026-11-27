@@ -15,7 +15,7 @@ a.pl{text-decoration:underline;text-decoration-color:var(--line);text-underline-
 a.pl:hover{text-decoration-color:var(--acc);color:var(--acc)}
 
 /* الردهة */
-.lobby{max-width:1240px;margin:0 auto;padding:0 max(4vw,16px) clamp(28px,4vw,56px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.lobby{max-width:1240px;margin:0 auto;padding:0 max(4vw,16px) clamp(28px,4vw,56px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .lob{position:relative;border-radius:12px;padding:20px 20px 18px;background:rgba(255,255,255,.05);border:1px solid var(--line);text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:6px;min-height:220px;overflow:hidden}
 a.lob:hover{background:rgba(255,255,255,.09)}
 .lk{font-size:13px;font-weight:700;color:var(--acc)}
@@ -26,7 +26,6 @@ a.lob:hover{background:rgba(255,255,255,.09)}
 .lob li::before{content:"";position:absolute;inset-inline-start:0;top:.7em;width:7px;height:7px;border-radius:50%;background:var(--acc)}
 .lob ul a{color:var(--ink);text-decoration-color:var(--acc);text-underline-offset:4px}
 .lgo{margin-top:auto;font-weight:700;color:var(--acc)}
-.lob-game{background:linear-gradient(135deg,rgba(232,179,58,.18),rgba(255,255,255,.03))}
 .slot{position:relative;height:96px;margin:6px 0 10px;border-radius:8px;background:#0b0b0b;box-shadow:inset 0 8px 14px #000;overflow:hidden}
 .slot::before{content:"";position:absolute;left:12%;right:12%;top:8px;height:6px;border-radius:3px;background:#000;box-shadow:0 1px 0 rgba(255,255,255,.12)}
 .tk{position:absolute;left:14%;right:14%;top:14px;bottom:8px;background:var(--tbg,#efe5cb);color:var(--tink,#211a12);border-radius:4px;
@@ -53,40 +52,8 @@ a.lob:hover{background:rgba(255,255,255,.09)}
 .btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
 .lnone{color:var(--sub);padding:18px 0}
 
-/* خمّن الفيلم */
-.strip6{list-style:none;padding:14px 0;margin:26px 0 0;display:grid;gap:10px;background:#0b0b0b;border-radius:6px;position:relative;
- background-image:radial-gradient(circle,var(--bg) 3.5px,transparent 4px),radial-gradient(circle,var(--bg) 3.5px,transparent 4px);background-size:18px 14px;background-position:4px 0,4px 100%;background-repeat:repeat-x}
-.strip6 li{display:flex;align-items:center;gap:14px;margin:0 14px;padding:12px 16px;border-radius:4px;min-height:58px}
-.strip6 .open{background:#f3ead2;color:#211a12}
-.strip6 .open.new{animation:reveal .5s ease-out}
-@keyframes reveal{from{opacity:0;transform:scaleY(.6)}to{opacity:1;transform:none}}
-.strip6 .shut{background:repeating-linear-gradient(45deg,#1c1c1c 0 10px,#232323 10px 20px);color:#6d6a63}
-.strip6 .cn{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;background:var(--acc);color:#0b0b0b}
-.strip6 .shut .cn{background:#333;color:#888}
-.strip6 p{margin:0;font-size:17px;line-height:1.5}
-.gin{position:relative;margin-top:22px}
-.gbox{display:flex;gap:10px}
-.gbox input,.pfind input,.pick input{flex:1;min-width:0;height:54px;padding:0 18px;border-radius:8px;border:2px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:500 18px var(--body)}
-.gbox input:focus,.pfind input:focus,.pick input:focus{outline:0;border-color:var(--acc)}
-.gbox .btn{height:54px}
-.gsug{position:absolute;z-index:4;top:calc(100% + 6px);right:0;left:0;margin:0;padding:6px;list-style:none;background:#f3ead2;color:#211a12;border-radius:8px;box-shadow:0 16px 30px #000a}
-.gsug[hidden]{display:none}
-.gsug li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;border-radius:6px;cursor:pointer;min-height:44px}
-.gsug li.on,.gsug li:hover{background:rgba(155,61,28,.15)}
-.gsug small{opacity:.65}
-.gtries{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:6px}
-.gtries li{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:6px;border:1px solid var(--line)}
-.gtries li span{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:#a33;color:#fff;flex:none}
-.gtries .ok span{background:#2f8f5b}
-.gtries small{color:var(--sub)}
-.gres{display:grid;grid-template-columns:170px minmax(0,1fr);gap:24px;margin-top:28px;padding:20px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
-.gres h2{font:700 34px/1.2 var(--disp);margin:4px 0}
-.gres p{margin:0 0 10px;color:var(--sub)}
-.sq{font-size:24px;letter-spacing:3px;direction:ltr;text-align:right}
-.gact{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
-.gst{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0}
-.gst div{text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px 4px}
-.gst dt{font-size:12px;color:var(--sub)}.gst dd{margin:0;font:700 22px var(--body)}
+.pfind input,.pick input{flex:1;min-width:0;height:54px;padding:0 18px;border-radius:8px;border:2px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);font:500 18px var(--body)}
+.pfind input:focus,.pick input:focus{outline:0;border-color:var(--acc)}
 
 /* الصنّاع */
 .pfind{margin:22px 0 0;display:flex;max-width:520px}
@@ -181,7 +148,7 @@ a.lob:hover{background:rgba(255,255,255,.09)}
 .axis{display:flex;justify-content:space-between;margin:6px 3em 0 0;padding-inline-start:calc(10em + 10px);font-size:12px;color:var(--sub)}
 
 @media(max-width:900px){.lobby{grid-template-columns:1fr}.lob{min-height:0}.pcols{grid-template-columns:1fr}.sgrid{grid-template-columns:1fr}.hero-n{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.gres{grid-template-columns:1fr}.gres .gpo{max-width:160px}.gst{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:600px){
  .pickers{grid-template-columns:1fr}.swap{width:100%;height:44px}.br{grid-template-columns:minmax(0,7em) minmax(0,1fr) 2.6em}.dr{grid-template-columns:minmax(0,7em) minmax(0,1fr) 2.6em}.axis{padding-inline-start:calc(7em + 10px);margin-left:2.6em}
  .phead{flex-direction:column;align-items:flex-start}.ego svg{max-height:none}}
 @media(prefers-reduced-motion:reduce){.tk.out,.strip6 .open.new{animation:none}}

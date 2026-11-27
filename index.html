@@ -41,18 +41,40 @@ a{color:inherit}
 .hero h1{font:700 clamp(40px,7vw,76px)/1.1 var(--disp);margin:0 0 16px}
 .hero p{font-size:18px;line-height:1.85;max-width:32em;margin:0 0 24px;opacity:.9}
 .btn{display:inline-flex;align-items:center;min-height:46px;padding:0 22px;background:var(--acc);color:var(--bg);border:0;border-radius:4px;font:700 16px var(--body);cursor:pointer;text-decoration:none}
-.dial-wrap{display:flex;justify-content:center}
-.dial{position:relative;width:min(100%,430px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#2b2622,#0b0b0b 70%);box-shadow:0 30px 60px -20px #000c,inset 0 0 0 10px #1a1612,inset 0 0 0 12px #ffd77a55}
-.dial::before{content:"";position:absolute;inset:5%;border-radius:50%;border:3px dotted #ffd77a;opacity:.75;animation:glow 1.8s infinite}
-@keyframes glow{50%{opacity:.35}}
-.rotor{position:absolute;inset:0;border-radius:50%;transition:transform .75s cubic-bezier(.3,.1,.2,1)}
-.hole{position:absolute;width:23%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;box-shadow:inset 0 4px 10px #0007,0 0 0 4px #0b0b0b,0 0 0 6px #ffd77a44;transition:box-shadow .2s}
-.hole b{font-size:clamp(17px,4.4vw,26px);line-height:1;white-space:nowrap}
-.hole:hover,.hole:focus-visible{box-shadow:inset 0 4px 10px #0007,0 0 0 4px #0b0b0b,0 0 0 7px #ffd77a,0 0 22px #ffd77a88;outline:0}
-.hub{position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle at 40% 35%,#f3ead2,#cbbd9c);color:#211a12;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 6px 18px #000a,inset 0 -4px 8px #0003;padding:6%}
-.hub strong{font:700 clamp(20px,4.6vw,30px)/1.1 'Aref Ruqaa',serif}
-.hub span{font-size:clamp(11px,2.6vw,13px);margin-top:4px;opacity:.75;line-height:1.35}
-.stop{position:absolute;width:5%;height:15%;border-radius:6px;background:linear-gradient(90deg,#9c8a5f,#ffd77a,#9c8a5f);right:9%;top:62%;transform:rotate(-40deg);box-shadow:0 3px 6px #000a}
+.tm{width:min(100%,470px);margin-inline:auto;background:linear-gradient(160deg,#2a241d,#0d0b09 70%);border-radius:18px;padding:22px 20px 20px;box-shadow:0 30px 60px -20px #000c,inset 0 0 0 1px #ffd77a33,inset 0 2px 0 #ffffff14;color:#f3ead2;position:relative}
+.tm-top{display:flex;justify-content:space-between;align-items:center;font:500 13px var(--body);color:#cbbd9c;margin-bottom:14px}
+.tm-led{width:9px;height:9px;border-radius:50%;background:#ff5a3c;box-shadow:0 0 10px #ff5a3c;display:inline-block;margin-inline-end:6px;animation:led 1.6s infinite}
+@keyframes led{50%{opacity:.35}}
+.flaps{display:flex;justify-content:center;gap:8px;direction:ltr}
+.flap{position:relative;width:clamp(56px,17vw,84px);aspect-ratio:3/4.2;border-radius:8px;background:linear-gradient(#1b1714 50%,#110e0c 50%);box-shadow:inset 0 0 0 1px #ffffff10,0 6px 14px #0009;font:700 clamp(52px,15vw,80px)/1 'Cairo',sans-serif;color:#ffd77a;display:flex;align-items:center;justify-content:center;overflow:hidden;perspective:300px}
+.flap::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:#000;box-shadow:0 1px 0 #ffffff12}
+.flap span{display:block}
+.flap.go span{animation:flip .32s cubic-bezier(.4,.1,.3,1)}
+@keyframes flip{0%{transform:rotateX(0)}45%{transform:rotateX(-90deg);opacity:.2}55%{transform:rotateX(90deg);opacity:.2}100%{transform:rotateX(0)}}
+.tm-era{text-align:center;margin:14px 0 4px;font:700 26px/1.2 var(--disp);color:#f3ead2;min-height:1.2em}
+.tm-sub{text-align:center;font-size:14px;color:#cbbd9c;margin:0 0 14px;min-height:1.4em}
+.reelbar{display:flex;align-items:center;gap:8px;direction:ltr}
+.reelbar button{flex:0 0 44px;height:44px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:1px solid #ffd77a55;background:#1b1714;color:#ffd77a;font:700 20px var(--body);cursor:pointer}
+.reelbar button:hover,.reelbar button:focus-visible{background:#2b241c;outline:2px solid #ffd77a;outline-offset:2px}
+.strip-r{flex:1;-webkit-appearance:none;appearance:none;height:46px;background:transparent;cursor:grab;direction:ltr}
+.strip-r:active{cursor:grabbing}
+.strip-r::-webkit-slider-runnable-track{height:34px;border-radius:3px;background:radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 4px/12px 7px repeat-x,radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 27px/12px 7px repeat-x,linear-gradient(90deg,#e9e4d8,#e8b33a,#f3a59c,#e8823a,#f07a8a,#f2c94c)}
+.strip-r::-moz-range-track{height:34px;border-radius:3px;background:radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 4px/12px 7px repeat-x,radial-gradient(circle,#0d0b09 2.6px,transparent 3.2px) 0 27px/12px 7px repeat-x,linear-gradient(90deg,#e9e4d8,#e8b33a,#f3a59c,#e8823a,#f07a8a,#f2c94c)}
+.strip-r::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:46px;margin-top:-6px;border-radius:5px;background:#0d0b09;border:3px solid #ffd77a;box-shadow:0 0 14px #ffd77a99}
+.strip-r::-moz-range-thumb{width:20px;height:40px;border-radius:5px;background:#0d0b09;border:3px solid #ffd77a;box-shadow:0 0 14px #ffd77a99}
+.strip-r:focus-visible{outline:2px solid #ffd77a;outline-offset:4px;border-radius:4px}
+.tm-ticks{position:relative;height:34px;margin:2px 52px 0;font-size:13px;color:#9c8f74}
+.tm-ticks button{position:absolute;top:0;transform:translateX(-50%);background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:6px 4px;min-height:32px;min-width:30px}
+.tm-ticks button:hover,.tm-ticks button:focus-visible{color:#ffd77a}
+.tm-scr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px;min-height:120px}
+.tm-scr a{text-decoration:none;color:#f3ead2;display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.35;transition:transform .2s}
+.tm-scr a:hover,.tm-scr a:focus-visible{transform:translateY(-3px)}
+.tm-scr .mp{width:100%}
+.tm-scr p{grid-column:1/-1;margin:auto;color:#9c8f74;font-size:14px;text-align:center}
+.tm-act{display:flex;gap:10px;margin-top:16px}
+.tm-act .btn{flex:1;justify-content:center}
+.tm-act .btn.ghost{background:none;color:#ffd77a;border:1px solid #ffd77a66}
+@media(prefers-reduced-motion:reduce){.flap.go span,.tm-led{animation:none}}
 .era{padding:clamp(36px,6vw,80px) 0;border-top:1px solid var(--line)}
 .era-head{max-width:1240px;margin:auto;padding:0 max(4vw,16px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 28px;align-items:end}
 .num{font:700 clamp(64px,13vw,150px)/.9 var(--disp);color:var(--acc)}
@@ -279,7 +301,6 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
   </button>
 </div>
 <nav class="menu" id="menu" hidden aria-label="أقسام الموقع">
-  <a href="#game"><b>خمّن الفيلم</b><span>لغز جديد كل يوم</span></a>
   <a href="#news"><b>الجريدة</b><span>مقالات وتحقيقات وأخبار</span></a>
   <a href="#people"><b>الصنّاع</b><span>ممثلون ومخرجون</span></a>
   <a href="#network"><b>شبكة النجوم</b><span>كيف يلتقي نجمان؟</span></a>
@@ -290,14 +311,23 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
 <section class="hero" id="top">
   <div>
     <h1>آلة الزمن السينمائية</h1>
-    <p>أكثر من سبعين عامًا من السينما المصرية، من «ليلى» أول فيلم روائي طويل عام 1927 حتى نهاية القرن العشرين. أدر قرص الزمن إلى العقد الذي تريده، أو انزل في الصفحة عقدًا بعد عقد، وستتبدّل ألوانها وخطوطها لتشبه أفيشات كل زمن.</p>
+    <p>أكثر من سبعين عامًا من السينما المصرية، من «ليلى» أول فيلم روائي طويل عام 1927 حتى نهاية القرن العشرين. اضبط آلة الزمن على السنة التي تريدها، أو انزل في الصفحة عقدًا بعد عقد، وستتبدّل ألوانها وخطوطها لتشبه أفيشات كل زمن.</p>
     <a class="btn" href="#e40">ابدأ من البدايات</a>
   </div>
-  <div class="dial-wrap"><nav class="dial" id="dial" aria-label="اختر زمنك">
-    <div class="rotor" id="rotor"></div>
-    <div class="hub" aria-live="polite"><strong>اختر زمنك</strong><span id="hubsub">أدر القرص إلى عقد</span></div>
-    <div class="stop" aria-hidden="true"></div>
-  </nav></div>
+  <div class="tm" id="tm" role="group" aria-label="آلة الزمن: اختر سنة">
+    <div class="tm-top"><span><i class="tm-led" aria-hidden="true"></i>آلة الزمن</span><span>من ١٩٢٧ إلى ٢٠٠٠</span></div>
+    <div class="flaps" id="flaps" aria-hidden="true"></div>
+    <div class="tm-era" id="tmEra"></div>
+    <p class="tm-sub" id="tmSub" aria-live="polite"></p>
+    <div class="reelbar">
+      <button type="button" id="tmPrev" aria-label="السنة السابقة"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <input class="strip-r" id="tmY" type="range" min="1927" max="2000" step="1" value="1959" aria-label="السنة">
+      <button type="button" id="tmNext" aria-label="السنة التالية"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <div class="tm-ticks" id="tmTicks"></div>
+    <div class="tm-scr" id="tmScr"></div>
+    <div class="tm-act"><a class="btn" id="tmGo" href="#">انطلق</a><button class="btn ghost" type="button" id="tmLuck">رحلة عشوائية</button></div>
+  </div>
 </section>
 <div id="lobby"></div>
 <main id="eras"></main>
@@ -306,7 +336,7 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
 <article class="film" id="film" hidden></article>
 <section class="list" id="list" hidden></section>
 <section class="page" id="page" hidden></section>
-<footer><nav class="fnav"><a href="#top">آلة الزمن</a><a href="#game">خمّن الفيلم</a><a href="#people">الصنّاع</a><a href="#network">شبكة النجوم</a><a href="#stats">أرقام الزمن الجميل</a></nav>شاشة زمان · أرشيف السينما المصرية حتى عام 2000</footer>
+<footer><nav class="fnav"><a href="#top">آلة الزمن</a><a href="#people">الصنّاع</a><a href="#network">شبكة النجوم</a><a href="#stats">أرقام الزمن الجميل</a></nav>شاشة زمان · أرشيف السينما المصرية حتى عام 2000</footer>
 
 <div class="finder" id="finder" role="dialog" aria-modal="true" aria-label="البحث">
   <div class="ticket">
@@ -349,17 +379,27 @@ const poster=(f)=>{const e=eraOf(f.year).id,[bg,ink,acc]=STYLE[e],v=FILMS.indexO
 /* ——— الصفحة الرئيسية ——— */
 const strip=$('strip'),main=$('eras');
 strip.innerHTML=ERAS.map(e=>`<a href="#${e.id}" data-id="${e.id}">${e.name}</a>`).join('');
-const ANG=[120,165,210,255,300,345],STOP=40;
-$('rotor').innerHTML=ERAS.map((e,i)=>{const [bg,ink]=STYLE[e.id],t=ANG[i]*Math.PI/180;return `<a class="hole" href="#${e.id}" data-i="${i}" style="left:${50+37*Math.cos(t)}%;top:${50+37*Math.sin(t)}%;background:${bg};color:${ink}" aria-label="${e.name}"><b style="font-family:${FONT[e.id]}">${e.num}</b></a>`}).join('');
-const hubsub=$('hubsub'),rotor=$('rotor'),HUB0='أدر القرص إلى عقد';
-const hubFor=i=>{const e=ERAS[i],n=FILMS.filter(f=>eraOf(f.year)===e).length;hubsub.textContent=`${e.name}، ${cnt(n)}`};
-rotor.addEventListener('pointerover',ev=>{const h=ev.target.closest('.hole');if(h)hubFor(+h.dataset.i)});
-rotor.addEventListener('focusin',ev=>{const h=ev.target.closest('.hole');if(h)hubFor(+h.dataset.i)});
-rotor.addEventListener('pointerleave',()=>hubsub.textContent=HUB0);
-rotor.addEventListener('click',ev=>{const h=ev.target.closest('.hole');if(!h)return;ev.preventDefault();const i=+h.dataset.i,id=ERAS[i].id;hubFor(i);
- if(matchMedia('(prefers-reduced-motion: reduce)').matches){location.hash=id;return}
- rotor.style.transform=`rotate(${(STOP-ANG[i]+360)%360}deg)`;
- setTimeout(()=>{location.hash=id;if(location.hash==='#'+id)showHome(id);rotor.style.transition='none';rotor.style.transform='';requestAnimationFrame(()=>requestAnimationFrame(()=>rotor.style.transition=''));hubsub.textContent=HUB0},800)});
+/* ——— آلة الزمن: عدّاد سنوات بلوحات قلّابة وشريط فيلم ——— */
+const tmY=$('tmY'),flaps=$('flaps'),RM=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+flaps.innerHTML='<div class="flap"><span></span></div>'.repeat(4);
+$('tmTicks').innerHTML=[1930,1940,1950,1960,1970,1980,1990,2000].map(y=>`<button type="button" data-y="${y}" aria-label="${y}" style="left:calc(13px + (100% - 26px) * ${(y-1927)/73})">${ar(String(y).slice(2))}</button>`).join('');
+let tmCur=0,tmT;
+function tmSet(y,anim=true){
+ y=Math.max(1927,Math.min(2000,+y));tmY.value=y;
+ const d=ar(y).split('');[...flaps.children].forEach((f,i)=>{const sp=f.firstChild;if(sp.textContent!==d[i]){sp.textContent=d[i];if(anim&&!RM()){f.classList.remove('go');void f.offsetWidth;f.classList.add('go')}}});
+ if(y===tmCur)return;tmCur=y;
+ const e=eraOf(y),fs=FILMS.filter(f=>f.year===y).sort(byRating);
+ $('tmEra').textContent=e.name;$('tmEra').style.fontFamily=FONT[e.id];
+ $('tmSub').textContent=fs.length?`${cnt(fs.length)} من عام ${ar(y)} في الأرشيف`:`لا أفلام من عام ${ar(y)} في الأرشيف بعد`;
+ $('tmScr').innerHTML=fs.length?fs.slice(0,3).map(f=>`<a href="#film-${esc(f.id)}">${mpo(f,e.id)}<span>${esc(f.title)}</span></a>`).join(''):'<p>الشاشة مظلمة في هذا العام</p>';
+ $('tmGo').href='#y-'+y;$('tmGo').textContent=fs.length?`انطلق إلى ${ar(y)}`:`انطلق إلى ${e.name}`;if(!fs.length)$('tmGo').href='#list-'+e.id;
+ if(anim&&!$('home').hidden)setEra(e.id);
+}
+tmY.addEventListener('input',()=>tmSet(tmY.value));
+$('tmPrev').addEventListener('click',()=>tmSet(tmCur-1));$('tmNext').addEventListener('click',()=>tmSet(tmCur+1));
+$('tmTicks').addEventListener('click',e=>{const b=e.target.closest('[data-y]');if(b)tmSet(b.dataset.y)});
+$('tmLuck').addEventListener('click',()=>{clearInterval(tmT);const years=[...new Set(FILMS.map(f=>f.year))],to=years[Math.floor(Math.random()*years.length)];
+ if(RM()){tmSet(to);return}let k=0;tmT=setInterval(()=>{tmSet(k<12?years[Math.floor(Math.random()*years.length)]:to);if(++k>12)clearInterval(tmT)},70)});
 const cnt=n=>n===1?'فيلم واحد':n===2?'فيلمان':ar(n)+(n<=10?' أفلام':' فيلمًا');
 const score=f=>f.ratings&&f.ratings.imdb?f.ratings.imdb.score:0;
 const escore=f=>f.ratings&&f.ratings.elcinema?f.ratings.elcinema.score:0;
@@ -519,10 +559,12 @@ $('list').addEventListener('click',ev=>{
  const grp=b.parentElement;
  if('sort' in b.dataset)lsort=b.dataset.sort;else if('genre' in b.dataset)lgenre=b.dataset.genre;else lyear=+b.dataset.year;
  grp.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));lpage=1;rows()});
-const XR=/^(game|people|network|stats|p-)/;
+const XR=/^(people|network|stats|p-)/;
 function showPage(eraId,title){$('home').hidden=true;$('film').hidden=true;$('list').hidden=true;const el=$('page');el.hidden=false;cur='';setEra(eraId);for(const x of strip.children)x.classList.remove('on');document.title=(title?title+' · ':'')+'شاشة زمان';scrollTo(0,0);return el}
 function route(){const h=decodeURIComponent(location.hash.slice(1));closeMenu();
- if(h.startsWith('film-'))showFilm(h.slice(5));else if(h.startsWith('list-')){showList(h.slice(5));scrollTo(0,0)}
+ if(h==='game'){location.replace('#top');return}
+ if(/^y-\d{4}$/.test(h)){const y=+h.slice(2),e=eraOf(y);lera=e.id;lq='';lgenre='';lpage=1;lyear=y;showList(e.id);scrollTo(0,0)}
+ else if(h.startsWith('film-'))showFilm(h.slice(5));else if(h.startsWith('list-')){showList(h.slice(5));scrollTo(0,0)}
  else if(h==='news'||h.startsWith('a-')){if(window.SZN)SZN.route(h)}
  else if(XR.test(h)){if(window.SZX)SZX.route(h)}
  else showHome(h)}
@@ -583,7 +625,7 @@ res.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b)retu
 window.SZ={get FILMS(){return FILMS},ERAS,STYLE,FONT,esc,ar,norm,eraOf,poster,mpo,cnt,score,escore,byRating,md,pname,plink,showPage,route,ready:false};
 fetch('data/people.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>{PPX=x||{};const m=location.hash.match(/^#film-(.+)$/),c=document.querySelector('#film .cast'),f=m&&FILMS.find(y=>y.id===m[1]);if(c&&f)c.outerHTML=castStrip(f,eraOf(f.year))});
 fetch('data/films.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{for(const f of d){const r=f.ratings||(f.ratings={});for(const k of ['imdb','elcinema'])if(r[k]&&typeof r[k].score!=='number')delete r[k];f.cast=f.cast||[];f.genre=f.genre||[]}
- FILMS=d.sort((a,b)=>a.year-b.year);renderHome();SZ.ready=true;route();const sc=document.createElement('script');sc.src='js/extras.js';document.body.appendChild(sc);const sn=document.createElement('script');sn.src='js/news.js';document.body.appendChild(sn)})
+ FILMS=d.sort((a,b)=>a.year-b.year);renderHome();tmSet(1959,false);SZ.ready=true;route();const sc=document.createElement('script');sc.src='js/extras.js';document.body.appendChild(sc);const sn=document.createElement('script');sn.src='js/news.js';document.body.appendChild(sn)})
  .catch(()=>{main.innerHTML='<p style="padding:40px;text-align:center">تعذّر تحميل بيانات الأفلام.</p>'});
 }
 </script>

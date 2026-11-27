@@ -69,10 +69,7 @@ function lobby() {
   const el = $('lobby'); if (!el) return;
   const t = onThisDay();
   const dayTxt = !t ? '' : t.k === 0 ? 'اليوم' : t.k === 1 ? 'غدًا' : `بعد ${ar(t.k)} ${t.k <= 10 ? 'أيام' : 'يومًا'}، ${ar(t.date.getDate())} ${MONTHS[t.date.getMonth()]}`;
-  const g = gameToday(), gs = store.get('g-' + g.day, null);
-  const gTxt = gs && gs.done ? (gs.won ? `حللته في ${ar(gs.guesses.length)} ${gs.guesses.length > 2 ? 'محاولات' : 'محاولة'}. عُد غدًا للغز جديد.` : 'فاتك لغز اليوم. عُد غدًا.') : 'ست تلميحات تتكشّف واحدة بعد الأخرى. كم تحتاج لتعرف الفيلم؟';
   el.innerHTML = `<section class="lobby" aria-label="ردهة السينما">
-   <a class="lob lob-game" href="#game"><span class="lk">لغز رقم ${ar(g.no)}</span><b>خمّن فيلم اليوم</b><p>${gTxt}</p><span class="lgo">${gs && gs.done ? 'شاهد النتيجة' : 'ابدأ اللعب'} ←</span></a>
    <div class="lob lob-day"><span class="lk">حدث في مثل هذا اليوم</span>${t ? `<b>${dayTxt === 'اليوم' ? 'اليوم' : esc(dayTxt)}</b><ul>${t.hits.slice(0, 3).map(x => `<li>${eventLine(x)}</li>`).join('')}</ul>` : '<b>قريبًا</b><p>تُجمع التواريخ من ويكي بيانات كل أسبوع.</p>'}</div>
    <div class="lob lob-tix"><span class="lk">شبّاك التذاكر</span><b>لا تعرف ماذا تشاهد؟</b><div class="slot" id="slot"><div class="tk" id="tk" hidden></div></div><button class="btn pull" type="button" id="pull">اسحب تذكرة</button></div>
   </section>`;
@@ -88,98 +85,8 @@ function pullTicket() {
   $('pull').textContent = 'اسحب تذكرة أخرى';
 }
 
-/* ——— خمّن الفيلم ——— */
-const EPOCH = Date.UTC(2026, 10, 25);
-function seeded(n, seed) { const a = [...Array(n).keys()]; let s = seed; for (let i = n - 1; i > 0; i--) { s = (s * 1103515245 + 12345) % 2147483648; const j = s % (i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-// الأفلام المعروفة: لها ملخص، أو قيّمها على IMDb عدد كافٍ من الناس
+/* الأفلام المعروفة: لها ملخص، أو قيّمها على IMDb عدد كافٍ من الناس */
 const KNOWN = () => { const k = FILMS().filter(f => f.summary || (((f.ratings || {}).imdb || {}).votes || 0) >= 250); return k.length >= 20 ? k : FILMS(); };
-function gameToday() {
-  const now = new Date(), day = Math.floor((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - EPOCH) / 864e5);
-  const list = [...KNOWN()].sort((a, b) => a.id < b.id ? -1 : 1), n = list.length;
-  const cycle = Math.floor(day / n), order = seeded(n, 7919 + cycle * 31);
-  return { day, no: day + 1, f: list[order[((day % n) + n) % n]] };
-}
-function clues(f) {
-  if (Array.isArray(f.clues) && f.clues.length >= 4) return f.clues.slice(0, 6);
-  const e = eraOf(f.year), lead = (f.cast || []).map(pname).filter(c => c !== pname(f.director));
-  const words = f.title.split(/\s+/).length;
-  return [
-    `من أفلام ${e.name}، ونوعه ${(f.genre || []).join(' و') || 'غير مصنّف'}`,
-    `عُرض عام ${ar(f.year)}`,
-    f.based_on ? `مأخوذ عن ${f.based_on}` : f.writer ? `التأليف: ${f.writer}` : `تقييمه على IMDb ${score(f) ? score(f).toFixed(1) : 'غير متاح'}`,
-    f.director ? `إخراج: ${pname(f.director)}` : `تقييمه على السينما.كوم ${escore(f) ? escore(f).toFixed(1) : 'غير متاح'}`,
-    lead.length ? `من أبطاله: ${lead[lead.length > 1 ? 1 : 0]}` : `تقييمه على السينما.كوم ${escore(f) ? escore(f).toFixed(1) : 'غير متاح'}`,
-    `يبدأ عنوانه بحرف «${f.title.replace(/^ال/, '')[0]}»، ويتكوّن من ${words === 1 ? 'كلمة واحدة' : words === 2 ? 'كلمتين' : ar(words) + ' كلمات'}`
-  ];
-}
-let G = null;
-function renderGame(practice) {
-  const el = showPage('e50', 'خمّن الفيلم');
-  const t = gameToday();
-  const f = practice ? practice : t.f, key = practice ? null : 'g-' + t.day;
-  const st = key ? store.get(key, { guesses: [], done: false, won: false }) : { guesses: [], done: false, won: false };
-  G = { f, key, st, practice: !!practice, no: t.no, cl: clues(f) };
-  el.innerHTML = `<div class="gwrap">
-   <a class="back" href="#top">→ العودة إلى آلة الزمن</a>
-   <div class="ghead"><span class="lk">${practice ? 'جولة تدريب' : 'لغز رقم ' + ar(t.no)}</span><h1>خمّن الفيلم</h1><p>كل محاولة خاطئة تكشف تلميحًا جديدًا. أمامك ست محاولات.</p></div>
-   <ol class="strip6" id="clues"></ol>
-   <div class="gin" id="gin"><div class="gbox"><input id="gq" type="text" autocomplete="off" placeholder="اكتب اسم الفيلم…" aria-label="اسم الفيلم" aria-autocomplete="list" aria-controls="gsug"><button type="button" class="btn" id="gskip">تخطَّ</button></div><ul class="gsug" id="gsug" role="listbox" hidden></ul></div>
-   <ol class="gtries" id="gtries"></ol>
-   <div id="gend"></div>
-  </div>`;
-  paintGame();
-  const q = $('gq'), sug = $('gsug'); let act = 0, opts = [];
-  const show = () => {
-    const qn = norm(q.value); act = 0;
-    opts = qn ? FILMS().filter(x => norm(x.title).includes(qn) && !G.st.guesses.includes(x.id)).slice(0, 6) : [];
-    sug.hidden = !opts.length;
-    sug.innerHTML = opts.map((x, i) => `<li role="option" id="gs${i}" data-id="${esc(x.id)}" class="${i === act ? 'on' : ''}"><b>${esc(x.title)}</b><small>${ar(x.year)}</small></li>`).join('');
-  };
-  q.addEventListener('input', show);
-  q.addEventListener('keydown', e => {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (!opts.length) return; act = (act + (e.key === 'ArrowDown' ? 1 : -1) + opts.length) % opts.length; [...sug.children].forEach((li, i) => li.classList.toggle('on', i === act)); }
-    else if (e.key === 'Enter' && opts[act]) { e.preventDefault(); guess(opts[act].id); }
-  });
-  sug.addEventListener('click', e => { const li = e.target.closest('li'); if (li) guess(li.dataset.id); });
-  $('gskip').addEventListener('click', () => guess(null));
-  if (!G.st.done) q.focus({ preventScroll: true });
-}
-function guess(id) {
-  if (G.st.done) return;
-  G.st.guesses.push(id);
-  if (id === G.f.id) { G.st.done = true; G.st.won = true; }
-  else if (G.st.guesses.length >= 6) { G.st.done = true; }
-  if (G.key) { store.set(G.key, G.st); if (G.st.done) saveStats(G.st); }
-  const q = $('gq'); q.value = ''; $('gsug').hidden = true;
-  paintGame(true);
-  if (!G.st.done) q.focus({ preventScroll: true });
-}
-function saveStats(st) {
-  const s = store.get('gstats', { played: 0, won: 0, streak: 0, best: 0, dist: [0, 0, 0, 0, 0, 0], last: null });
-  if (s.last === G.key) return;
-  s.played++; if (st.won) { s.won++; s.dist[st.guesses.length - 1]++; s.streak = (s.last === 'g-' + (+G.key.slice(2) - 1) ? s.streak : 0) + 1; s.best = Math.max(s.best, s.streak); } else s.streak = 0;
-  s.last = G.key; store.set('gstats', s);
-}
-function paintGame(anim) {
-  const { st, cl, f } = G, shown = st.done ? 6 : st.guesses.length + 1;
-  $('clues').innerHTML = cl.map((c, i) => i < shown ? `<li class="open${anim && i === shown - 1 && !st.done ? ' new' : ''}"><span class="cn">${ar(i + 1)}</span><p>${esc(c)}</p></li>` : `<li class="shut"><span class="cn">${ar(i + 1)}</span><p>تلميح مغلق</p></li>`).join('');
-  $('gtries').innerHTML = st.guesses.map((id, i) => { const x = FILMS().find(y => y.id === id); return `<li class="${id === f.id ? 'ok' : 'no'}"><span>${ar(i + 1)}</span>${x ? esc(x.title) + ` <small>${ar(x.year)}</small>` : '<em>تخطّي</em>'}</li>`; }).join('');
-  $('gin').hidden = st.done;
-  const end = $('gend');
-  if (!st.done) { end.innerHTML = ''; return; }
-  const sq = st.guesses.map(id => id === f.id ? '🟩' : '🟥').join('') + '⬜'.repeat(6 - st.guesses.length);
-  const share = `شاشة زمان · ${G.practice ? 'جولة تدريب' : 'لغز ' + G.no}\n${sq}\ncimaeg.github.io/#game`;
-  const s = store.get('gstats', null);
-  end.innerHTML = `<div class="gres ${st.won ? 'won' : 'lost'}">
-    <div class="gpo">${poster(f)}</div>
-    <div><span class="lk">${st.won ? 'أحسنت!' : 'فاتك هذه المرة'}</span><h2>${esc(f.title)}</h2><p>${ar(f.year)}${f.director ? ' · إخراج: ' + esc(f.director) : ''}</p>
-    <div class="sq" aria-label="${st.won ? 'عرفته في المحاولة ' + (st.guesses.length) : 'لم تعرفه'}">${sq}</div>
-    <div class="gact"><a class="btn" href="#film-${esc(f.id)}">صفحة الفيلم</a><button type="button" class="btn ghost" id="gshare">انسخ النتيجة</button><button type="button" class="btn ghost" id="gprac">جولة تدريب</button></div>
-    ${!G.practice && s ? `<dl class="gst"><div><dt>لعبت</dt><dd>${ar(s.played)}</dd></div><div><dt>فزت</dt><dd>${ar(s.played ? Math.round(s.won / s.played * 100) : 0)}٪</dd></div><div><dt>سلسلة</dt><dd>${ar(s.streak)}</dd></div><div><dt>أفضل سلسلة</dt><dd>${ar(s.best)}</dd></div></dl>` : ''}
-    ${!G.practice ? '<p class="note">لغز جديد كل يوم عند منتصف الليل.</p>' : ''}</div></div>`;
-  $('gshare').addEventListener('click', async e => { try { await navigator.clipboard.writeText(share); e.target.textContent = 'نُسخت ✓'; } catch { e.target.textContent = 'تعذّر النسخ'; } });
-  $('gprac').addEventListener('click', () => { const pool = KNOWN().filter(x => x !== f); renderGame(pool[Math.floor(Math.random() * pool.length)]); });
-}
 
 /* ——— فهرس الصنّاع ——— */
 let pq = '', plim = 120;
@@ -358,8 +265,7 @@ function renderStats() {
 /* ——— المسارات ——— */
 window.SZX = {
   route(h) {
-    if (h === 'game') renderGame();
-    else if (h === 'people') renderPeople();
+    if (h === 'people') renderPeople();
     else if (h === 'network') renderNetwork();
     else if (h === 'stats') renderStats();
     else if (h.startsWith('p-')) renderPerson(h.slice(2));
@@ -370,6 +276,7 @@ Promise.all([getj('data/wikidata.json'), getj('data/people.json')]).then(([d, px
   WD = { people: {}, films: {}, ...d }; PX = px || {};
   lobby();
   const h = decodeURIComponent(location.hash.slice(1));
-  if (/^(game|people|network|stats|p-)/.test(h)) SZX.route(h);
+  if (h === 'game') location.hash = 'top';
+  else if (/^(people|network|stats|p-)/.test(h)) SZX.route(h);
 });
 }
