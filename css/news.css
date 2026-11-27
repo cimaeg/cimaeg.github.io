@@ -1,0 +1,85 @@
+/* الجريدة: ورق جرائد قديم، أختام ملوّنة لأنواع المواضيع، وقصاصات بحافة ممزقة */
+.nwrap{max-width:1100px;margin:auto;padding:clamp(20px,4vw,48px) max(4vw,16px) 70px;--np:#efe6d0;--npi:#1e1912;--nps:#6b5f4c;--nfont:'Amiri','Aref Ruqaa',serif}
+.mast{background:var(--np);color:var(--npi);padding:14px clamp(16px,3vw,34px) 18px;margin:10px 0 26px;text-align:center;border-radius:2px;box-shadow:0 20px 40px -24px #000;position:relative}
+.mast::before,.mast::after{content:"";position:absolute;inset-inline:clamp(16px,3vw,34px);height:0;border-top:3px double var(--npi)}
+.mast::before{top:44px}.mast::after{bottom:52px}
+.mtop{display:flex;justify-content:space-between;font:500 13px/1 var(--body);color:var(--nps);padding-bottom:12px}
+.mast h1{font:700 clamp(54px,11vw,120px)/1 'Aref Ruqaa',serif;margin:10px 0 18px;letter-spacing:.01em}
+.mast p{margin:0;font:500 15px/1.5 var(--body);color:var(--nps)}
+.nkinds{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+.nkinds button{font:500 15px var(--body);min-height:40px;padding:4px 16px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--ink);cursor:pointer}
+.nkinds button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.nstamp{display:inline-block;font:700 13px/1 var(--body);padding:6px 10px 5px;border:2px solid currentColor;border-radius:3px;transform:rotate(-3deg);letter-spacing:.04em;background:transparent}
+.k-news{color:#b3261e}.k-essay{color:#1f4e79}.k-probe{color:#7a4b00}.k-talk{color:#2e6b3a}
+.nfront{display:grid;gap:22px}
+.ncols{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.nclip{position:relative;display:flex;flex-direction:column;gap:10px;text-decoration:none;background:var(--np);color:var(--npi);padding:18px 18px 26px;box-shadow:0 14px 26px -16px #000;transform:rotate(var(--r,-.6deg));transition:transform .25s,box-shadow .25s;
+ -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat,conic-gradient(from 135deg at top,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 10px repeat-x;
+ mask:linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat,conic-gradient(from 135deg at top,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 10px repeat-x}
+.ncols .nclip:nth-child(3n+2){--r:.7deg}.ncols .nclip:nth-child(3n){--r:-.2deg}
+.nclip:hover,.nclip:focus-visible{transform:rotate(0) translateY(-4px);box-shadow:0 22px 34px -16px #000;outline:0}
+.nclip:focus-visible{box-shadow:0 0 0 3px var(--acc),0 22px 34px -16px #000}
+.nclip .nstamp{align-self:flex-start}
+.ntxt{display:flex;flex-direction:column;gap:6px}
+.ntxt b{font:700 22px/1.35 var(--nfont)}
+.ntxt em{font-style:normal;color:var(--nps);font-size:15px;line-height:1.6}
+.ntxt small{color:var(--nps);font-size:13px}
+.nclip.lead{display:grid;grid-template-columns:minmax(0,170px) 1fr;grid-template-areas:"s s" "p t";column-gap:24px;padding:24px 26px 32px;--r:0deg}
+.nclip.lead .nstamp{grid-area:s;justify-self:start;margin-bottom:10px}
+.nclip.lead .npic{grid-area:p}.nclip.lead .ntxt{grid-area:t;align-self:center}
+.nclip.lead .ntxt b{font-size:clamp(28px,4vw,40px);line-height:1.25}
+.nclip.lead .ntxt em{font-size:18px}
+.npic .mp{width:100%;filter:grayscale(.35) contrast(1.05)}
+@media(max-width:620px){.nclip.lead{grid-template-columns:1fr;grid-template-areas:"s" "t" "p"}.nclip.lead .npic{max-width:150px;margin-top:14px}}
+.nface{display:block;width:100%;aspect-ratio:3/4;border-radius:4px;overflow:hidden;background:#d8ccb0}
+.nface img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.25)}
+.nface.ini{display:flex;align-items:center;justify-content:center;font:700 30px 'Aref Ruqaa',serif;color:var(--nps)}
+.nempty{background:var(--np);color:var(--npi);text-align:center;padding:48px 20px;border-radius:2px}
+.nempty b{font:700 30px 'Aref Ruqaa',serif}.nempty p{color:var(--nps);margin:6px 0 0}
+
+/* المقالة */
+.npaper{background:var(--np);color:var(--npi);padding:clamp(22px,5vw,60px) clamp(18px,6vw,80px) clamp(30px,5vw,60px);border-radius:2px;box-shadow:0 30px 60px -30px #000;margin-top:10px}
+.nline{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-size:14px;color:var(--nps);border-bottom:1px solid #1e19123a;padding-bottom:14px}
+.nline a{color:inherit}
+.npaper h1{font:700 clamp(32px,5.5vw,56px)/1.2 var(--nfont);margin:22px 0 10px}
+.ndek{font-size:clamp(17px,2.2vw,21px);line-height:1.65;color:#4a3f2f;margin:0 0 12px}
+.nby{font-weight:700;margin:0 0 26px;color:var(--nps)}
+.nbody{font-size:18px;line-height:1.95;border-top:3px double var(--npi);padding-top:24px}
+.nbody{max-width:46em}
+.nbody>p:first-child{font-size:1.12em;font-weight:500}
+.nbody h2{font:700 26px/1.4 var(--nfont);margin:28px 0 10px}
+.nbody h3{font:700 21px/1.4 var(--nfont);margin:22px 0 8px}
+.nbody p{margin:0 0 1em}
+.nbody blockquote{margin:22px 0;padding:6px 22px;border-inline-start:4px solid #8a2a1c;font:700 22px/1.7 var(--nfont)}
+.nbody a{color:#7d1f12}
+.nbody a.xref{text-decoration:none;background:linear-gradient(#8a2a1c55,#8a2a1c55) bottom/100% 2px no-repeat;padding-bottom:1px;transition:background-size .2s}
+.nbody a.xref:hover,.nbody a.xref:focus-visible{background:#8a2a1c22;outline:0;border-radius:2px}
+.nbody a.xref[href^="#p-"]{background-image:radial-gradient(circle,#8a2a1c 1px,transparent 1.3px);background-size:5px 3px;background-position:bottom;background-repeat:repeat-x}
+.ncast,.nmore{margin-top:38px}
+.ncast h2,.nmore h2{font:700 26px/1.3 var(--disp);color:var(--acc);margin:0 0 16px}
+.nreel{display:flex;gap:14px;overflow-x:auto;padding:14px 12px;background:#0b0b0b;border-block:10px dashed #2a2a2a;border-radius:4px;scroll-snap-type:x mandatory}
+.nreel a{flex:0 0 120px;text-decoration:none;color:#eee;scroll-snap-align:start;display:flex;flex-direction:column;gap:6px}
+.nreel .mp{width:120px}
+.nreel a>span:last-child{display:flex;flex-direction:column}
+.nreel b{font-size:14px;line-height:1.35}.nreel small{color:#999;font-size:12px}
+.npeople{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:14px;margin-top:18px}
+.nwho{text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:6px;text-align:center}
+.nwho .nface{border-radius:50% 50% 6px 6px}
+.nwho b{font-size:14px;line-height:1.35}
+.nwho:hover b{color:var(--acc)}
+
+/* بطاقة المعاينة */
+.ntip{position:fixed;z-index:60;display:flex;gap:12px;align-items:center;max-width:290px;padding:10px 12px;background:#efe6d0;color:#1e1912;border-radius:6px;box-shadow:0 16px 30px -10px #000c;pointer-events:none;font-size:14px;line-height:1.5}
+.ntip .mp,.ntip .nface{width:58px;flex:0 0 58px}
+.ntip b{display:block;font-size:16px}.ntip small{color:#6b5f4c}
+
+/* القصاصات في صفحات الأفلام والصنّاع */
+.nclips{background:#efe6d0;color:#1e1912;border-color:transparent}
+.nclips h4{color:#8a2a1c}
+.nclips .mini{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:inherit;padding:10px 0;border-top:1px dashed #1e191240}
+.nclips .mini:first-of-type{border-top:0}
+.nclips .mini .nstamp{align-self:flex-start;font-size:11px;padding:4px 7px 3px}
+.nclips .mini b{font:700 17px/1.4 'Amiri','Aref Ruqaa',serif}
+.nclips .mini small{color:#6b5f4c;font-size:12px}
+.nclips .mini:hover b{text-decoration:underline}
+@media(prefers-reduced-motion:reduce){.nclip,.nclip:hover{transition:none;transform:none}}

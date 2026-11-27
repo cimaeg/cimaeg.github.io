@@ -7,7 +7,7 @@
 <title>شاشة زمان</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@500;700&family=Lalezar&family=Rakkas&family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Reem+Kufi:wght@500;700&family=Lalezar&family=Rakkas&family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* VOICE: حنين دافئ، كأنك تدخل سينما مصرية قديمة
    IDEA: شريط فيلم يتغيّر لونه وخطّه مع كل عقد، والبحث تذكرة سينما ورقية
@@ -264,6 +264,7 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 <link rel="stylesheet" href="css/extras.css">
+<link rel="stylesheet" href="css/news.css">
 </head>
 <body data-era="e40">
 <header class="top"><div class="top-in">
@@ -279,6 +280,7 @@ footer{text-align:center;padding:28px 16px;color:var(--sub);font-size:13px}
 </div>
 <nav class="menu" id="menu" hidden aria-label="أقسام الموقع">
   <a href="#game"><b>خمّن الفيلم</b><span>لغز جديد كل يوم</span></a>
+  <a href="#news"><b>الجريدة</b><span>مقالات وتحقيقات وأخبار</span></a>
   <a href="#people"><b>الصنّاع</b><span>ممثلون ومخرجون</span></a>
   <a href="#network"><b>شبكة النجوم</b><span>كيف يلتقي نجمان؟</span></a>
   <a href="#stats"><b>أرقام الزمن الجميل</b><span>الأرشيف بالأرقام</span></a>
@@ -431,6 +433,7 @@ async function showFilm(id){
  <aside class="side" id="side">${sideRel(f,e)}</aside></div>`;
  applyTs();
  window.scrollTo(0,0);
+ if(window.SZN)SZN.film(id);
  const txt=await article(id);
  if(location.hash!=='#film-'+id)return;
  $('prose').insertAdjacentHTML('beforeend',txt?md(txt):`<div class="soon">لم تُكتب عن هذا الفيلم مقالة بعد.</div>`);
@@ -520,6 +523,7 @@ const XR=/^(game|people|network|stats|p-)/;
 function showPage(eraId,title){$('home').hidden=true;$('film').hidden=true;$('list').hidden=true;const el=$('page');el.hidden=false;cur='';setEra(eraId);for(const x of strip.children)x.classList.remove('on');document.title=(title?title+' · ':'')+'شاشة زمان';scrollTo(0,0);return el}
 function route(){const h=decodeURIComponent(location.hash.slice(1));closeMenu();
  if(h.startsWith('film-'))showFilm(h.slice(5));else if(h.startsWith('list-')){showList(h.slice(5));scrollTo(0,0)}
+ else if(h==='news'||h.startsWith('a-')){if(window.SZN)SZN.route(h)}
  else if(XR.test(h)){if(window.SZX)SZX.route(h)}
  else showHome(h)}
 const menu=$('menu'),menuBtn=$('menuBtn');
@@ -579,7 +583,7 @@ res.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b)retu
 window.SZ={get FILMS(){return FILMS},ERAS,STYLE,FONT,esc,ar,norm,eraOf,poster,mpo,cnt,score,escore,byRating,md,pname,plink,showPage,route,ready:false};
 fetch('data/people.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).catch(()=>({})).then(x=>{PPX=x||{};const m=location.hash.match(/^#film-(.+)$/),c=document.querySelector('#film .cast'),f=m&&FILMS.find(y=>y.id===m[1]);if(c&&f)c.outerHTML=castStrip(f,eraOf(f.year))});
 fetch('data/films.json',{cache:'no-cache'}).then(r=>r.json()).then(d=>{for(const f of d){const r=f.ratings||(f.ratings={});for(const k of ['imdb','elcinema'])if(r[k]&&typeof r[k].score!=='number')delete r[k];f.cast=f.cast||[];f.genre=f.genre||[]}
- FILMS=d.sort((a,b)=>a.year-b.year);renderHome();SZ.ready=true;route();const sc=document.createElement('script');sc.src='js/extras.js';document.body.appendChild(sc)})
+ FILMS=d.sort((a,b)=>a.year-b.year);renderHome();SZ.ready=true;route();const sc=document.createElement('script');sc.src='js/extras.js';document.body.appendChild(sc);const sn=document.createElement('script');sn.src='js/news.js';document.body.appendChild(sn)})
  .catch(()=>{main.innerHTML='<p style="padding:40px;text-align:center">تعذّر تحميل بيانات الأفلام.</p>'});
 }
 </script>

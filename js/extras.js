@@ -235,6 +235,7 @@ async function renderPerson(name) {
     <div class="box"><h4>شبكة النجوم</h4><p class="note">كيف ${f ? 'تتصل' : 'يتصل'} ${esc(p.name)} ${f ? 'بغيرها' : 'بغيره'} من النجوم؟</p><a class="btn" href="#network">افتح الشبكة</a></div>
    </aside></div></div>`;
   netFrom = p.name;
+  if (window.SZN) SZN.person(p.name);
   const txt = await personArticle(p.name);
   if (txt && location.hash === '#p-' + encodeURIComponent(p.name) || txt && decodeURIComponent(location.hash.slice(3)) === p.name) $('pprose').innerHTML = md(txt);
 }
