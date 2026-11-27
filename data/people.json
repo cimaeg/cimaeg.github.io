@@ -58,5 +58,25 @@
  "فريد شوقي": {
   "photo": "people/farid-shawqi.webp",
   "focus": "50% 28%"
+ },
+ "عادل إمام": {
+  "photo": "people/adel-imam.webp",
+  "focus": "50% 40%"
+ },
+ "حاتم ذو الفقار": {
+  "photo": "people/hatem-zulfikar.webp",
+  "focus": "50% 28%"
+ },
+ "سعاد حسني": {
+  "photo": "people/soad-hosny.webp",
+  "focus": "55% 32%"
+ },
+ "أحمد زكي": {
+  "photo": "people/ahmed-zaki.webp",
+  "focus": "55% 40%"
+ },
+ "نور الشريف": {
+  "photo": "people/nour-el-sherif.webp",
+  "focus": "50% 30%"
  }
 }
