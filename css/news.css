@@ -68,6 +68,11 @@
 .nwho b{font-size:14px;line-height:1.35}
 .nwho:hover b{color:var(--acc)}
 
+.nsrc{margin-top:30px;padding:16px 18px;border:1px solid #1e191240;border-inline-start:4px solid #8a2a1c;background:#1e19120a;display:flex;flex-direction:column;gap:4px;font-size:15px;max-width:46em}
+.nsrc b{font:700 18px var(--nfont);color:#8a2a1c}
+.nsrc a{color:#7d1f12;font-weight:700}
+.nsrc .nsrc-go{align-self:flex-start;margin-top:4px;min-height:36px;display:inline-flex;align-items:center}
+.nsrc small{color:var(--nps);font-size:13px}
 /* بطاقة المعاينة */
 .ntip{position:fixed;z-index:60;display:flex;gap:12px;align-items:center;max-width:290px;padding:10px 12px;background:#efe6d0;color:#1e1912;border-radius:6px;box-shadow:0 16px 30px -10px #000c;pointer-events:none;font-size:14px;line-height:1.5}
 .ntip .mp,.ntip .nface{width:58px;flex:0 0 58px}

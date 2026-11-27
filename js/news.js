@@ -37,7 +37,7 @@ async function renderIndex() {
     return `<a class="nclip${lead ? ' lead' : ''}" href="#a-${encodeURIComponent(x.id)}">${stamp(x.kind)}
       ${lead && pic ? `<span class="npic">${pic}</span>` : ''}
       <span class="ntxt"><b>${esc(x.title)}</b>${x.dek ? `<em>${esc(x.dek)}</em>` : ''}
-      <small>${x.author ? esc(x.author) + ' · ' : ''}${fmt(x.date)}</small></span></a>`;
+      <small>${x.author ? esc(x.author) + ' · ' : ''}${fmt(x.date)}${x.source && (x.source.name || x.source.url) ? ' · عن ' + esc(x.source.name || host(x.source.url)) : ''}</small></span></a>`;
   };
   el.innerHTML = `<div class="nwrap"><a class="back" href="#top">→ العودة إلى آلة الزمن</a>
    <header class="mast"><div class="mtop"><span>العدد ${issueNo(today)}</span><span>${fmt(today)}</span></div>
@@ -47,6 +47,18 @@ async function renderIndex() {
      : `<div class="nempty"><b>المطبعة تنتظر</b><p>لم يُنشر في الجريدة شيء بعد.</p></div>`}
   </div>`;
   el.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => { kind = b.dataset.k; renderIndex(); }));
+}
+
+/* ——— المصدر: يُذكر دائمًا مع رابطه حفظًا للحقوق ——— */
+const host = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
+function srcBox(x) {
+  const s = x.source || {};
+  if (!s.name && !s.url) return `<footer class="nsrc own"><b>المصدر</b><span>${x.author ? esc(x.author) + ' · ' : ''}خاص بشاشة زمان</span></footer>`;
+  const name = esc(s.name || host(s.url));
+  return `<footer class="nsrc"><b>المصدر</b>
+   <span>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${name}</a>` : name}${s.author ? ' · بقلم ' + esc(s.author) : ''}${s.date ? ' · نُشر في ' + fmt(s.date) : ''}</span>
+   ${s.url ? `<a class="nsrc-go" href="${esc(s.url)}" target="_blank" rel="noopener">اقرأ النص في مصدره الأصلي ←</a>` : ''}
+   <small>${x.mode === 'summary' ? 'هذا عرض بصياغة شاشة زمان، والنص الأصلي وحقوقه لمصدره.' : 'جميع الحقوق محفوظة للمصدر.'}</small></footer>`;
 }
 
 /* ——— صفحة المقالة ——— */
@@ -63,6 +75,7 @@ async function renderArticle(id) {
     <h1>${esc(x.title)}</h1>${x.dek ? `<p class="ndek">${esc(x.dek)}</p>` : ''}
     ${x.author ? `<p class="nby">بقلم ${esc(x.author)}</p>` : ''}
     <div class="nbody" id="nbody"></div>
+    ${srcBox(x)}
    </article>
    ${fs.length || ppl.length ? `<section class="ncast" aria-label="ورد في هذا الموضوع"><h2>ورد في هذا الموضوع</h2>
     ${fs.length ? `<div class="nreel">${fs.map(f => `<a href="#film-${esc(f.id)}">${mpo(f, eraOf(f.year).id)}<span><b>${esc(f.title)}</b><small>${ar(f.year)}</small></span></a>`).join('')}</div>` : ''}

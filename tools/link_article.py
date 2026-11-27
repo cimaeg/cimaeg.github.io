@@ -2,6 +2,11 @@
 scan  FILE.md          : يعرض الأفلام والأسماء المرشّحة في النص مع ما يشبهها، للتحقق اليدوي قبل الربط
 apply FILE.md MAP.json : يربط أول ظهور فقط لكل عبارة في MAP ({"العبارة": "#film-id" أو "#p-الاسم"})
                          ويطبع قائمتي films و people لإضافتهما إلى data/articles.json
+سجل المقالة في data/articles.json:
+  {"id", "kind": خبر|مقال|تحقيق|حوار, "title", "dek", "date", "author",
+   "source": {"name", "url", "author", "date"},   ← إلزامي لكل نص منقول: اسم المصدر ورابطه
+   "mode": "full" (نص مأذون أو ملك صاحب الموقع) | "summary" (عرض بصياغتنا لنص منشور في موقع آخر),
+   "films": [...], "people": [...]}
 """
 import json, re, sys
 F = json.load(open("data/films.json", encoding="utf-8"))
