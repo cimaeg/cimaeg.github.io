@@ -61,6 +61,79 @@ function srcBox(x) {
    <small>${x.mode === 'summary' ? 'هذا عرض بصياغة شاشة زمان، والنص الأصلي وحقوقه لمصدره.' : 'جميع الحقوق محفوظة للمصدر.'}</small></footer>`;
 }
 
+
+/* ——— ضبط السطور بالكشيدة: يُمدّ الحرف بدل توسيع الفراغات، كالصحف المطبوعة ——— */
+const DUAL = /[بتثجحخسشصضطظعغفقكلمنهيئـ]/;          // حروف تتصل بما بعدها
+const ARL = /[ء-ي]/;
+const PRI = /[سشصضطظكلفق]/;                           // مدّها أجمل
+const toAr = t => t.replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+function wrapWords(root) {
+  const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), nodes = [];
+  while (tw.nextNode()) nodes.push(tw.currentNode);
+  for (const n of nodes) {
+    const parts = toAr(n.nodeValue).split(/(\s+)/), fr = document.createDocumentFragment();
+    for (const w of parts) {
+      if (!w) continue;
+      if (/^\s+$/.test(w)) fr.appendChild(document.createTextNode(w));
+      else { const sp = document.createElement('span'); sp.className = 'kw'; sp.textContent = w; fr.appendChild(sp); }
+    }
+    n.replaceWith(fr);
+  }
+}
+function slots(w) {                                    // مواضع صالحة للمدّ داخل الكلمة، الأفضل أولًا
+  const out = [];
+  for (let i = 0; i < w.length - 1; i++) {
+    const a = w[i], b = w[i + 1];
+    if (!DUAL.test(a) || !ARL.test(b)) continue;
+    if (a === 'ل' && /[اأإآ]/.test(b)) continue;       // لا نكسر «لا»
+    if (/[ً-ْ]/.test(b)) continue;
+    out.push({ i: i + 1, p: (PRI.test(a) ? 2 : 0) + (i + 2 === w.length ? 1 : 0) + i / 100 });
+  }
+  return out.sort((x, y) => y.p - x.p).map(x => x.i);
+}
+function justify(box) {
+  box.querySelectorAll('p').forEach(p => {
+    const words = [...p.querySelectorAll('.kw')];
+    if (words.length < 4) return;
+    p.style.textAlign = 'start';
+    const probe = document.createElement('span'); probe.textContent = 'ـــــــــــــــــــ'; probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap';
+    p.appendChild(probe); const tw = probe.getBoundingClientRect().width / 10; probe.remove();
+    if (!tw) { p.style.textAlign = ''; return; }
+    const W = p.clientWidth, lines = [];
+    for (const w of words) { const r = w.getBoundingClientRect(), L = lines[lines.length - 1]; if (L && Math.abs(L.top - r.top) < r.height / 2) L.ws.push(w); else lines.push({ top: r.top, ws: [w] }); }
+    const pr = p.getBoundingClientRect();
+    lines.slice(0, -1).forEach(L => {
+      const rs = L.ws.map(w => w.getBoundingClientRect());
+      const used = Math.max(...rs.map(r => r.right)) - Math.min(...rs.map(r => r.left));
+      let need = Math.floor((W - used) / tw);
+      if (need <= 0) return;
+      const cand = L.ws.map(w => ({ w, t: w.textContent, s: slots(w.textContent) })).filter(c => c.s.length);
+      if (!cand.length) return;
+      const plan = [];                                  // تسلسل الإضافات بالتناوب بين الكلمات، بحد ٤ لكل كلمة
+      for (let r = 0; r < 4 && plan.length < need + 2; r++) for (const c of cand) if (r < c.s.length * 2) plan.push([c, c.s[r % c.s.length]]);
+      const apply = k => {
+        const add = new Map(cand.map(c => [c, {}]));
+        plan.slice(0, k).forEach(([c, at]) => { const m = add.get(c); m[at] = (m[at] || 0) + 1; });
+        for (const c of cand) { const m = add.get(c); let o = ''; for (let i = 0; i < c.t.length; i++) o += 'ـ'.repeat(m[i] || 0) + c.t[i]; c.w.textContent = o; }
+      };
+      const first = L.ws[0], last = L.ws[L.ws.length - 1];
+      const ok = () => Math.abs(last.getBoundingClientRect().top - first.getBoundingClientRect().top) < 2;
+      let k = Math.min(need, plan.length); apply(k);
+      while (k > 0 && !ok()) apply(--k);
+    });
+    p.style.textAlign = '';
+  });
+}
+let kSrc = null;
+function typeset() {
+  const b = $('nbody'); if (!b || kSrc == null) return;
+  b.innerHTML = kSrc;
+  b.querySelectorAll('a[href^="#film-"],a[href^="#p-"]').forEach(a => a.classList.add('xref'));
+  wrapWords(b);
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => justify(b));
+}
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if ($('nbody') && !$('nbody').closest('[hidden]')) typeset(); }, 200); });
+
 /* ——— صفحة المقالة ——— */
 async function renderArticle(id) {
   const all = await load(), x = all.find(a => a.id === id);
@@ -84,8 +157,8 @@ async function renderArticle(id) {
   </div>`;
   const t = await text(id);
   if (decodeURIComponent(location.hash.slice(3)) !== id) return;
-  $('nbody').innerHTML = t ? md(t) : '<p class="lnone">النص غير متاح.</p>';
-  $('nbody').querySelectorAll('a[href^="#film-"],a[href^="#p-"]').forEach(a => a.classList.add('xref'));
+  kSrc = t ? md(t) : '<p class="lnone">النص غير متاح.</p>';
+  typeset();
 }
 
 /* ——— بطاقة معاينة عند المرور على اسم مرتبط ——— */
