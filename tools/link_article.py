@@ -11,7 +11,7 @@ apply FILE.md MAP.json : يربط أول ظهور فقط لكل عبارة في 
 import json, re, sys
 F = json.load(open("data/films.json", encoding="utf-8"))
 nz = lambda s: s.replace("أ", "ا").replace("إ", "ا").replace("آ", "ا").replace("ة", "ه").replace("ى", "ي")
-pn = lambda n: re.sub(r"\s*\(.*?\)", "", n or "").strip()
+pn = lambda n: re.sub(r"\s*\((?!ممثل|مخرج)[^)]*\)", "", n or "").strip()
 def people():
     s = {}
     for f in F:

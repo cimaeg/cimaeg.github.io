@@ -405,7 +405,7 @@ async function article(id){
  try{const r=await fetch(`films/${encodeURIComponent(id)}.md`,{cache:'no-cache'});cache[id]=r.ok?await r.text():null}catch{cache[id]=null}
  return cache[id];
 }
-const pname=n=>String(n||'').replace(/\s*\(.*?\)/,'').trim();
+const pname=n=>String(n||'').replace(/\s*\((?!ممثل|مخرج)[^)]*\)/,'').trim();
 const plink=n=>{const c=pname(n);return c?`<a class="pl" href="#p-${encodeURIComponent(c)}">${esc(n)}</a>`:esc(n)};
 let PPX={};
 const castStrip=(f,e)=>{const c=f.cast||[];if(!c.length)return'';const [bg,ink]=STYLE[e.id];
@@ -550,8 +550,8 @@ const hl=(text,qn)=>{if(!qn)return esc(text);const n=norm(text),i=n.indexOf(qn);
  // تقريب: التطبيع لا يغيّر الطول إلا بحذف التشكيل، فنظلّل فقط إن تطابق الطول
  return n.length===text.length?esc(text.slice(0,i))+'<mark>'+esc(text.slice(i,i+qn.length))+'</mark>'+esc(text.slice(i+qn.length)):esc(text)};
 function people(){const m=new Map();
- for(const f of FILMS){for(const c of f.cast||[]){const n=c.replace(/\s*\(.*?\)/,'');m.has(n)||m.set(n,{name:n,films:new Set(),roles:new Set()});m.get(n).films.add(f);m.get(n).roles.add('ممثل')}
-  const d=(f.director||'').replace(/\s*\(.*?\)/,'');if(d){m.has(d)||m.set(d,{name:d,films:new Set(),roles:new Set()});m.get(d).films.add(f);m.get(d).roles.add('مخرج')}}
+ for(const f of FILMS){for(const c of f.cast||[]){const n=c.replace(/\s*\((?!ممثل|مخرج)[^)]*\)/,'');m.has(n)||m.set(n,{name:n,films:new Set(),roles:new Set()});m.get(n).films.add(f);m.get(n).roles.add('ممثل')}
+  const d=(f.director||'').replace(/\s*\((?!ممثل|مخرج)[^)]*\)/,'');if(d){m.has(d)||m.set(d,{name:d,films:new Set(),roles:new Set()});m.get(d).films.add(f);m.get(d).roles.add('مخرج')}}
  return [...m.values()]}
 function search(raw){
  const qn=norm(raw);act=0;
