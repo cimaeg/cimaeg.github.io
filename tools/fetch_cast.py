@@ -16,19 +16,17 @@ if sys.argv[1] == "debug":
     parts = t.split('class="section-title"')
     for p in parts[1:4]: print("SEC", repr(p[:2500]))
     sys.exit()
+import unicodedata
 def parse(t):
     out = {}
     for sec in t.split('class="section-title"')[1:]:
-        title = cl(sec.split("</", 1)[0].split(">", 1)[-1])
+        title = unicodedata.normalize("NFKC", cl(sec.split("<span", 1)[0].split(">", 1)[-1]))
+        if "تمثيل" not in title: continue
         rows = []
-        # كل شخص داخل كتلة؛ الدور غالبًا بعد الاسم
-        for m in re.finditer(r'<a href="/person/(\d+)/">([^<]+)</a>(.{0,600}?)(?=<a href="/person/|$)', sec, re.S):
-            pid, name, rest = m.group(1), cl(m.group(2)), m.group(3)
-            role = ""
-            rm = re.search(r"(?:الدور|Role)\s*:?\s*</?[^>]*>?\s*([^<]{1,80})<", rest)
-            if rm: role = cl(rm.group(1))
-            if name and not any(r[0] == pid for r in rows): rows.append([pid, name, role])
-        if rows: out[title] = rows
+        for pid, name, role in re.findall(r'<li><a href="/person/(\d+)/">([^<]+)</a></li>\s*(?:<li class="subheader">([^<]*)</li>)?', sec):
+            role = cl(role).strip("() \u00a0")
+            if not any(r[0] == pid for r in rows): rows.append([pid, cl(name), role])
+        out[title] = rows
     return out
 F = json.load(open("data/films.json"))
 todo = [(f["id"], f["ratings"]["elcinema"]["id"]) for f in F if ((f.get("ratings") or {}).get("elcinema") or {}).get("id")]
