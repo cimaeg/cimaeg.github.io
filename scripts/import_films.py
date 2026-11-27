@@ -19,6 +19,7 @@ WD = "data/wikidata.json"
 DRY = "--dry" in sys.argv
 MAX_YEAR = 2000
 CAST_N = 6
+CAST_EXTRA = "data/cast_extra.json"  # طواقم مكمّلة من السينما.كوم حين تنقص ويكي بيانات
 
 S = requests.Session()
 S.headers.update({"User-Agent": "ShashaZaman/1.0 (https://cimaeg.github.io; github.com/cimaeg)"})
@@ -304,6 +305,10 @@ def main():
         wd = json.load(open(WD, encoding="utf-8"))
     except Exception:
         wd = {"films": {}, "people": {}}
+    try:
+        cast_extra = json.load(open(CAST_EXTRA, encoding="utf-8"))
+    except Exception:
+        cast_extra = {}
 
     films = fetch_films()
     credits = fetch_credits(films)
@@ -435,6 +440,9 @@ def main():
             "src": "wikidata",
             "qid": k,
         })
+        ex = cast_extra.get(rec["id"]) or []
+        if len(ex) > len(rec["cast"]):
+            rec["cast"] = ex
         if f["en"]:
             rec["title_en"] = f["en"]
         rec.setdefault("summary", "")
