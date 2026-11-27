@@ -14,4 +14,7 @@ jobs:
       - run: pip install requests && python tools/fetch_cast.py ${{ inputs.mode }} ${{ inputs.a }} ${{ inputs.b }}
       - if: inputs.mode == 'run'
         uses: actions/upload-artifact@v4
-        with: { name: cast-${{ inputs.a }}, path: cast.jsonl, retention-days: 3 }
+        with:
+          name: cast-${{ inputs.a }}
+          path: cast.jsonl
+          retention-days: 3
