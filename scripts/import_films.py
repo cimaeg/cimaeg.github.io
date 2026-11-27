@@ -310,7 +310,8 @@ def main():
     except Exception:
         cast_extra = {}
     try:
-        excl_q = set(json.load(open("data/excluded.json", encoding="utf-8"))["wikidata"])
+        _ex = json.load(open("data/excluded.json", encoding="utf-8"))
+        excl_q = set(_ex["wikidata"]) | set(_ex.get("duplicates", {}))
     except Exception:
         excl_q = set()
 
