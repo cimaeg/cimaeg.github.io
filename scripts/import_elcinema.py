@@ -243,8 +243,12 @@ def main():
         by_title.setdefault((norm(f["title"]), f["year"]), f)
 
     # الأعمال المطلوبة: الجديدة كليًا، ثم المستوردة الناقصة
+    try:
+        excluded = set(json.load(open("data/excluded.json", encoding="utf-8"))["elcinema"])
+    except Exception:
+        excluded = set()
     new_ids = [w for w, x in sorted(index.items(), key=lambda kv: kv[1]["year"])
-               if w not in by_elc and not any((norm(x["title"]), x["year"] + d) in by_title for d in (0, -1, 1))]
+               if w not in by_elc and w not in excluded and not any((norm(x["title"]), x["year"] + d) in by_title for d in (0, -1, 1))]
     fill_ids = [e for e, f in by_elc.items() if f.get("src") == "wikidata" and (not f.get("cast") or not f.get("director"))]
     print("new works:", len(new_ids), "imported films to complete:", len(fill_ids), flush=True)
 

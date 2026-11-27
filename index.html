@@ -420,7 +420,7 @@ async function showFilm(id){
  el.innerHTML=`<a class="back" href="#${e.id}">→ العودة إلى ${e.name}</a>
  <div class="film-top"><div>${poster(f)}</div><div>
   <div class="kicker">${ar(f.year)} · ${e.name}</div><h1>${esc(f.title)}</h1>${f.director?`<p class="by">إخراج: ${plink(f.director)}</p>`:''}
-  ${(m=>m?`<dl class="meta">${m}</dl>`:'')(row('التأليف',f.writer)+(/عن /.test(f.writer||'')?'':row('عن',f.based_on))+row('الإنتاج',f.producer)+row('المدة',f.duration)+row('العرض الأول',f.premiere))}
+  ${(m=>m?`<dl class="meta">${m}</dl>`:'')(row('التأليف',f.writer)+(/عن /.test(f.writer||'')?'':row('عن',f.based_on))+row('الإنتاج',f.producer)+row('إنتاج مشترك',f.coprod&&('مصر، '+f.coprod.join('، ')))+row('المدة',f.duration)+row('العرض الأول',f.premiere))}
   <div class="tags">${(f.genre||[]).map(g=>`<span>${esc(g)}</span>`).join('')}</div>
   ${rates(f)}
  </div></div>

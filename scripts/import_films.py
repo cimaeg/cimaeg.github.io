@@ -309,6 +309,10 @@ def main():
         cast_extra = json.load(open(CAST_EXTRA, encoding="utf-8"))
     except Exception:
         cast_extra = {}
+    try:
+        excl_q = set(json.load(open("data/excluded.json", encoding="utf-8"))["wikidata"])
+    except Exception:
+        excl_q = set()
 
     films = fetch_films()
     credits = fetch_credits(films)
@@ -372,6 +376,8 @@ def main():
     records, used = [], set()
     people_out = wd.setdefault("people", {})
     for k, f in sorted(films.items(), key=lambda kv: (kv[1]["date"], kv[1]["ar"])):
+        if k in excl_q:
+            continue  # غير مصري (data/excluded.json)
         tt = next(iter(sorted(f["imdb"]))) if f["imdb"] else None
         title = clean_label(f["ar"])
         old = by_qid.get(k) or (by_imdb.get(tt) if tt else None) or by_title.get((norm(title), f["year"]))
