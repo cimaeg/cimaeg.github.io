@@ -115,8 +115,20 @@ async function personArticle(name) {
   try { const r = await fetch(`people/${encodeURIComponent(name.replace(/\s+/g, '-'))}.md`, { cache: 'no-cache' }); art[name] = r.ok ? await r.text() : null; } catch { art[name] = null; }
   return art[name];
 }
+/* سجل الأدوار الكامل: موزّع على ٣٢ ملفًا بحسب الاسم */
+const NS = 32, shard = n => { let h = 0; for (const ch of n) h = (h * 31 + ch.codePointAt(0)) % 1000003; return h % NS; };
+const CR = {};
+async function credits(name) {
+  const k = shard(name);
+  if (!(k in CR)) CR[k] = await fetch(`data/credits/${k}.json`, { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({}));
+  return CR[k][name] || [];
+}
 async function renderPerson(name) {
-  const p = people().get(name);
+  const cr = await credits(name);
+  if (decodeURIComponent(location.hash.slice(3)) !== name) return;
+  const p0 = people().get(name), RO = new Map(cr.map(([id, r]) => [id, r]));
+  const films = [...new Set([...(p0 ? p0.films : []), ...cr.map(([id]) => FILMS().find(f => f.id === id)).filter(Boolean)])].sort((a, b) => a.year - b.year);
+  const p = p0 ? { ...p0, films } : films.length ? { name, films, roles: new Set(['ممثل']) } : null;
   if (!p) { const el = showPage('e60', name); el.innerHTML = `<div class="pwrap"><a class="back" href="#people">→ كل الصنّاع</a><p class="lnone">لا يوجد في الأرشيف اسم «${esc(name)}».</p></div>`; return; }
   const era = eraOf(p.films[Math.floor(p.films.length / 2)].year).id;
   const el = showPage(era, p.name);
@@ -127,7 +139,8 @@ async function renderPerson(name) {
   const coTop = [...co.entries()].filter(([, c]) => c > 1).sort((a, b) => b[1] - a[1]).slice(0, 8);
   const coOne = coTop.length ? [] : [...co.keys()].slice(0, 8);
   const age = (w.born && w.born.length === 10) ? (() => { const b = new Date(w.born), d = w.died && w.died.length === 10 ? new Date(w.died) : new Date(); let a = d.getFullYear() - b.getFullYear(); if (d < new Date(d.getFullYear(), b.getMonth(), b.getDate())) a--; return a; })() : null;
-  const roleIn = f => pname(f.director) === p.name ? ((f.cast || []).map(pname).includes(p.name) ? 'إخراج وتمثيل' : 'إخراج') : 'تمثيل';
+  const roleIn = f => pname(f.director) === p.name ? ((f.cast || []).map(pname).includes(p.name) || RO.has(f.id) ? 'إخراج وتمثيل' : 'إخراج') : 'تمثيل';
+  const part = f => RO.get(f.id) ? ` · في دور «${esc(RO.get(f.id))}»` : '';
   el.innerHTML = `<div class="pwrap"><a class="back" href="#people">→ كل الصنّاع</a>
    <div class="phead">${avatar(p, true)}<div><span class="lk">${esc(roleText(p))}</span><h1>${esc(p.name)}</h1>
     <p class="life">${w.born ? `${f ? 'وُلدت' : 'وُلد'} ${w.born.includes('-') ? 'في' : 'عام'} ${fmtDate(w.born)}` : ''}${w.died ? `، ${f ? 'ورحلت' : 'ورحل'} ${w.died.includes('-') ? 'في' : 'عام'} ${fmtDate(w.died)}` : ''}${age !== null ? ` <small>(${w.died ? 'عن' : 'العمر'} ${ar(age)} عامًا)</small>` : ''}</p>
@@ -135,7 +148,7 @@ async function renderPerson(name) {
    <dl class="pnums"><div><dt>في الأرشيف</dt><dd>${cnt(p.films.length)}</dd></div><div><dt>الفترة</dt><dd>${ar(p.films[0].year)}${p.films.length > 1 ? '–' + ar(p.films[p.films.length - 1].year) : ''}</dd></div>${avg ? `<div><dt>متوسط IMDb</dt><dd>${avg.toFixed(1)}</dd></div>` : ''}</dl>
    <div class="pcols"><div>
     <h2 class="pg">${f ? 'أفلامها' : 'أفلامه'} في الأرشيف</h2>
-    <ol class="tline">${p.films.map(f => `<li><span class="ty">${ar(f.year)}</span><a href="#film-${esc(f.id)}">${mpo(f, eraOf(f.year).id)}<span><b>${esc(f.title)}</b><small>${roleIn(f)}${roleIn(f) === 'تمثيل' ? ' · إخراج: ' + esc(pname(f.director)) : ''}${score(f) ? ' · ★ ' + score(f).toFixed(1) : ''}</small></span></a></li>`).join('')}</ol>
+    <ol class="tline">${p.films.map(f => `<li><span class="ty">${ar(f.year)}</span><a href="#film-${esc(f.id)}">${mpo(f, eraOf(f.year).id)}<span><b>${esc(f.title)}</b><small>${roleIn(f)}${part(f)}${roleIn(f) === 'تمثيل' && f.director ? ' · إخراج: ' + esc(pname(f.director)) : ''}${score(f) ? ' · ★ ' + score(f).toFixed(1) : ''}</small></span></a></li>`).join('')}</ol>
     <div class="prose" id="pprose"></div>
    </div><aside class="side">
     ${coTop.length || coOne.length ? `<div class="box"><h4>${coTop.length ? (f ? 'أكثر من عملت معهم' : 'أكثر من عمل معهم') : (f ? 'عملت معهم' : 'عمل معهم')}</h4><ul class="co">${(coTop.length ? coTop : coOne.map(n => [n, 1])).map(([n, c]) => `<li><a href="#p-${encodeURIComponent(n)}">${esc(n)}</a>${c > 1 ? `<small>${cnt(c)}</small>` : ''}</li>`).join('')}</ul></div>` : ''}
