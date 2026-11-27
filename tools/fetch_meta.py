@@ -28,12 +28,14 @@ for f, e in todo:
     o = {"id": f["id"], "e": e}
     try:
         t = S.get(f"https://elcinema.com/work/{e}/", timeout=30).text
-        o["country"] = sorted(set(re.findall(r"/index/work/country/([a-z]{2})", t)))
+        m = re.search(r'id="work_country">(.*?)</ul>', t, re.S)
+        o["country"] = re.findall(r"/index/work/country/([a-z]{2})\">([^<]+)<", m.group(1)) if m else []
         if f.get("src") == "wikidata":
             c = S.get(f"https://elcinema.com/work/{e}/cast", timeout=30).text
-            seg = c.split("الممثلين", 1)[-1] if "الممثلين" in c else c
+            parts = c.split('class="section-title"')
+            seg = parts[1] if len(parts) > 1 else ""
             names = []
-            for pid, nm in re.findall(r'href="/person/(\d+)/?"[^>]*>([^<]+)</a>', seg):
+            for pid, nm in re.findall(r'<li><a href="/person/(\d+)/">([^<]+)</a></li>', seg):
                 nm = clean(nm)
                 if nm and nm not in names: names.append(nm)
             o["cast"] = names[:10]
